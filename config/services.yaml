@@ -10,6 +10,7 @@ parameters:
     app.upload.media_directory: '%kernel.project_dir%/var/uploads/media'
     app.mail.sender_address: '%env(MAIL_SENDER_ADDRESS)%'
     app.mail.sender_name: '%env(MAIL_SENDER_NAME)%'
+    app.mail.reply_to: '%env(MAIL_REPLY_TO)%'
 
 services:
     # default configuration for services in *this* file
@@ -30,6 +31,7 @@ services:
         arguments:
             $senderAddress: '%app.mail.sender_address%'
             $senderName: '%app.mail.sender_name%'
+            $replyToAddress: '%app.mail.reply_to%'
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
