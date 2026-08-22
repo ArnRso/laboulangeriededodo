@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>G3-A — Verrouillé clair</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#17152B;--muted:#6B6880;--pink:#FF5CA8}
+*{box-sizing:border-box;margin:0}
+body{font-family:'Plus Jakarta Sans',-apple-system,sans-serif;color:var(--ink);min-height:100vh;background:linear-gradient(165deg,#FFD6EC 0%,#FFE3D0 45%,#D9D0FF 100%);background-attachment:fixed}
+.wrap{max-width:430px;margin:0 auto;padding:12px 14px 40px}
+.status{display:flex;justify-content:space-between;font-size:13px;font-weight:700;padding:0 6px 14px}
+.clock{text-align:center;margin:0 0 18px}
+.clock .t{font-size:52px;font-weight:800;letter-spacing:-2px;line-height:1}
+.clock .d{font-size:13px;font-weight:700;color:var(--muted);margin-top:4px}
+.clock .aura{display:inline-flex;gap:6px;align-items:center;margin-top:10px;background:rgba(255,255,255,.65);backdrop-filter:blur(10px);border-radius:999px;padding:6px 12px;font-size:12px;font-weight:800}
+.clock .aura b{color:var(--pink)}
+/* iOS stack */
+.stack{position:relative;margin-bottom:14px}
+.stack .ghost{position:absolute;left:10px;right:10px;bottom:-5px;height:12px;background:rgba(255,255,255,.5);border-radius:0 0 18px 18px}
+.stack .ghost.g2{left:18px;right:18px;bottom:-9px;background:rgba(255,255,255,.32)}
+.stack .cnt{position:absolute;right:14px;top:-9px;background:var(--ink);color:#fff;font-size:10px;font-weight:800;padding:2px 8px;border-radius:999px;z-index:2}
+.n{display:flex;gap:12px;align-items:flex-start;background:rgba(255,255,255,.82);backdrop-filter:blur(18px);border-radius:20px;padding:12px 14px;box-shadow:0 10px 30px rgba(23,21,43,.10);text-decoration:none;color:var(--ink);position:relative;z-index:1}
+.n .app{width:40px;height:40px;border-radius:11px;flex:none;display:grid;place-items:center;font-size:19px;color:#fff;font-weight:800}
+.n .b{flex:1;min-width:0}
+.n .h{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.n .h b{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.4px}
+.n .h small{font-size:11px;color:var(--muted);font-weight:700;white-space:nowrap}
+.n .t{font-size:15px;font-weight:800;line-height:1.2;margin-top:2px}
+.n .m{font-size:13px;color:#3E3B55;line-height:1.35;margin-top:3px}
+.n .m b{color:var(--ink)}
+.btn{display:inline-block;margin-top:8px;border-radius:999px;padding:8px 14px;font-size:12px;font-weight:800;color:#fff;background:var(--ink)}
+.ue .app{background:#06C167;font-size:11px;line-height:1}
+.ue{outline:3px solid #06C167;outline-offset:-3px}
+.ue .track{display:flex;gap:4px;margin:8px 0 4px}.ue .track i{flex:1;height:4px;border-radius:99px;background:#06C167}
+.ue .btn{background:#06C167;color:#000}
+.dl .app{background:#107ACA}
+.dl .slot{display:flex;gap:8px;align-items:center;margin-top:8px;background:#EEF5FC;border-radius:12px;padding:8px 10px;font-size:13px;font-weight:700;color:#0D5FA0}
+.dl .slot .tm{font-size:20px;font-weight:800;font-variant-numeric:tabular-nums}
+.dl .btn{background:#107ACA}
+.tt .app{background:#000}.tt .stat{display:inline-block;margin-top:6px;font-size:13px;font-weight:800;color:#FE2C55}
+.ig .app{background:linear-gradient(45deg,#F9CE34,#EE2A7B 50%,#6228D7)}
+.td .app{background:linear-gradient(160deg,#FD5564,#EF4A75)}
+.td .match{font-size:20px;font-weight:800;color:#FD5564;line-height:1}
+.br .app{background:#000;font-size:10px}
+.hint{text-align:center;font-size:12px;color:var(--muted);font-weight:700;margin-top:18px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="status"><span>🦤 dodo</span><span>🏳️‍🌈 ▮▮▮</span></div>
+  <div class="clock">
+    <div class="t">23:25</div>
+    <div class="d">vendredi 22 août · Saison 1 · 2/5</div>
+    <div class="aura">✨ <b>1 240 aura</b> · +100 aujourd'hui</div>
+  </div>
+
+  <a class="n ue" href="#">
+    <div class="app">Uber<br>Eats</div>
+    <div class="b">
+      <div class="h"><b>Uber Eats</b><small>maintenant</small></div>
+      <div class="t">Ta commande est arrivée 🎁</div>
+      <div class="m">1 × <b>Souvenir du jour</b> · livré par Dodo du passé · +100 aura inclus</div>
+      <div class="track"><i></i><i></i><i></i><i></i></div>
+      <span class="btn">Ouvrir la commande</span>
+    </div>
+  </a>
+
+  <div class="n dl">
+    <div class="app">🩺</div>
+    <div class="b">
+      <div class="h"><b>Doctolib</b><small>rappel</small></div>
+      <div class="t">Rappel de rendez-vous</div>
+      <div class="m"><b>Dr Passé</b> · Spécialiste des décisions catastrophiques</div>
+      <div class="slot">📅 Demain · <span class="tm">23:14:02</span></div>
+      <span class="btn">Accepter mon destin</span>
+    </div>
+  </div>
+
+  <div class="stack">
+    <span class="cnt">3</span>
+    <div class="n tt">
+      <div class="app">♪</div>
+      <div class="b">
+        <div class="h"><b>TikTok</b><small>il y a 2 h</small></div>
+        <div class="t">Ta vidéo « Le premier jour » cartonne 🔥</div>
+        <div class="m">Tu pensais connaître toute l'histoire. Tu avais tort.</div>
+        <div class="stat">+100 aura · ne la gaspille pas</div>
+      </div>
+    </div>
+    <div class="ghost"></div><div class="ghost g2"></div>
+  </div>
+
+  <div class="stack">
+    <span class="cnt">2</span>
+    <div class="n ig">
+      <div class="app">📷</div>
+      <div class="b">
+        <div class="h"><b>Instagram</b><small>il y a 2 h</small></div>
+        <div class="t">dodo a débloqué un nouveau badge 👑</div>
+        <div class="m">Icon · Main character energy</div>
+      </div>
+    </div>
+    <div class="ghost"></div>
+  </div>
+
+  <div class="n td">
+    <div class="app">🔥</div>
+    <div class="b">
+      <div class="h"><b>Tinder</b><small>il y a 5 h</small></div>
+      <div class="match">C'est un match !</div>
+      <div class="m">Toi et <b>la coupe de cheveux de 2015</b>. Drama level : 87 %.</div>
+    </div>
+  </div>
+
+  <p class="hint">Glisser vers le haut pour ouvrir</p>
+</div>
+</body>
+</html>

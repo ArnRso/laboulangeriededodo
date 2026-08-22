@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>G2 — Accueil</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#FFFFFF;--ink:#111114;--muted:#6E6E78;--line:#ECECF1;--soft:#F5F5F8;--pink:#FF3B7F;--green:#1DB954;--white:#fff}
+*{box-sizing:border-box;margin:0}
+body{font-family:'Plus Jakarta Sans',-apple-system,sans-serif;color:var(--ink);background:var(--bg);min-height:100vh}
+.wrap{max-width:430px;margin:0 auto;padding:10px 0 96px}
+.status{display:flex;justify-content:space-between;font-size:13px;font-weight:700;padding:4px 18px 8px}
+
+/* Instagram-style header */
+.profile{display:flex;align-items:center;gap:16px;padding:6px 18px 14px}
+.ring{width:78px;height:78px;border-radius:50%;padding:3px;background:conic-gradient(#E40303,#FF8C00,#FFED00,#008026,#24408E,#732982,#E40303);flex:none}
+.ring .av{width:100%;height:100%;border-radius:50%;background:#fff;display:grid;place-items:center;font-size:36px;border:3px solid #fff}
+.stats{display:flex;flex:1;justify-content:space-around;text-align:center}
+.stats b{display:block;font-size:18px;font-weight:800;line-height:1.1}
+.stats small{font-size:12px;color:var(--muted);font-weight:600}
+.bio{padding:0 18px 12px}
+.bio b{font-size:14px;font-weight:800}
+.bio p{font-size:13px;color:var(--ink);line-height:1.35}
+.bio p span{color:var(--muted)}
+
+/* highlights = achievements */
+.highlights{display:flex;gap:14px;padding:4px 18px 16px;overflow-x:auto;scrollbar-width:none}
+.hl{flex:none;width:64px;text-align:center}
+.hl .c{width:60px;height:60px;border-radius:50%;border:1.5px solid var(--line);display:grid;place-items:center;font-size:26px;background:var(--soft);margin:0 auto 5px}
+.hl.on .c{border-color:var(--ink)}
+.hl small{font-size:11px;font-weight:600;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hl.off{opacity:.35}.hl.off .c{filter:grayscale(1)}
+
+hr.sep{border:0;border-top:1px solid var(--line);margin:0}
+
+/* Uber Eats-style tracker */
+.track{margin:16px 18px 0;border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:0 8px 24px rgba(17,17,20,.06)}
+.track .top{display:flex;justify-content:space-between;align-items:baseline}
+.track .top b{font-size:17px;font-weight:800}
+.track .top small{font-size:12px;color:var(--muted);font-weight:600}
+.track .eta{font-size:32px;font-weight:800;letter-spacing:-1px;margin:2px 0 12px;font-variant-numeric:tabular-nums}
+.track .eta span{font-size:14px;color:var(--muted);font-weight:600;letter-spacing:0;margin-left:6px}
+.steps{display:flex;gap:6px;margin-bottom:10px}
+.steps i{flex:1;height:5px;border-radius:99px;background:var(--line)}
+.steps i.on{background:var(--green)}
+.steps i.now{background:linear-gradient(90deg,var(--green) 0 55%,var(--line) 55%)}
+.slbl{display:flex;justify-content:space-between;font-size:11px;font-weight:700;color:var(--muted);margin-bottom:14px}
+.slbl span.on{color:var(--ink)}
+.row{display:flex;gap:12px;align-items:center;background:var(--soft);border-radius:14px;padding:12px}
+.row .ico{width:44px;height:44px;border-radius:12px;background:#fff;display:grid;place-items:center;font-size:22px;border:1px solid var(--line)}
+.row b{display:block;font-size:14px;font-weight:800}
+.row small{font-size:12px;color:var(--muted);font-weight:600}
+.row .aura{margin-left:auto;font-weight:800;color:var(--pink);font-size:14px;white-space:nowrap}
+.btn{display:block;margin-top:12px;background:var(--ink);color:#fff;text-align:center;border-radius:14px;padding:14px;font-weight:800;font-size:15px;text-decoration:none}
+.btn.dis{background:var(--soft);color:var(--muted)}
+
+/* BeReal-style post */
+.post{margin:18px 0 0}
+.post .h{display:flex;align-items:center;gap:10px;padding:0 18px 10px}
+.post .h .av{width:32px;height:32px;border-radius:50%;background:var(--soft);display:grid;place-items:center;font-size:16px}
+.post .h b{font-size:13px;font-weight:800;display:block}
+.post .h small{font-size:11px;color:var(--muted);font-weight:600}
+.post .h .late{margin-left:auto;font-size:11px;font-weight:700;color:var(--muted)}
+.post .media{position:relative;height:300px;background:linear-gradient(160deg,#FFD6EC,#D9D0FF);display:grid;place-items:center;font-size:72px}
+.post .media .selfie{position:absolute;left:14px;top:14px;width:84px;height:112px;border-radius:12px;border:2px solid #fff;background:#FFE3D0;display:grid;place-items:center;font-size:34px;box-shadow:0 4px 14px rgba(0,0,0,.2)}
+.post .cap{padding:10px 18px 0;font-size:13px;line-height:1.4}
+.post .cap b{font-weight:800}
+.post .cap .tag{color:var(--pink);font-weight:700}
+
+/* nav */
+nav{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--line);display:flex;justify-content:space-around;padding:10px 8px 22px}
+nav a{text-decoration:none;color:var(--ink);font-size:10px;font-weight:700;display:flex;flex-direction:column;align-items:center;gap:3px;opacity:.45}
+nav a.on{opacity:1}
+nav i{font-style:normal;font-size:22px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="status"><span>23:25</span><span>🏳️‍🌈 ▮▮▮</span></div>
+
+  <div class="profile">
+    <div class="ring"><div class="av">🦤</div></div>
+    <div class="stats">
+      <div><b>1 240</b><small>aura</small></div>
+      <div><b>3</b><small>achievements</small></div>
+      <div><b>2/5</b><small>saison 1</small></div>
+    </div>
+  </div>
+  <div class="bio">
+    <b>dodo</b>
+    <p>Main character energy · <span>niveau Icon</span><br>Aucune de ces coupes n'était un choix.</p>
+  </div>
+
+  <div class="highlights">
+    <div class="hl on"><div class="c">🧩</div><small>Lore</small></div>
+    <div class="hl on"><div class="c">👑</div><small>Icon</small></div>
+    <div class="hl on"><div class="c">📼</div><small>Leaked</small></div>
+    <div class="hl off"><div class="c">🚩</div><small>Red flag</small></div>
+    <div class="hl off"><div class="c">🏁</div><small>Finale</small></div>
+    <div class="hl off"><div class="c">🔒</div><small>???</small></div>
+  </div>
+
+  <hr class="sep">
+
+  <section class="track">
+    <div class="top"><b>Ton souvenir arrive</b><small>Nos années lycée</small></div>
+    <div class="eta">23:14<span>restantes</span></div>
+    <div class="steps"><i class="on"></i><i class="on"></i><i class="now"></i><i></i></div>
+    <div class="slbl"><span class="on">Commandé</span><span class="on">Préparation</span><span class="on">En route</span><span>Livré</span></div>
+    <div class="row">
+      <div class="ico">🔒</div>
+      <div><b>Canon event</b><small>Cette journée était inévitable.</small></div>
+      <div class="aura">+100 aura</div>
+    </div>
+    <a class="btn dis" href="#">Accepter mon destin</a>
+  </section>
+
+  <div class="post">
+    <div class="h">
+      <div class="av">🦤</div>
+      <div><b>dodo</b><small>Nos années lycée · hier</small></div>
+      <div class="late">⚠️ 2 h en retard</div>
+    </div>
+    <div class="media">📝<div class="selfie">🦤</div></div>
+    <div class="cap"><b>Le premier jour</b> — Tu pensais connaître toute l'histoire. Tu avais tort. <span class="tag">#LoreUnlocked +100</span></div>
+  </div>
+</div>
+
+<nav>
+  <a class="on" href="#"><i>🏠</i>Accueil</a>
+  <a href="#"><i>🃏</i>Saisons</a>
+  <a href="#"><i>🏆</i>Achv</a>
+  <a href="#"><i>🦤</i>Profil</a>
+</nav>
+</body>
+</html>

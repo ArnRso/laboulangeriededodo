@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ouverture — Uber Eats</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--green:#06C167;--ink:#000;--muted:#6B6B6B;--line:#E8E8E8;--soft:#F6F6F6;--pink:#FF5CA8}
+*{box-sizing:border-box;margin:0}
+body{font-family:'Plus Jakarta Sans',-apple-system,sans-serif;color:var(--ink);background:#fff;min-height:100vh}
+.wrap{max-width:430px;margin:0 auto;padding-bottom:110px}
+.bar{display:flex;align-items:center;justify-content:space-between;padding:12px 16px}
+.bar .x{width:36px;height:36px;border-radius:50%;background:var(--soft);display:grid;place-items:center;font-size:18px;text-decoration:none;color:var(--ink);font-weight:800}
+.bar b{font-size:15px;font-weight:800}
+.hero{padding:0 16px 12px}
+.hero .st{display:flex;align-items:center;gap:8px;color:var(--green);font-weight:800;font-size:13px}
+.hero .st i{width:22px;height:22px;border-radius:50%;background:var(--green);color:#fff;display:grid;place-items:center;font-style:normal;font-size:12px}
+.hero h1{font-size:26px;font-weight:800;letter-spacing:-.5px;line-height:1.1;margin:6px 0 4px}
+.hero p{font-size:13px;color:var(--muted);font-weight:600}
+.map{margin:0 16px;height:120px;border-radius:16px;background:linear-gradient(135deg,#E9F7EF,#F6F6F6);position:relative;overflow:hidden;border:1px solid var(--line)}
+.map::before{content:"";position:absolute;left:12%;right:12%;top:50%;border-top:3px dashed #BFC7C2}
+.map .a,.map .z{position:absolute;top:50%;transform:translate(-50%,-50%);width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-size:16px;background:#fff;border:2px solid var(--ink)}
+.map .a{left:12%}.map .z{left:88%;background:var(--green);border-color:var(--green)}
+.map .lbl{position:absolute;bottom:8px;left:12px;font-size:11px;font-weight:800;color:var(--muted)}
+.sec{padding:16px 16px 0}
+.sec h2{font-size:16px;font-weight:800;margin-bottom:10px}
+.item{display:flex;gap:12px;align-items:flex-start;border:1px solid var(--line);border-radius:16px;padding:12px;overflow:hidden}
+.item .q{width:26px;height:26px;border-radius:8px;background:var(--soft);display:grid;place-items:center;font-size:12px;font-weight:800;flex:none}
+.item .d{flex:1;min-width:0}
+.item .d b{font-size:15px;font-weight:800;display:block}
+.item .d p{font-size:13px;color:var(--muted);line-height:1.4;margin-top:3px}
+.item .ph{width:84px;height:84px;border-radius:12px;flex:none;background:linear-gradient(160deg,#FFD6EC,#D9D0FF);display:grid;place-items:center;font-size:38px}
+.media{margin-top:12px;border-radius:16px;overflow:hidden;background:linear-gradient(160deg,#FFD6EC,#FFE3D0 50%,#D9D0FF);height:240px;display:grid;place-items:center;font-size:80px;position:relative}
+.media .play{position:absolute;inset:0;display:grid;place-items:center}
+.media .play span{width:64px;height:64px;border-radius:50%;background:rgba(0,0,0,.75);color:#fff;display:grid;place-items:center;font-size:26px;padding-left:4px}
+.note{margin-top:10px;background:var(--soft);border-radius:12px;padding:10px 12px;font-size:13px;line-height:1.4}
+.note b{display:block;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:3px}
+.receipt{margin:16px 16px 0;border-top:1px solid var(--line);padding-top:12px}
+.receipt .r{display:flex;justify-content:space-between;font-size:13px;font-weight:600;padding:5px 0;color:var(--muted)}
+.receipt .r.t{border-top:1px solid var(--line);margin-top:6px;padding-top:10px;font-size:16px;font-weight:800;color:var(--ink)}
+.receipt .r.t span:last-child{color:var(--green)}
+.rate{margin:16px 16px 0;text-align:center}
+.rate small{font-size:12px;color:var(--muted);font-weight:700;display:block;margin-bottom:6px}
+.rate .stars{font-size:28px;letter-spacing:4px;color:#D8D8D8}
+.rate .stars b{color:var(--green)}
+.cta{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--line);padding:12px 16px 26px}
+.cta a{display:block;text-align:center;background:var(--ink);color:#fff;text-decoration:none;border-radius:12px;padding:15px;font-weight:800;font-size:15px;max-width:398px;margin:0 auto}
+.toast{position:fixed;top:14px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;border-radius:999px;padding:8px 14px;font-size:13px;font-weight:800;box-shadow:0 8px 24px rgba(0,0,0,.25);z-index:3;white-space:nowrap}
+.toast b{color:var(--pink)}
+</style>
+</head>
+<body>
+<div class="toast">✨ <b>+100 aura</b> · ne la gaspille pas</div>
+<div class="wrap">
+  <div class="bar"><a class="x" href="#">‹</a><b>Détails de la commande</b><span style="width:36px"></span></div>
+
+  <div class="hero">
+    <div class="st"><i>✓</i>Commande livrée</div>
+    <h1>Le premier jour</h1>
+    <p>Commande n° 3 · livrée par Dodo du passé · 23:25</p>
+  </div>
+
+  <div class="map"><div class="a">🦤</div><div class="z">🎁</div><div class="lbl">Ton adolescence → Aujourd'hui · 11 ans de trajet</div></div>
+
+  <div class="sec">
+    <h2>Ta commande</h2>
+    <div class="item">
+      <div class="q">1×</div>
+      <div class="d"><b>Le premier jour</b><p>Là où tout a commencé. Septembre, un bus, et une coupe de cheveux que personne n'a validée.</p></div>
+      <div class="ph">📸</div>
+    </div>
+
+    <div class="media"><span>📸</span><div class="play"><span>▶</span></div></div>
+
+    <div class="note"><b>Note du restaurant</b>Tu te souviens de ce jour de septembre ? Moi oui. Toi tu avais dit « je reste une heure ». Il était 4 h 12.</div>
+  </div>
+
+  <div class="receipt">
+    <div class="r"><span>Sous-total</span><span>+100 aura</span></div>
+    <div class="r"><span>Frais de service</span><span>0 aura</span></div>
+    <div class="r"><span>Pourboire au livreur</span><span>0 aura (radin)</span></div>
+    <div class="r t"><span>Total</span><span>+100 aura</span></div>
+  </div>
+
+  <div class="rate"><small>Note ta commande</small><div class="stars"><b>★★★★</b>★</div></div>
+</div>
+<div class="cta"><a href="#">Retour aux notifications</a></div>
+</body>
+</html>

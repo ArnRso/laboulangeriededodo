@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>G — Faux téléphone</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&family=Sora:wght@700;800&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#1C1A2E;--muted:#6B6880;--pink:#FF5CA8;--peach:#FFB27A;--lilac:#B79CFF;--mint:#7CF0C4;--sun:#FFD84D;--white:#fff}
+*{box-sizing:border-box;margin:0}
+body{font-family:'Plus Jakarta Sans',sans-serif;color:var(--ink);min-height:100vh;overflow-x:hidden;
+ background:linear-gradient(165deg,#FFD6EC 0%,#FFE3D0 40%,#D9D0FF 100%)}
+.wrap{position:relative;z-index:1;padding:10px 14px 112px;max-width:430px;margin:0 auto}
+.status{display:flex;justify-content:space-between;font-size:12px;font-weight:800;padding:4px 8px;margin-bottom:10px}
+.lock{ text-align:center;margin:6px 0 18px}
+.lock .time{font-family:'Sora';font-size:64px;font-weight:800;line-height:1;letter-spacing:-2px}
+.lock .date{font-size:13px;font-weight:700;color:var(--muted);margin-top:2px}
+.lock .aura{display:inline-flex;gap:8px;align-items:center;margin-top:10px;background:rgba(255,255,255,.6);backdrop-filter:blur(10px);border-radius:999px;padding:6px 12px;font-size:12px;font-weight:800}
+.lock .aura b{color:var(--pink);font-family:'Sora'}
+
+.notif{background:rgba(255,255,255,.78);backdrop-filter:blur(18px);border-radius:22px;padding:12px 14px;margin-bottom:10px;box-shadow:0 10px 30px rgba(28,26,46,.10);display:flex;gap:12px;align-items:flex-start;text-decoration:none;color:var(--ink);position:relative}
+.notif .app{width:40px;height:40px;border-radius:11px;flex:none;display:grid;place-items:center;font-size:20px;color:#fff}
+.notif .b{flex:1;min-width:0}
+.notif .h{display:flex;justify-content:space-between;align-items:baseline}
+.notif .h b{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.5px}
+.notif .h small{font-size:11px;color:var(--muted);font-weight:700}
+.notif .t{font-size:15px;font-weight:800;line-height:1.2;margin-top:2px}
+.notif .m{font-size:13px;color:#3E3B55;line-height:1.35;margin-top:2px}
+.notif .m b{color:var(--pink)}
+.n-gift .app{background:linear-gradient(135deg,var(--pink),#FF2F8E)}
+.n-gift{outline:3px solid var(--pink);outline-offset:-3px;animation:nudge 2.4s ease-in-out infinite}
+@keyframes nudge{0%,90%,100%{transform:none}93%{transform:translateX(-3px)}96%{transform:translateX(3px)}}
+.n-duo .app{background:#58CC02}
+.n-warn .app{background:var(--sun);color:var(--ink)}
+.n-news .app{background:#111}
+.n-wrapped .app{background:linear-gradient(135deg,#1DB954,#0E7A3A)}
+.n-lock .app{background:#9A97AD}
+.n-lock{opacity:.85}
+.stack{position:relative}
+.stack::after{content:"";position:absolute;left:12px;right:12px;bottom:-6px;height:10px;background:rgba(255,255,255,.45);border-radius:0 0 18px 18px;z-index:-1}
+.timer{font-family:'Sora';font-size:22px;font-weight:800;color:var(--ink);letter-spacing:-.5px;margin-top:4px;font-variant-numeric:tabular-nums}
+.btn{display:inline-block;margin-top:8px;background:var(--ink);color:#fff;border-radius:999px;padding:8px 14px;font-size:12px;font-weight:800}
+.grp{font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin:16px 4px 8px}
+.widgets{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.wg{border-radius:22px;padding:14px;min-height:118px;display:flex;flex-direction:column;justify-content:space-between;color:#fff;box-shadow:0 10px 30px rgba(28,26,46,.12)}
+.wg small{font-size:10px;letter-spacing:2px;text-transform:uppercase;font-weight:800;opacity:.85}
+.wg b{font-family:'Sora';font-size:26px;font-weight:800;line-height:1}
+.wg span{font-size:11px;font-weight:700;opacity:.9}
+.w1{background:linear-gradient(160deg,#FF5CA8,#FF8F5C)}
+.w2{background:linear-gradient(160deg,#6D5BFF,#B79CFF)}
+.bar{height:8px;border-radius:99px;background:rgba(255,255,255,.35);overflow:hidden;margin-top:6px}
+.bar i{display:block;height:100%;width:87%;background:#fff;border-radius:99px}
+.avatar-row{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.6);border-radius:18px;padding:10px 12px;margin-top:10px}
+.avatar-row .av{width:40px;height:40px;border-radius:50%;background:var(--sun);display:grid;place-items:center;font-size:20px}
+.avatar-row b{font-size:14px;font-weight:800;display:block}
+.avatar-row span{font-size:11px;color:var(--muted);font-weight:700}
+nav{position:fixed;left:50%;transform:translateX(-50%);bottom:14px;width:calc(100% - 28px);max-width:402px;background:rgba(255,255,255,.75);backdrop-filter:blur(18px);border-radius:28px;padding:10px 12px;display:flex;justify-content:space-around;z-index:2;box-shadow:0 16px 40px rgba(28,26,46,.18)}
+nav a{text-decoration:none;color:var(--muted);font-size:11px;font-weight:800;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 14px;border-radius:18px}
+nav a.on{color:#fff;background:var(--ink)}
+nav i{font-style:normal;font-size:18px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="status"><span>23:25</span><span>🏳️‍🌈 4G ▮▮▮</span></div>
+
+  <div class="lock">
+    <div class="time">23:25</div>
+    <div class="date">vendredi 22 août · jour 3 de ta saison</div>
+    <div class="aura">✨ <b>1 240 aura</b> · +100 aujourd'hui</div>
+  </div>
+
+  <a class="notif n-gift stack" href="#">
+    <div class="app">🎁</div>
+    <div class="b">
+      <div class="h"><b>La Boulangerie</b><small>maintenant</small></div>
+      <div class="t">⚠️ Votre niveau de drama vient d'augmenter</div>
+      <div class="m">Un souvenir est prêt dans <b>Nos années lycée</b>. Ouvre-le pour <b>+100 aura</b>. Ne la gaspille pas.</div>
+      <span class="btn">Ouvrir la side quest →</span>
+    </div>
+  </a>
+
+  <div class="notif n-lock">
+    <div class="app">🔒</div>
+    <div class="b">
+      <div class="h"><b>Canon event</b><small>bientôt</small></div>
+      <div class="t">Cette journée était inévitable.</div>
+      <div class="timer">23:14:02</div>
+      <div class="m">[ACCEPTER MON DESTIN]</div>
+    </div>
+  </div>
+
+  <div class="notif n-duo">
+    <div class="app">🦉</div>
+    <div class="b">
+      <div class="h"><b>Rappel</b><small>il y a 2 h</small></div>
+      <div class="t">Ça fait 3 jours que tu n'as pas…</div>
+      <div class="m">…pensé à cette coupe de cheveux de 2015. On s'en charge.</div>
+    </div>
+  </div>
+
+  <div class="notif n-news">
+    <div class="app">📰</div>
+    <div class="b">
+      <div class="h"><b>Breaking news</b><small>hier</small></div>
+      <div class="t">Lore unlocked 🧩 — « Le premier jour »</div>
+      <div class="m">Tu pensais connaître toute l'histoire. Tu avais tort.</div>
+    </div>
+  </div>
+
+  <div class="grp">Widgets</div>
+  <div class="widgets">
+    <div class="wg w1"><small>Delulu meter</small><div><b>87 %</b><div class="bar"><i></i></div></div><span>en hausse depuis mardi</span></div>
+    <div class="wg w2"><small>Saison 1</small><div><b>2 / 5</b></div><span>Nos années lycée · 3 épisodes restants</span></div>
+  </div>
+
+  <div class="avatar-row">
+    <div class="av">🦤</div>
+    <div><b>Dodo</b><span>Main character energy · niveau Icon</span></div>
+  </div>
+</div>
+<nav><a class="on" href="#"><i>📲</i>Feed</a><a href="#"><i>🏆</i>Achv</a><a href="#"><i>🦤</i>Moi</a></nav>
+</body>
+</html>
