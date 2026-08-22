@@ -49,14 +49,27 @@ class CreateAdminCommandTest extends KernelTestCase
     {
         $this->commandTester->execute(['email' => 'nouvel-admin@example.com']);
 
-        $messages = self::getContainer()->get('mailer.message_logger_listener')->getEvents()->getMessages();
+        $email = $this->getSentEmail();
 
-        self::assertCount(1, $messages);
-
-        $email = $messages[0];
-        self::assertInstanceOf(Email::class, $email);
         self::assertSame('Votre accès à l\'administration', $email->getSubject());
         self::assertSame('nouvel-admin@example.com', $email->getTo()[0]->getAddress());
+    }
+
+    public function testExactlyOneRecipientIsMailed(): void
+    {
+        $this->commandTester->execute(['email' => 'nouvel-admin@example.com']);
+
+        $recipients = [];
+
+        foreach (self::getContainer()->get('mailer.message_logger_listener')->getEvents()->getMessages() as $message) {
+            self::assertInstanceOf(Email::class, $message);
+
+            foreach ($message->getTo() as $address) {
+                $recipients[] = $address->getAddress();
+            }
+        }
+
+        self::assertSame(['nouvel-admin@example.com'], array_values(array_unique($recipients)));
     }
 
     public function testInvitationEmailContainsWorkingLink(): void
@@ -66,15 +79,27 @@ class CreateAdminCommandTest extends KernelTestCase
         $user = self::getContainer()->get(UserRepository::class)->findOneByEmail('nouvel-admin@example.com');
         self::assertNotNull($user);
 
+        self::assertStringContainsString(
+            (string) $user->getInvitationToken(),
+            (string) $this->getSentEmail()->getHtmlBody(),
+            'Le mail doit porter le lien d\'invitation.',
+        );
+    }
+
+    /**
+     * Le collecteur enregistre l'email deux fois en envoi synchrone (passage par
+     * le bus puis envoi direct) : on vérifie donc le contenu, pas le nombre.
+     */
+    private function getSentEmail(): Email
+    {
         $messages = self::getContainer()->get('mailer.message_logger_listener')->getEvents()->getMessages();
+
+        self::assertNotEmpty($messages, 'Aucun email n\'a été envoyé.');
+
         $email = $messages[0];
         self::assertInstanceOf(Email::class, $email);
 
-        self::assertStringContainsString(
-            (string) $user->getInvitationToken(),
-            (string) $email->getHtmlBody(),
-            'Le mail doit porter le lien d\'invitation.',
-        );
+        return $email;
     }
 
     public function testRejectsInvalidEmail(): void
