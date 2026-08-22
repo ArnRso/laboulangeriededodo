@@ -1,0 +1,11 @@
+<?php
+
+$finder = (new TwigCsFixer\File\Finder())
+    ->in(__DIR__.'/templates')
+;
+
+$config = (new TwigCsFixer\Config\Config())
+    ->setFinder($finder)
+;
+
+return $config;

@@ -1,0 +1,17 @@
+parameters:
+    level: max
+    paths:
+        - src
+        - tests
+
+    symfony:
+        containerXmlPath: var/cache/dev/App_KernelDevDebugContainer.xml
+
+    doctrine:
+        objectManagerLoader: tests/object-manager.php
+
+    # Fichiers générés par Symfony, dont les conventions échappent à l'analyse.
+    excludePaths:
+        analyseAndScan:
+            - src/Kernel.php
+            - tests/bootstrap.php

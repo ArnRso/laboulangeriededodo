@@ -16,11 +16,11 @@ class MediaAccess
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
-    private ?User $user = null;
+    private User $user;
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Media $media = null;
+    private Media $media;
 
     #[ORM\Column]
     private \DateTimeImmutable $openedAt;
@@ -35,24 +35,24 @@ class MediaAccess
         return $this->id;
     }
 
-    public function getUser(): ?User
+    public function getUser(): User
     {
         return $this->user;
     }
 
-    public function setUser(?User $user): static
+    public function setUser(User $user): static
     {
         $this->user = $user;
 
         return $this;
     }
 
-    public function getMedia(): ?Media
+    public function getMedia(): Media
     {
         return $this->media;
     }
 
-    public function setMedia(?Media $media): static
+    public function setMedia(Media $media): static
     {
         $this->media = $media;
 

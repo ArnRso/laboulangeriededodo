@@ -35,14 +35,14 @@ class UnlockService
     {
         $pack = $progress->getPack();
         $medias = $this->mediaRepository->findByPackOrdered($pack);
-        $openedIds = $this->getOpenedMediaIds($user, $pack);
+        $openedMedias = $this->getOpenedMedias($user, $pack);
         $availableAt = $this->getNextAvailabilityDate($progress);
 
         $states = [];
         $nextIsUnlockable = true;
 
         foreach ($medias as $media) {
-            if (isset($openedIds[$media->getId()])) {
+            if (isset($openedMedias[spl_object_id($media)])) {
                 $states[] = UnlockState::opened($media);
 
                 continue;
@@ -68,7 +68,7 @@ class UnlockService
     public function getMediaState(User $user, PackProgress $progress, Media $media): ?UnlockState
     {
         foreach ($this->getPackState($user, $progress) as $state) {
-            if ($state->media->getId() === $media->getId()) {
+            if ($state->media === $media) {
                 return $state;
             }
         }
@@ -98,16 +98,21 @@ class UnlockService
     }
 
     /**
-     * @return array<int, true> ids des médias déjà ouverts, en clé pour un test O(1)
+     * Médias déjà ouverts, indexés par identifiant d'objet pour un test O(1).
+     *
+     * L'identité d'objet est utilisée plutôt que l'id afin de rester correct
+     * même sur des entités qui ne sont pas encore persistées.
+     *
+     * @return array<int, true>
      */
-    private function getOpenedMediaIds(User $user, Pack $pack): array
+    private function getOpenedMedias(User $user, Pack $pack): array
     {
-        $ids = [];
+        $opened = [];
 
         foreach ($this->mediaAccessRepository->findForUserAndPack($user, $pack) as $access) {
-            $ids[$access->getMedia()->getId()] = true;
+            $opened[spl_object_id($access->getMedia())] = true;
         }
 
-        return $ids;
+        return $opened;
     }
 }

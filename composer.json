@@ -50,7 +50,8 @@
         "allow-plugins": {
             "php-http/discovery": true,
             "symfony/flex": true,
-            "symfony/runtime": true
+            "symfony/runtime": true,
+            "phpstan/extension-installer": true
         },
         "bump-after-update": true,
         "sort-packages": true
@@ -88,6 +89,34 @@
         ],
         "post-update-cmd": [
             "@auto-scripts"
+        ],
+        "phpstan": "phpstan analyse --memory-limit=1G",
+        "cs": "PHP_CS_FIXER_IGNORE_ENV=1 php-cs-fixer fix --dry-run --diff",
+        "cs:fix": "PHP_CS_FIXER_IGNORE_ENV=1 php-cs-fixer fix",
+        "twig": [
+            "@php bin/console lint:twig templates",
+            "twig-cs-fixer lint"
+        ],
+        "twig:fix": "twig-cs-fixer lint --fix",
+        "js": "npx biome check assets",
+        "js:fix": "npx biome check --write assets",
+        "test": "@php bin/phpunit",
+        "lint": [
+            "@php bin/console lint:container",
+            "@php bin/console lint:yaml config"
+        ],
+        "qa": [
+            "@lint",
+            "@cs",
+            "@phpstan",
+            "@twig",
+            "@js",
+            "@test"
+        ],
+        "fix": [
+            "@cs:fix",
+            "@twig:fix",
+            "@js:fix"
         ]
     },
     "conflict": {
@@ -102,12 +131,25 @@
     "require-dev": {
         "dama/doctrine-test-bundle": "^8.6",
         "doctrine/doctrine-fixtures-bundle": "^4.3",
+        "friendsofphp/php-cs-fixer": "^3.95",
+        "phpstan/extension-installer": "^1.4",
+        "phpstan/phpstan": "^2.2",
+        "phpstan/phpstan-deprecation-rules": "^2.0",
+        "phpstan/phpstan-doctrine": "^2.0",
+        "phpstan/phpstan-phpunit": "^2.0",
+        "phpstan/phpstan-strict-rules": "^2.0",
+        "phpstan/phpstan-symfony": "^2.0",
         "phpunit/phpunit": "^13.3",
         "symfony/browser-kit": "8.1.*",
         "symfony/css-selector": "8.1.*",
         "symfony/debug-bundle": "8.1.*",
         "symfony/maker-bundle": "^1.67",
         "symfony/stopwatch": "8.1.*",
-        "symfony/web-profiler-bundle": "8.1.*"
+        "symfony/web-profiler-bundle": "8.1.*",
+        "vincentlanglet/twig-cs-fixer": "^4.0"
+    },
+    "scripts-descriptions": {
+        "qa": "Lance toute la cha\u00eene qualit\u00e9 : lint, style, analyse statique, Twig, JS et tests",
+        "fix": "Corrige automatiquement le style PHP, Twig et JS"
     }
 }

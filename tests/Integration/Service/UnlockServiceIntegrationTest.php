@@ -42,10 +42,10 @@ class UnlockServiceIntegrationTest extends KernelTestCase
 
         $states = $this->unlockService->getPackState($user, $progress);
 
-        $this->assertCount(3, $states);
-        $this->assertSame('Premier', $states[0]->media->getTitle());
-        $this->assertSame('Deuxième', $states[1]->media->getTitle());
-        $this->assertSame('Troisième', $states[2]->media->getTitle());
+        self::assertCount(3, $states);
+        self::assertSame('Premier', $states[0]->media->getTitle());
+        self::assertSame('Deuxième', $states[1]->media->getTitle());
+        self::assertSame('Troisième', $states[2]->media->getTitle());
     }
 
     public function testOpenedMediaIsDetectedFromDatabase(): void
@@ -63,8 +63,8 @@ class UnlockServiceIntegrationTest extends KernelTestCase
 
         $states = $this->unlockService->getPackState($user, $progress);
 
-        $this->assertTrue($states[0]->opened, 'L\'ouverture enregistrée doit être relue depuis la base.');
-        $this->assertFalse($states[1]->unlockable, 'Le délai de 24h n\'est pas écoulé.');
+        self::assertTrue($states[0]->opened, 'L\'ouverture enregistrée doit être relue depuis la base.');
+        self::assertFalse($states[1]->unlockable, 'Le délai de 24h n\'est pas écoulé.');
     }
 
     public function testAccessOfAnotherUserDoesNotLeak(): void
@@ -83,7 +83,7 @@ class UnlockServiceIntegrationTest extends KernelTestCase
 
         $states = $this->unlockService->getPackState($dorian, $progress);
 
-        $this->assertFalse(
+        self::assertFalse(
             $states[0]->opened,
             'L\'ouverture par un autre utilisateur ne doit pas compter pour Dorian.',
         );
@@ -106,8 +106,8 @@ class UnlockServiceIntegrationTest extends KernelTestCase
 
         $states = $this->unlockService->getPackState($user, $progress);
 
-        $this->assertCount(1, $states, 'Seuls les médias du pack courant sont retournés.');
-        $this->assertFalse($states[0]->opened);
+        self::assertCount(1, $states, 'Seuls les médias du pack courant sont retournés.');
+        self::assertFalse($states[0]->opened);
     }
 
     private function createPack(int $delayHours): Pack
