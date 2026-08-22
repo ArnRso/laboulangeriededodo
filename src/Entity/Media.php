@@ -207,6 +207,31 @@ class Media
                 ->atPath('file')
                 ->addViolation();
         }
+
+        $this->validateFileMatchesType($context);
+    }
+
+    /**
+     * Le type MIME est confronté au type choisi : l'onglet indique l'intention,
+     * mais rien n'empêche d'y déposer un fichier d'une autre nature.
+     */
+    private function validateFileMatchesType(ExecutionContextInterface $context): void
+    {
+        $prefix = $this->type->mimePrefix();
+
+        if (null === $this->file || null === $prefix) {
+            return;
+        }
+
+        $mimeType = $this->file->getMimeType();
+
+        if (null !== $mimeType && !str_starts_with($mimeType, $prefix)) {
+            $context->buildViolation('Ce fichier ne correspond pas au type « {{ type }} » (détecté : {{ mime }}).')
+                ->setParameter('{{ type }}', $this->type->label())
+                ->setParameter('{{ mime }}', $mimeType)
+                ->atPath('file')
+                ->addViolation();
+        }
     }
 
     public function setFile(?File $file): static

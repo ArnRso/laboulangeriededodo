@@ -35,29 +35,29 @@ class MediaType extends AbstractType
                 'required' => false,
                 'attr' => ['rows' => 2],
             ])
+            // Le type est choisi par les onglets, qui alimentent ce champ caché.
             ->add('type', EnumType::class, [
-                'label' => 'Type de média',
                 'class' => MediaTypeEnum::class,
-                'choice_label' => static fn (MediaTypeEnum $type): string => $type->label(),
+                'label' => false,
+                'attr' => ['data-media-type-target' => 'input'],
             ])
             ->add('file', FileType::class, [
                 'label' => 'Fichier',
                 'required' => false,
-                'help' => 'Pour les photos, vidéos et audio. Taille maximale : '.self::MAX_FILE_SIZE.'.',
+                'help' => 'Taille maximale : '.self::MAX_FILE_SIZE.'.',
                 'constraints' => [
                     new File(maxSize: self::MAX_FILE_SIZE),
                 ],
             ])
             ->add('textContent', TextareaType::class, [
-                'label' => 'Texte',
+                'label' => 'Votre message',
                 'required' => false,
-                'attr' => ['rows' => 6],
-                'help' => 'Pour les médias de type Texte.',
+                'attr' => ['rows' => 8],
             ])
             ->add('url', UrlType::class, [
-                'label' => 'Lien',
+                'label' => 'Adresse du lien',
                 'required' => false,
-                'help' => 'Pour les médias de type Lien.',
+                'attr' => ['placeholder' => 'https://'],
             ]);
     }
 

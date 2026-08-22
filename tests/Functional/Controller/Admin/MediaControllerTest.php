@@ -53,6 +53,38 @@ class MediaControllerTest extends WebTestCase
         self::assertSame(0, $media->getPosition(), 'Le premier média est en tête.');
     }
 
+    public function testFormOffersOneTabPerMediaType(): void
+    {
+        $pack = $this->packFactory->createPack();
+
+        $crawler = $this->client->request('GET', sprintf('/admin/packs/%d/medias/nouveau', (int) $pack->getId()));
+
+        self::assertCount(
+            5,
+            $crawler->filter('[data-media-type-target="tab"]'),
+            'Photo, vidéo, audio, texte et lien.',
+        );
+        self::assertSelectorExists('[data-controller="media-type"]');
+    }
+
+    public function testUploadedFileMustMatchTheChosenType(): void
+    {
+        $pack = $this->packFactory->createPack();
+
+        $this->client->request('GET', sprintf('/admin/packs/%d/medias/nouveau', (int) $pack->getId()));
+        $this->client->submitForm('Ajouter', [
+            'media[title]' => 'Fichier incohérent',
+            'media[type]' => MediaType::VIDEO->value,
+            'media[file]' => $this->createUploadedImage(),
+        ]);
+
+        self::assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
+        self::assertNull(
+            $this->mediaRepository->findOneBy(['title' => 'Fichier incohérent']),
+            'Une image déposée comme vidéo est refusée.',
+        );
+    }
+
     public function testAddLinkMedia(): void
     {
         $pack = $this->packFactory->createPack();

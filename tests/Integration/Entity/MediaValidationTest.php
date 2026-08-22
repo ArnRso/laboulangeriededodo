@@ -6,6 +6,7 @@ use App\Entity\Media;
 use App\Entity\Pack;
 use App\Enum\MediaType;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class MediaValidationTest extends KernelTestCase
@@ -64,12 +65,67 @@ class MediaValidationTest extends KernelTestCase
         self::assertCount(0, $this->validator->validate($media));
     }
 
+    public function testFileMustMatchTheChosenType(): void
+    {
+        $media = $this->createMedia(MediaType::IMAGE);
+        $media->setFile($this->createUploadedFile('sequence.mp4', 'video/mp4', 'du texte, pas une image'));
+
+        self::assertViolation($this->validator->validate($media), 'file');
+    }
+
+    public function testMatchingFileIsAccepted(): void
+    {
+        $media = $this->createMedia(MediaType::IMAGE);
+        $media->setFile($this->createUploadedFile('souvenir.png', 'image/png', $this->pngContent()));
+
+        self::assertCount(0, $this->validator->validate($media));
+    }
+
+    public function testARenamedFileIsStillRefused(): void
+    {
+        $media = $this->createMedia(MediaType::IMAGE);
+        // Un fichier texte renommé en .png : seul son contenu fait foi.
+        $media->setFile($this->createUploadedFile('piege.png', 'image/png', 'ceci est du texte'));
+
+        self::assertViolation($this->validator->validate($media), 'file');
+    }
+
+    public function testAudioFileIsRefusedAsAVideo(): void
+    {
+        $media = $this->createMedia(MediaType::VIDEO);
+        $media->setFile($this->createUploadedFile('chanson.mp3', 'audio/mpeg', $this->pngContent()));
+
+        self::assertViolation($this->validator->validate($media), 'file');
+    }
+
     public function testTitleIsRequired(): void
     {
         $media = $this->createMedia(MediaType::TEXT);
         $media->setTitle('')->setTextContent('du contenu');
 
         self::assertViolation($this->validator->validate($media), 'title');
+    }
+
+    /**
+     * Le contenu compte : getMimeType() inspecte les octets du fichier plutôt
+     * que son extension, ce qui est justement ce qui déjoue un renommage.
+     */
+    private function createUploadedFile(string $name, string $mimeType, string $content): UploadedFile
+    {
+        $directory = sys_get_temp_dir().'/'.uniqid('media-mime-', true);
+        mkdir($directory);
+        $path = $directory.'/'.$name;
+        file_put_contents($path, $content);
+
+        return new UploadedFile($path, $name, $mimeType, null, true);
+    }
+
+    private function pngContent(): string
+    {
+        return (string) base64_decode(
+            'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==',
+            true,
+        );
     }
 
     private function createMedia(MediaType $type): Media
