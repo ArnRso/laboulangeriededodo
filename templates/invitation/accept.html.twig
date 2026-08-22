@@ -1,26 +1,29 @@
-{% extends 'base.html.twig' %}
+{% extends 'base_feed.html.twig' %}
 
 {% block title %}Choisir un mot de passe{% endblock %}
 
 {% block body %}
-    <div class="row justify-content-center">
-        <div class="col-12 col-md-6 col-lg-5">
-            <h1 class="h3 mb-2">Choisissez votre mot de passe</h1>
-            <p class="text-body-secondary mb-4">Votre compte : {{ user.email }}</p>
+    <main class="f-wrap">
+        <header class="f-clock">
+            <div class="f-clock-time">🔔</div>
+            <div class="f-clock-date">dernière étape avant les notifications</div>
+        </header>
 
-            {{ form_start(form) }}
-                <div class="mb-3">
-                    {{ form_label(form.plainPassword.first) }}
-                    {{ include('components/_password_field.html.twig', {field: form.plainPassword.first}, with_context: false) }}
-                </div>
+        {{ form_start(form, {attr: {class: 'f-card'}}) }}
+            <h1 class="f-card-title">Choisis ton mot de passe</h1>
+            <p class="f-card-sub">Ton compte : {{ user.email }}</p>
 
-                <div class="mb-3">
-                    {{ form_label(form.plainPassword.second) }}
-                    {{ include('components/_password_field.html.twig', {field: form.plainPassword.second}, with_context: false) }}
-                </div>
+            <div class="f-field">
+                <label class="f-label" for="{{ form.plainPassword.first.vars.id }}">Mot de passe</label>
+                {{ include('components/_password_field_feed.html.twig', {field: form.plainPassword.first}, with_context: false) }}
+            </div>
 
-                <button type="submit" class="btn btn-primary w-100">Enregistrer</button>
-            {{ form_end(form) }}
-        </div>
-    </div>
+            <div class="f-field">
+                <label class="f-label" for="{{ form.plainPassword.second.vars.id }}">Confirmer le mot de passe</label>
+                {{ include('components/_password_field_feed.html.twig', {field: form.plainPassword.second}, with_context: false) }}
+            </div>
+
+            <button type="submit" class="f-submit">Enregistrer</button>
+        {{ form_end(form) }}
+    </main>
 {% endblock %}

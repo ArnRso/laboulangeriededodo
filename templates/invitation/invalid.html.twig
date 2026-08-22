@@ -1,15 +1,20 @@
-{% extends 'base.html.twig' %}
+{% extends 'base_feed.html.twig' %}
 
 {% block title %}Lien invalide{% endblock %}
 
 {% block body %}
-    <div class="row justify-content-center">
-        <div class="col-12 col-md-6 text-center">
-            <h1 class="h3 mb-3">Ce lien n'est plus valable</h1>
-            <p class="text-body-secondary">
-                Il a peut-être expiré, ou déjà été utilisé pour définir un mot de passe.
-                Demandez qu'une nouvelle invitation vous soit envoyée.
+    <main class="f-wrap">
+        <header class="f-clock">
+            <div class="f-clock-time">🔒</div>
+            <div class="f-clock-date">canon event</div>
+        </header>
+
+        <div class="f-card">
+            <h1 class="f-card-title">Ce lien n'est plus valable</h1>
+            <p class="f-card-sub">
+                Il a peut-être expiré, ou déjà servi à définir un mot de passe.
+                Demande qu'une nouvelle invitation te soit envoyée.
             </p>
         </div>
-    </div>
+    </main>
 {% endblock %}

@@ -82,7 +82,7 @@ class SecurityControllerTest extends WebTestCase
 
         self::assertResponseRedirects('/connexion');
         $this->client->followRedirect();
-        self::assertSelectorExists('.alert-danger');
+        self::assertSelectorExists('.f-flash[role="alert"]');
     }
 
     public function testUnknownEmailIsRejected(): void
