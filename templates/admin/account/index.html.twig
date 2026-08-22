@@ -1,0 +1,35 @@
+{% extends 'admin/_layout.html.twig' %}
+
+{% block title %}Mon compte{% endblock %}
+
+{% block admin_body %}
+    <h1 class="h3 mb-1">Mon compte</h1>
+    <p class="text-body-secondary mb-4">{{ app.user.email }}</p>
+
+    <div class="row">
+        <div class="col-12 col-lg-6">
+            <h2 class="h5 mb-3">Changer de mot de passe</h2>
+
+            {{ form_start(form) }}
+                <div class="mb-3">
+                    {{ form_label(form.currentPassword) }}
+                    {{ include('components/_password_field.html.twig', {field: form.currentPassword}, with_context: false) }}
+                </div>
+
+                <hr class="my-4">
+
+                <div class="mb-3">
+                    {{ form_label(form.newPassword.first) }}
+                    {{ include('components/_password_field.html.twig', {field: form.newPassword.first}, with_context: false) }}
+                </div>
+
+                <div class="mb-3">
+                    {{ form_label(form.newPassword.second) }}
+                    {{ include('components/_password_field.html.twig', {field: form.newPassword.second}, with_context: false) }}
+                </div>
+
+                <button type="submit" class="btn btn-primary">Enregistrer</button>
+            {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock %}
