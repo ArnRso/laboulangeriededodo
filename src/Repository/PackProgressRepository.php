@@ -39,6 +39,20 @@ class PackProgressRepository extends ServiceEntityRepository
     /**
      * @return list<PackProgress>
      */
+    public function findCompletedForUser(User $user): array
+    {
+        return $this->createQueryBuilder('pp')
+            ->andWhere('pp.user = :user')
+            ->andWhere('pp.completedAt IS NOT NULL')
+            ->setParameter('user', $user)
+            ->orderBy('pp.completedAt', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @return list<PackProgress>
+     */
     public function findAllForUser(User $user): array
     {
         return $this->createQueryBuilder('pp')

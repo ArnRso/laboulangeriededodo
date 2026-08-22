@@ -42,8 +42,24 @@ class SecurityControllerTest extends WebTestCase
         ]);
 
         self::assertResponseRedirects('/');
+
+        // La racine oriente ensuite chacun vers son espace.
         $this->client->followRedirect();
-        self::assertResponseIsSuccessful();
+        self::assertResponseRedirects('/admin/packs');
+    }
+
+    public function testTheRecipientLandsOnTheirJourney(): void
+    {
+        $this->userFactory->createRecipient('dorian@example.com', 'un-mot-de-passe-valide');
+
+        $this->client->request('GET', '/connexion');
+        $this->client->submitForm('Se connecter', [
+            '_username' => 'dorian@example.com',
+            '_password' => 'un-mot-de-passe-valide',
+        ]);
+
+        $this->client->followRedirect();
+        self::assertResponseRedirects('/mon-espace');
     }
 
     public function testInvalidPasswordIsRejected(): void

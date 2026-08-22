@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ progress.pack.name }}{% endblock %}
+
+{% block body %}
+    <div class="text-center mb-4">
+        <h1 class="h3 mb-2">{{ progress.pack.name }}</h1>
+        {% if progress.pack.description %}
+            <p class="text-body-secondary">{{ progress.pack.description }}</p>
+        {% endif %}
+    </div>
+
+    <div class="list-group mb-4">
+        {% for state in states %}
+            {% if state.opened %}
+                <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+                   href="{{ path('app_journey_media', {id: state.media.id}) }}">
+                    <span>
+                        <span class="fw-semibold">{{ state.media.title }}</span>
+                        <small class="d-block text-body-secondary">{{ state.media.type.label }}</small>
+                    </span>
+                    <span class="badge text-bg-success">Découvert</span>
+                </a>
+            {% elseif state.unlockable %}
+                <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+                   href="{{ path('app_journey_media', {id: state.media.id}) }}">
+                    <span class="fw-semibold">Un nouveau souvenir t'attend</span>
+                    <span class="badge text-bg-primary">Ouvrir</span>
+                </a>
+            {% else %}
+                <div class="list-group-item d-flex justify-content-between align-items-center text-body-secondary">
+                    <span>À découvrir plus tard</span>
+
+                    {% if state.availableAt %}
+                        <span class="badge text-bg-light"
+                              data-controller="countdown"
+                              data-countdown-available-at-value="{{ state.availableAt|date('c') }}">
+                            <span data-countdown-target="output">{{ state.availableAt|date('d/m/Y à H:i') }}</span>
+                        </span>
+                    {% else %}
+                        <span class="badge text-bg-light">Verrouillé</span>
+                    {% endif %}
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+
+    {% if completed is not empty %}
+        {{ include('journey/_completed.html.twig') }}
+    {% endif %}
+{% endblock %}

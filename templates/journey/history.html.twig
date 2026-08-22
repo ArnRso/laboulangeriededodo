@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ pack.name }}{% endblock %}
+
+{% block body %}
+    <div class="mb-4">
+        <a class="btn btn-sm btn-outline-secondary" href="{{ path('app_journey') }}">Retour</a>
+    </div>
+
+    <h1 class="h3 mb-4">{{ pack.name }}</h1>
+
+    {% if accesses is empty %}
+        <p class="text-body-secondary">Aucun souvenir découvert dans cette collection.</p>
+    {% else %}
+        <div class="list-group">
+            {% for access in accesses %}
+                <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+                   href="{{ path('app_journey_media', {id: access.media.id}) }}">
+                    <span>
+                        <span class="fw-semibold">{{ access.media.title }}</span>
+                        <small class="d-block text-body-secondary">{{ access.media.type.label }}</small>
+                    </span>
+                    <small class="text-body-secondary">{{ access.openedAt|date('d/m/Y') }}</small>
+                </a>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endblock %}
