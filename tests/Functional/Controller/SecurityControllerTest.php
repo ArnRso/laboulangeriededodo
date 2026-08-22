@@ -6,6 +6,7 @@ use App\Tests\Factory\UserFactory;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class SecurityControllerTest extends WebTestCase
@@ -82,6 +83,26 @@ class SecurityControllerTest extends WebTestCase
         ]);
 
         self::assertResponseRedirects('/connexion');
+    }
+
+    public function testAdminAreaRejectsAnonymousVisitors(): void
+    {
+        $this->client->request('GET', '/admin/packs');
+
+        self::assertResponseRedirects();
+        self::assertStringContainsString(
+            '/connexion',
+            (string) $this->client->getResponse()->headers->get('Location'),
+        );
+    }
+
+    public function testAdminAreaRejectsTheRecipient(): void
+    {
+        $this->client->loginUser($this->userFactory->createRecipient());
+
+        $this->client->request('GET', '/admin/packs');
+
+        self::assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
     public function testLogoutRedirectsHome(): void

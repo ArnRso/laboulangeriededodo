@@ -17,7 +17,7 @@ class PackRepository extends ServiceEntityRepository
     }
 
     /**
-     * @return Pack[]
+     * @return list<Pack>
      */
     public function findAllOrdered(): array
     {
@@ -29,7 +29,7 @@ class PackRepository extends ServiceEntityRepository
     }
 
     /**
-     * @return Pack[]
+     * @return list<Pack>
      */
     public function findPublishedOrdered(): array
     {

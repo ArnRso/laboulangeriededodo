@@ -34,6 +34,20 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         return $this->findOneBy(['email' => $email]);
     }
 
+    /**
+     * Le rôle est stocké en JSON : la recherche porte sur la chaîne sérialisée,
+     * d'où le passage par du SQL natif que DQL ne sait pas exprimer.
+     */
+    public function findOneByRole(string $role): ?User
+    {
+        $id = $this->getEntityManager()->getConnection()->fetchOne(
+            'SELECT id FROM "user" WHERE roles::text LIKE :role ORDER BY id ASC LIMIT 1',
+            ['role' => '%"'.$role.'"%'],
+        );
+
+        return false === $id ? null : $this->find($id);
+    }
+
     public function findOneByValidInvitationToken(string $token): ?User
     {
         $results = $this->createQueryBuilder('u')

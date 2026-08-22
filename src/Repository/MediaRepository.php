@@ -18,7 +18,7 @@ class MediaRepository extends ServiceEntityRepository
     }
 
     /**
-     * @return Media[]
+     * @return list<Media>
      */
     public function findByPackOrdered(Pack $pack): array
     {

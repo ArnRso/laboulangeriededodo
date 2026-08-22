@@ -7,6 +7,7 @@ use App\Repository\MediaRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use Vich\UploaderBundle\Mapping\Attribute as Vich;
 
 #[ORM\Entity(repositoryClass: MediaRepository::class)]
@@ -180,6 +181,32 @@ class Media
     public function getFile(): ?File
     {
         return $this->file;
+    }
+
+    /**
+     * Chaque type de média a besoin de son propre contenu : sans cette règle, un
+     * média vide se retrouverait dans un pack et bloquerait la progression.
+     */
+    #[Assert\Callback]
+    public function validateContent(ExecutionContextInterface $context): void
+    {
+        if (MediaType::LINK === $this->type && null === $this->url) {
+            $context->buildViolation('Un média de type Lien doit avoir une URL.')
+                ->atPath('url')
+                ->addViolation();
+        }
+
+        if (MediaType::TEXT === $this->type && (null === $this->textContent || '' === trim($this->textContent))) {
+            $context->buildViolation('Un média de type Texte doit avoir du contenu.')
+                ->atPath('textContent')
+                ->addViolation();
+        }
+
+        if ($this->type->isFile() && null === $this->filePath && null === $this->file) {
+            $context->buildViolation('Un média de ce type doit avoir un fichier.')
+                ->atPath('file')
+                ->addViolation();
+        }
     }
 
     public function setFile(?File $file): static

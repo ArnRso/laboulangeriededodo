@@ -37,7 +37,7 @@ class PackProgressRepository extends ServiceEntityRepository
     }
 
     /**
-     * @return PackProgress[]
+     * @return list<PackProgress>
      */
     public function findAllForUser(User $user): array
     {
