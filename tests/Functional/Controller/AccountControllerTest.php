@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\Functional\Controller\Admin;
+namespace App\Tests\Functional\Controller;
 
 use App\Repository\UserRepository;
 use App\Tests\Factory\UserFactory;
@@ -34,24 +34,44 @@ class AccountControllerTest extends WebTestCase
     {
         $this->client->loginUser($this->userFactory->createAdmin());
 
-        $this->client->request('GET', '/admin/mon-compte');
+        $this->client->request('GET', '/mon-compte');
 
         self::assertResponseIsSuccessful();
         self::assertSelectorTextContains('body', 'Changer de mot de passe');
     }
 
-    public function testPageIsRefusedToTheRecipient(): void
+    public function testPageIsReachableByTheRecipient(): void
     {
         $this->client->loginUser($this->userFactory->createRecipient());
 
-        $this->client->request('GET', '/admin/mon-compte');
+        $this->client->request('GET', '/mon-compte');
 
-        self::assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+        self::assertResponseIsSuccessful();
+        self::assertSelectorTextContains('body', 'Changer de mot de passe');
+    }
+
+    public function testTheRecipientCanChangeTheirPassword(): void
+    {
+        $dorian = $this->userFactory->createRecipient('dorian@example.com', self::CURRENT_PASSWORD);
+        $this->client->loginUser($dorian);
+
+        $this->client->request('GET', '/mon-compte');
+        $this->client->submitForm('Enregistrer', [
+            'change_password[currentPassword]' => self::CURRENT_PASSWORD,
+            'change_password[newPassword][first]' => 'nouveau-mot-de-passe',
+            'change_password[newPassword][second]' => 'nouveau-mot-de-passe',
+        ]);
+
+        self::assertResponseRedirects('/mon-compte');
+
+        $updated = self::getContainer()->get(UserRepository::class)->findOneByEmail('dorian@example.com');
+        self::assertNotNull($updated);
+        self::assertTrue($this->passwordHasher->isPasswordValid($updated, 'nouveau-mot-de-passe'));
     }
 
     public function testPageIsRefusedToAnonymousVisitors(): void
     {
-        $this->client->request('GET', '/admin/mon-compte');
+        $this->client->request('GET', '/mon-compte');
 
         self::assertResponseRedirects();
         self::assertStringContainsString(
@@ -65,14 +85,14 @@ class AccountControllerTest extends WebTestCase
         $admin = $this->userFactory->createAdmin('admin@example.com', self::CURRENT_PASSWORD);
         $this->client->loginUser($admin);
 
-        $this->client->request('GET', '/admin/mon-compte');
+        $this->client->request('GET', '/mon-compte');
         $this->client->submitForm('Enregistrer', [
             'change_password[currentPassword]' => self::CURRENT_PASSWORD,
             'change_password[newPassword][first]' => 'nouveau-mot-de-passe',
             'change_password[newPassword][second]' => 'nouveau-mot-de-passe',
         ]);
 
-        self::assertResponseRedirects('/admin/mon-compte');
+        self::assertResponseRedirects('/mon-compte');
 
         // L'entité est relue : la requête HTTP s'exécute dans un autre contexte Doctrine.
         $updated = self::getContainer()->get(UserRepository::class)->findOneByEmail('admin@example.com');
@@ -89,7 +109,7 @@ class AccountControllerTest extends WebTestCase
         $admin = $this->userFactory->createAdmin('admin@example.com', self::CURRENT_PASSWORD);
         $this->client->loginUser($admin);
 
-        $this->client->request('GET', '/admin/mon-compte');
+        $this->client->request('GET', '/mon-compte');
         $this->client->submitForm('Enregistrer', [
             'change_password[currentPassword]' => 'ce-nest-pas-le-bon',
             'change_password[newPassword][first]' => 'nouveau-mot-de-passe',
@@ -108,7 +128,7 @@ class AccountControllerTest extends WebTestCase
         $admin = $this->userFactory->createAdmin('admin@example.com', self::CURRENT_PASSWORD);
         $this->client->loginUser($admin);
 
-        $this->client->request('GET', '/admin/mon-compte');
+        $this->client->request('GET', '/mon-compte');
         $this->client->submitForm('Enregistrer', [
             'change_password[currentPassword]' => self::CURRENT_PASSWORD,
             'change_password[newPassword][first]' => 'nouveau-mot-de-passe',
@@ -124,7 +144,7 @@ class AccountControllerTest extends WebTestCase
         $admin = $this->userFactory->createAdmin('admin@example.com', self::CURRENT_PASSWORD);
         $this->client->loginUser($admin);
 
-        $this->client->request('GET', '/admin/mon-compte');
+        $this->client->request('GET', '/mon-compte');
         $this->client->submitForm('Enregistrer', [
             'change_password[currentPassword]' => self::CURRENT_PASSWORD,
             'change_password[newPassword][first]' => 'court',
@@ -141,7 +161,7 @@ class AccountControllerTest extends WebTestCase
         $admin = $this->userFactory->createAdmin('autre@example.com', self::CURRENT_PASSWORD);
         $this->client->loginUser($admin);
 
-        $this->client->request('GET', '/admin/mon-compte');
+        $this->client->request('GET', '/mon-compte');
         $this->client->submitForm('Enregistrer', [
             'change_password[currentPassword]' => self::CURRENT_PASSWORD,
             'change_password[newPassword][first]' => 'nouveau-mot-de-passe',
@@ -163,7 +183,7 @@ class AccountControllerTest extends WebTestCase
     {
         $this->client->loginUser($this->userFactory->createAdmin());
 
-        $crawler = $this->client->request('GET', '/admin/mon-compte');
+        $crawler = $this->client->request('GET', '/mon-compte');
 
         self::assertCount(
             3,

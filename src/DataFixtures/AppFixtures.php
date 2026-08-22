@@ -19,16 +19,18 @@ class AppFixtures extends Fixture
 
     public function load(ObjectManager $manager): void
     {
-        $admin = new User();
-        $admin->setEmail('admin@example.com')
+        // Mots de passe volontairement courts : les fixtures ne passent pas par
+        // la validation du formulaire, et ces comptes ne servent qu'en local.
+        $marie = new User();
+        $marie->setEmail('marie@test.com')
             ->setRoles([User::ROLE_ADMIN])
-            ->setPassword($this->passwordHasher->hashPassword($admin, 'password'));
-        $manager->persist($admin);
+            ->setPassword($this->passwordHasher->hashPassword($marie, 'Marie'));
+        $manager->persist($marie);
 
         $dorian = new User();
-        $dorian->setEmail('dorian@example.com')
+        $dorian->setEmail('dorian@test.com')
             ->setRoles([User::ROLE_RECIPIENT])
-            ->setPassword($this->passwordHasher->hashPassword($dorian, 'password'));
+            ->setPassword($this->passwordHasher->hashPassword($dorian, 'Dorian'));
         $manager->persist($dorian);
 
         foreach ($this->packDefinitions() as $position => $definition) {

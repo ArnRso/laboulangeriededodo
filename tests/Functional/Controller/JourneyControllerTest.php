@@ -60,9 +60,10 @@ class JourneyControllerTest extends WebTestCase
         self::assertSelectorExists('.navbar .dropdown-menu a[href="/deconnexion"]');
         self::assertCount(
             0,
-            $crawler->filter('.navbar a[href="/admin/mon-compte"]'),
+            $crawler->filter('.navbar a[href^="/admin"]'),
             'Le destinataire n\'a pas accès à l\'espace admin.',
         );
+        self::assertSelectorExists('.navbar a[href="/mon-compte"]');
     }
 
     public function testChoiceScreenListsAvailablePacks(): void
