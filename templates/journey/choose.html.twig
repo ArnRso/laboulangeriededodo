@@ -1,0 +1,56 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Choisir une collection{% endblock %}
+
+{% block body %}
+    {% if packs is empty and completed is empty %}
+        <div class="text-center py-5">
+            <h1 class="h3 mb-3">Rien à découvrir pour le moment</h1>
+            <p class="text-body-secondary">Repasse un peu plus tard.</p>
+        </div>
+    {% else %}
+        {% if packs is not empty %}
+            <div class="text-center mb-5">
+                <h1 class="h3 mb-2">Choisis ta prochaine collection</h1>
+                <p class="text-body-secondary">
+                    Une fois lancée, tu la découvriras petit à petit, un souvenir à la fois.
+                </p>
+            </div>
+
+            <div class="row g-3">
+                {% for pack in packs %}
+                    <div class="col-12 col-md-6">
+                        <div class="card h-100">
+                            <div class="card-body d-flex flex-column">
+                                <h2 class="h5 card-title">{{ pack.name }}</h2>
+
+                                {% if pack.description %}
+                                    <p class="card-text text-body-secondary">{{ pack.description }}</p>
+                                {% endif %}
+
+                                <p class="card-text small text-body-secondary mt-auto mb-3">
+                                    {{ pack.mediaCount }} souvenir{{ pack.mediaCount > 1 ? 's' : '' }} ·
+                                    un toutes les {{ pack.unlockDelayHours }} h
+                                </p>
+
+                                <form method="post" action="{{ path('app_journey_start', {id: pack.id}) }}">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('start_pack_' ~ pack.id) }}">
+                                    <button type="submit" class="btn btn-primary w-100">Commencer</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="text-center py-5">
+                <h1 class="h3 mb-3">Tu as tout découvert</h1>
+                <p class="text-body-secondary">Tes collections restent accessibles ci-dessous.</p>
+            </div>
+        {% endif %}
+
+        {% if completed is not empty %}
+            {{ include('journey/_completed.html.twig') }}
+        {% endif %}
+    {% endif %}
+{% endblock %}

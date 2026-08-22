@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ media.title }}{% endblock %}
+
+{% block body %}
+    <div class="mb-4">
+        <a class="btn btn-sm btn-outline-secondary" href="{{ path('app_journey') }}">Retour</a>
+    </div>
+
+    <article>
+        <h1 class="h3 mb-2">{{ media.title }}</h1>
+
+        {% if media.description %}
+            <p class="text-body-secondary">{{ media.description }}</p>
+        {% endif %}
+
+        <div class="my-4">
+            {% if media.type.value == 'image' %}
+                <img src="{{ path('app_media_file', {id: media.id}) }}" alt="{{ media.title }}" class="img-fluid rounded">
+            {% elseif media.type.value == 'video' %}
+                <video controls class="w-100 rounded">
+                    <source src="{{ path('app_media_file', {id: media.id}) }}">
+                    Votre navigateur ne peut pas lire cette vidéo.
+                </video>
+            {% elseif media.type.value == 'audio' %}
+                <audio controls class="w-100">
+                    <source src="{{ path('app_media_file', {id: media.id}) }}">
+                    Votre navigateur ne peut pas lire cet audio.
+                </audio>
+            {% elseif media.type.value == 'text' %}
+                <div class="card">
+                    <div class="card-body" style="white-space: pre-line;">{{ media.textContent }}</div>
+                </div>
+            {% elseif media.type.value == 'link' %}
+                <a href="{{ media.url }}" target="_blank" rel="noopener noreferrer" class="btn btn-primary">
+                    Ouvrir le lien
+                </a>
+            {% endif %}
+        </div>
+    </article>
+{% endblock %}
