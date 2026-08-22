@@ -30,7 +30,7 @@
 
                                 <p class="card-text small text-body-secondary mt-auto mb-3">
                                     {{ pack.mediaCount }} souvenir{{ pack.mediaCount > 1 ? 's' : '' }} ·
-                                    un toutes les {{ pack.unlockDelayHours }} h
+                                    un toutes les {{ pack.delayLabel }}
                                 </p>
 
                                 <form method="post" action="{{ path('app_journey_start', {id: pack.id}) }}">

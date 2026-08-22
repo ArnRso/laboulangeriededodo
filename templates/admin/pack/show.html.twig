@@ -7,7 +7,7 @@
         <div>
             <h1 class="h3 mb-1">{{ pack.name }}</h1>
             <p class="text-body-secondary mb-0">
-                Un média toutes les {{ pack.unlockDelayHours }} h ·
+                Un média toutes les {{ pack.delayLabel }} ·
                 {% if pack.published %}visible{% else %}masqué{% endif %}
             </p>
         </div>

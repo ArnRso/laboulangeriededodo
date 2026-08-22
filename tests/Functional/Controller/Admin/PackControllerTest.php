@@ -46,7 +46,8 @@ class PackControllerTest extends WebTestCase
         $this->client->submitForm('Créer', [
             'pack[name]' => 'Les grandes aventures',
             'pack[description]' => 'Des souvenirs',
-            'pack[unlockDelayHours]' => 12,
+            'pack[unlockDelayMinutes][hours]' => 12,
+            'pack[unlockDelayMinutes][minutes]' => 0,
             'pack[published]' => true,
         ]);
 
@@ -54,7 +55,7 @@ class PackControllerTest extends WebTestCase
 
         $pack = $this->packRepository->findOneBy(['name' => 'Les grandes aventures']);
         self::assertNotNull($pack);
-        self::assertSame(12, $pack->getUnlockDelayHours());
+        self::assertSame(720, $pack->getUnlockDelayMinutes());
         self::assertTrue($pack->isPublished());
     }
 
@@ -63,21 +64,67 @@ class PackControllerTest extends WebTestCase
         $this->client->request('GET', '/admin/packs/nouveau');
         $this->client->submitForm('Créer', [
             'pack[name]' => '',
-            'pack[unlockDelayHours]' => 24,
+            'pack[unlockDelayMinutes][hours]' => 24,
+            'pack[unlockDelayMinutes][minutes]' => 0,
         ]);
 
         self::assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
-    public function testCreateRejectsNonPositiveDelay(): void
+    public function testCreateRejectsAZeroDelay(): void
     {
         $this->client->request('GET', '/admin/packs/nouveau');
         $this->client->submitForm('Créer', [
             'pack[name]' => 'Pack',
-            'pack[unlockDelayHours]' => 0,
+            'pack[unlockDelayMinutes][hours]' => 0,
+            'pack[unlockDelayMinutes][minutes]' => 0,
         ]);
 
         self::assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
+    }
+
+    public function testCreateRejectsMinutesAboveFiftyNine(): void
+    {
+        $this->client->request('GET', '/admin/packs/nouveau');
+        $this->client->submitForm('Créer', [
+            'pack[name]' => 'Pack',
+            'pack[unlockDelayMinutes][hours]' => 1,
+            'pack[unlockDelayMinutes][minutes]' => 90,
+        ]);
+
+        self::assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
+    }
+
+    public function testCreateAcceptsADelayUnderAnHour(): void
+    {
+        $this->client->request('GET', '/admin/packs/nouveau');
+        $this->client->submitForm('Créer', [
+            'pack[name]' => 'Pack rapide',
+            'pack[unlockDelayMinutes][hours]' => 0,
+            'pack[unlockDelayMinutes][minutes]' => 5,
+        ]);
+
+        self::assertResponseRedirects();
+
+        $pack = $this->packRepository->findOneBy(['name' => 'Pack rapide']);
+        self::assertNotNull($pack);
+        self::assertSame(5, $pack->getUnlockDelayMinutes());
+    }
+
+    public function testCreateCombinesHoursAndMinutes(): void
+    {
+        $this->client->request('GET', '/admin/packs/nouveau');
+        $this->client->submitForm('Créer', [
+            'pack[name]' => 'Pack mixte',
+            'pack[unlockDelayMinutes][hours]' => 2,
+            'pack[unlockDelayMinutes][minutes]' => 30,
+        ]);
+
+        self::assertResponseRedirects();
+
+        $pack = $this->packRepository->findOneBy(['name' => 'Pack mixte']);
+        self::assertNotNull($pack);
+        self::assertSame(150, $pack->getUnlockDelayMinutes(), '2 h 30 valent 150 minutes.');
     }
 
     public function testEditPack(): void
@@ -87,7 +134,8 @@ class PackControllerTest extends WebTestCase
         $this->client->request('GET', sprintf('/admin/packs/%d/modifier', (int) $pack->getId()));
         $this->client->submitForm('Enregistrer', [
             'pack[name]' => 'Nouveau nom',
-            'pack[unlockDelayHours]' => 48,
+            'pack[unlockDelayMinutes][hours]' => 48,
+            'pack[unlockDelayMinutes][minutes]' => 0,
         ]);
 
         self::assertResponseRedirects();
@@ -95,7 +143,7 @@ class PackControllerTest extends WebTestCase
         // L'entité est relue : la requête HTTP s'exécute dans un autre contexte Doctrine.
         $updated = $this->packRepository->findOneBy(['name' => 'Nouveau nom']);
         self::assertNotNull($updated);
-        self::assertSame(48, $updated->getUnlockDelayHours());
+        self::assertSame(2880, $updated->getUnlockDelayMinutes());
     }
 
     public function testShowListsMediasInOrder(): void

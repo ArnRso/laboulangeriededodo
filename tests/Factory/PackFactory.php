@@ -19,14 +19,14 @@ final readonly class PackFactory
 
     public function createPack(
         string $name = 'Pack de test',
-        int $unlockDelayHours = 24,
+        int $unlockDelayMinutes = 1440,
         bool $published = true,
         int $position = 0,
     ): Pack {
         $pack = new Pack();
         $pack->setName($name)
             ->setDescription('Description de test')
-            ->setUnlockDelayHours($unlockDelayHours)
+            ->setUnlockDelayMinutes($unlockDelayMinutes)
             ->setPublished($published)
             ->setPosition($position);
 

@@ -19,7 +19,7 @@ class UnlockServiceTest extends TestCase
 
     public function testFirstMediaIsUnlockableWhenPackJustStarted(): void
     {
-        $pack = $this->createPack(24);
+        $pack = $this->createPack(1440);
         $medias = $this->createMedias($pack, 3);
         $progress = $this->createProgress($pack, lastOpenedAt: null);
 
@@ -32,7 +32,7 @@ class UnlockServiceTest extends TestCase
 
     public function testNextMediaIsLockedBeforeDelayHasElapsed(): void
     {
-        $pack = $this->createPack(24);
+        $pack = $this->createPack(1440);
         $medias = $this->createMedias($pack, 3);
         $progress = $this->createProgress($pack, lastOpenedAt: new \DateTimeImmutable('2026-01-01 06:00:00'));
 
@@ -48,7 +48,7 @@ class UnlockServiceTest extends TestCase
 
     public function testNextMediaIsUnlockableOnceDelayHasElapsed(): void
     {
-        $pack = $this->createPack(24);
+        $pack = $this->createPack(1440);
         $medias = $this->createMedias($pack, 3);
         $progress = $this->createProgress($pack, lastOpenedAt: new \DateTimeImmutable('2025-12-31 10:00:00'));
 
@@ -60,7 +60,7 @@ class UnlockServiceTest extends TestCase
 
     public function testDelayIsExactlyElapsed(): void
     {
-        $pack = $this->createPack(24);
+        $pack = $this->createPack(1440);
         $medias = $this->createMedias($pack, 2);
         $progress = $this->createProgress($pack, lastOpenedAt: new \DateTimeImmutable('2025-12-31 12:00:00'));
 
@@ -71,7 +71,7 @@ class UnlockServiceTest extends TestCase
 
     public function testOnlyOneMediaUnlocksEvenAfterLongAbsence(): void
     {
-        $pack = $this->createPack(24);
+        $pack = $this->createPack(1440);
         $medias = $this->createMedias($pack, 4);
         $progress = $this->createProgress($pack, lastOpenedAt: new \DateTimeImmutable('2025-12-01 12:00:00'));
 
@@ -84,7 +84,7 @@ class UnlockServiceTest extends TestCase
 
     public function testOpenedMediaStaysAccessible(): void
     {
-        $pack = $this->createPack(24);
+        $pack = $this->createPack(1440);
         $medias = $this->createMedias($pack, 3);
         $progress = $this->createProgress($pack, lastOpenedAt: new \DateTimeImmutable(self::NOW));
 
@@ -97,7 +97,7 @@ class UnlockServiceTest extends TestCase
 
     public function testCustomDelayIsHonoured(): void
     {
-        $pack = $this->createPack(1);
+        $pack = $this->createPack(60);
         $medias = $this->createMedias($pack, 2);
         $progress = $this->createProgress($pack, lastOpenedAt: new \DateTimeImmutable('2026-01-01 11:30:00'));
 
@@ -113,7 +113,7 @@ class UnlockServiceTest extends TestCase
 
     public function testCanOpenRejectsLockedMedia(): void
     {
-        $pack = $this->createPack(24);
+        $pack = $this->createPack(1440);
         $medias = $this->createMedias($pack, 3);
         $progress = $this->createProgress($pack, lastOpenedAt: new \DateTimeImmutable(self::NOW));
         $service = $this->createService($medias, [$medias[0]]);
@@ -125,7 +125,7 @@ class UnlockServiceTest extends TestCase
 
     public function testCanOpenRejectsMediaFromAnotherPack(): void
     {
-        $pack = $this->createPack(24);
+        $pack = $this->createPack(1440);
         $medias = $this->createMedias($pack, 2);
         $progress = $this->createProgress($pack, lastOpenedAt: null);
 
@@ -140,7 +140,7 @@ class UnlockServiceTest extends TestCase
 
     public function testEmptyPackYieldsNoState(): void
     {
-        $pack = $this->createPack(24);
+        $pack = $this->createPack(1440);
         $progress = $this->createProgress($pack, lastOpenedAt: null);
 
         self::assertSame([], $this->createService([], [])->getPackState($progress->getUser(), $progress));
@@ -148,7 +148,7 @@ class UnlockServiceTest extends TestCase
 
     public function testNextAvailabilityDateIsNullBeforeFirstOpening(): void
     {
-        $pack = $this->createPack(24);
+        $pack = $this->createPack(1440);
         $progress = $this->createProgress($pack, lastOpenedAt: null);
 
         self::assertNull($this->createService([], [])->getNextAvailabilityDate($progress));
@@ -179,10 +179,10 @@ class UnlockServiceTest extends TestCase
         return new UnlockService($mediaRepository, $accessRepository, new MockClock(self::NOW));
     }
 
-    private function createPack(int $delayHours): Pack
+    private function createPack(int $delayMinutes): Pack
     {
         $pack = new Pack();
-        $pack->setName('Pack de test')->setUnlockDelayHours($delayHours);
+        $pack->setName('Pack de test')->setUnlockDelayMinutes($delayMinutes);
         $this->setId($pack, 1);
 
         return $pack;

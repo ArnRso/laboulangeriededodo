@@ -10,7 +10,14 @@
             {{ form_start(form) }}
                 {{ form_row(form.name) }}
                 {{ form_row(form.description) }}
-                {{ form_row(form.unlockDelayHours) }}
+                <div class="mb-3">
+                    <span class="form-label d-block">Délai entre deux médias</span>
+                    <div class="row g-2">
+                        <div class="col-6">{{ form_row(form.unlockDelayMinutes.hours) }}</div>
+                        <div class="col-6">{{ form_row(form.unlockDelayMinutes.minutes) }}</div>
+                    </div>
+                    {{ form_errors(form.unlockDelayMinutes) }}
+                </div>
                 {{ form_row(form.published) }}
 
                 <div class="d-flex gap-2 mt-3">
