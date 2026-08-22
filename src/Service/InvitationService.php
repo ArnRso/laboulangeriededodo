@@ -6,6 +6,7 @@ use App\Entity\User;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Clock\ClockInterface;
+use Random\RandomException;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 /**
@@ -14,7 +15,7 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
  */
 class InvitationService
 {
-    public const TOKEN_LIFETIME_DAYS = 7;
+    public const int TOKEN_LIFETIME_DAYS = 7;
 
     public function __construct(
         private readonly UserRepository $userRepository,
@@ -30,6 +31,8 @@ class InvitationService
      * @param list<string> $roles
      *
      * @throws \InvalidArgumentException si un compte existe déjà pour cet email
+     * @throws RandomException
+     * @throws \DateMalformedIntervalStringException
      */
     public function invite(string $email, array $roles): User
     {
@@ -50,6 +53,9 @@ class InvitationService
 
     /**
      * Régénère le token d'un utilisateur, par exemple pour renvoyer une invitation.
+     *
+     * @throws RandomException
+     * @throws \DateMalformedIntervalStringException
      */
     public function refreshInvitationToken(User $user): string
     {

@@ -37,8 +37,8 @@ class DefinePasswordType extends AbstractType
                 new NotBlank(message: 'Merci de saisir un mot de passe.'),
                 new Length(
                     min: 6,
-                    minMessage: 'Le mot de passe doit contenir au moins {{ limit }} caractères.',
                     max: 4096,
+                    minMessage: 'Le mot de passe doit contenir au moins {{ limit }} caractères.',
                 ),
                 new NotCompromisedPassword(
                     message: 'Ce mot de passe est apparu dans une fuite de données, merci d\'en choisir un autre.',

@@ -14,12 +14,12 @@ use Doctrine\ORM\EntityManagerInterface;
  * Les positions sont toujours normalisées en une suite contiguë partant de zéro,
  * pour que l'ordre de lecture reste prévisible après n'importe quelle opération.
  */
-class PackManager
+readonly class PackManager
 {
     public function __construct(
-        private readonly PackRepository $packRepository,
-        private readonly MediaRepository $mediaRepository,
-        private readonly EntityManagerInterface $entityManager,
+        private PackRepository $packRepository,
+        private MediaRepository $mediaRepository,
+        private EntityManagerInterface $entityManager,
     ) {
     }
 
@@ -31,7 +31,7 @@ class PackManager
         $this->entityManager->flush();
     }
 
-    public function updatePack(Pack $pack): void
+    public function updatePack(): void
     {
         $this->entityManager->flush();
     }
@@ -59,7 +59,7 @@ class PackManager
         $this->entityManager->flush();
     }
 
-    public function updateMedia(Media $media): void
+    public function updateMedia(): void
     {
         $this->entityManager->flush();
     }

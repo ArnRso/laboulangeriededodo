@@ -9,11 +9,11 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 /**
  * Changement de mot de passe par un utilisateur déjà connecté.
  */
-class PasswordChanger
+readonly class PasswordChanger
 {
     public function __construct(
-        private readonly UserPasswordHasherInterface $passwordHasher,
-        private readonly EntityManagerInterface $entityManager,
+        private UserPasswordHasherInterface $passwordHasher,
+        private EntityManagerInterface $entityManager,
     ) {
     }
 

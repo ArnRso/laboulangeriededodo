@@ -14,7 +14,7 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
  */
 class PackVoter extends Voter
 {
-    public const VIEW = 'view_pack';
+    public const string VIEW = 'view_pack';
 
     public function __construct(
         private readonly PackProgressRepository $packProgressRepository,

@@ -5,17 +5,19 @@ namespace App\Service;
 use App\Entity\User;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Random\RandomException;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 
 /**
  * Invite le destinataire du cadeau, ou lui renvoie son lien.
  */
-class RecipientInviter
+readonly class RecipientInviter
 {
     public function __construct(
-        private readonly UserRepository $userRepository,
-        private readonly InvitationService $invitationService,
-        private readonly InvitationMailer $invitationMailer,
-        private readonly EntityManagerInterface $entityManager,
+        private UserRepository $userRepository,
+        private InvitationService $invitationService,
+        private InvitationMailer $invitationMailer,
+        private EntityManagerInterface $entityManager,
     ) {
     }
 
@@ -27,7 +29,9 @@ class RecipientInviter
     /**
      * Invite le destinataire s'il n'existe pas encore, sinon lui renvoie un lien neuf.
      *
-     * @throws \LogicException si le compte a déjà été activé
+     * @throws \DateMalformedIntervalStringException
+     * @throws RandomException
+     * @throws TransportExceptionInterface
      */
     public function invite(string $email): User
     {

@@ -22,7 +22,7 @@ class DelayType extends AbstractType
      * Un mois de délai : au-delà, la valeur relève plus de la faute de frappe
      * que d'une intention.
      */
-    public const MAX_HOURS = 720;
+    public const int MAX_HOURS = 720;
 
     /**
      * @param array<string, mixed> $options

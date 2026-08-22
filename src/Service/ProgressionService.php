@@ -18,16 +18,16 @@ use Psr\Clock\ClockInterface;
  * Pilote la progression du destinataire : choix d'un pack, ouverture des médias,
  * et passage au pack suivant une fois le précédent terminé.
  */
-class ProgressionService
+readonly class ProgressionService
 {
     public function __construct(
-        private readonly PackRepository $packRepository,
-        private readonly PackProgressRepository $packProgressRepository,
-        private readonly MediaRepository $mediaRepository,
-        private readonly MediaAccessRepository $mediaAccessRepository,
-        private readonly UnlockService $unlockService,
-        private readonly EntityManagerInterface $entityManager,
-        private readonly ClockInterface $clock,
+        private PackRepository $packRepository,
+        private PackProgressRepository $packProgressRepository,
+        private MediaRepository $mediaRepository,
+        private MediaAccessRepository $mediaAccessRepository,
+        private UnlockService $unlockService,
+        private EntityManagerInterface $entityManager,
+        private ClockInterface $clock,
     ) {
     }
 

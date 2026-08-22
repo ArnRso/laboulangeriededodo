@@ -24,6 +24,9 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[IsGranted('ROLE_USER')]
 class JourneyController extends AbstractController
 {
+    /**
+     * @throws \DateMalformedIntervalStringException
+     */
     #[Route('', name: 'app_journey', methods: ['GET'])]
     public function index(ProgressionService $progressionService, UnlockService $unlockService): Response
     {
@@ -45,7 +48,7 @@ class JourneyController extends AbstractController
         ]);
     }
 
-    #[Route('/packs/{id}/commencer', name: 'app_journey_start', methods: ['POST'], requirements: ['id' => '\d+'])]
+    #[Route('/packs/{id}/commencer', name: 'app_journey_start', requirements: ['id' => '\d+'], methods: ['POST'])]
     #[IsCsrfTokenValid(new Expression('"start_pack_" ~ args["pack"].getId()'))]
     public function start(Pack $pack, ProgressionService $progressionService): Response
     {
@@ -58,7 +61,7 @@ class JourneyController extends AbstractController
         return $this->redirectToRoute('app_journey');
     }
 
-    #[Route('/medias/{id}', name: 'app_journey_media', methods: ['GET'], requirements: ['id' => '\d+'])]
+    #[Route('/medias/{id}', name: 'app_journey_media', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function openMedia(Media $media, ProgressionService $progressionService): Response
     {
         $user = $this->getAppUser();
@@ -82,7 +85,7 @@ class JourneyController extends AbstractController
         ]);
     }
 
-    #[Route('/packs/{id}', name: 'app_journey_pack_history', methods: ['GET'], requirements: ['id' => '\d+'])]
+    #[Route('/packs/{id}', name: 'app_journey_pack_history', requirements: ['id' => '\d+'], methods: ['GET'])]
     #[IsGranted(PackVoter::VIEW, subject: 'pack')]
     public function history(
         Pack $pack,

@@ -19,7 +19,7 @@ use Symfony\Component\Validator\Constraints\File;
  */
 class MediaType extends AbstractType
 {
-    public const MAX_FILE_SIZE = '256M';
+    public const string MAX_FILE_SIZE = '256M';
 
     /**
      * @param array<string, mixed> $options

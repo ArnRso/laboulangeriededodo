@@ -202,7 +202,7 @@ class Media
                 ->addViolation();
         }
 
-        if ($this->type->isFile() && null === $this->filePath && null === $this->file) {
+        if (null === $this->filePath && null === $this->file && $this->type->isFile()) {
             $context->buildViolation('Un média de ce type doit avoir un fichier.')
                 ->atPath('file')
                 ->addViolation();

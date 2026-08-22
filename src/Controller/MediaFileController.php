@@ -20,7 +20,7 @@ class MediaFileController extends AbstractController
     ) {
     }
 
-    #[Route('/medias/{id}/fichier', name: 'app_media_file', methods: ['GET'], requirements: ['id' => '\d+'])]
+    #[Route('/medias/{id}/fichier', name: 'app_media_file', requirements: ['id' => '\d+'], methods: ['GET'])]
     #[IsGranted('view', subject: 'media')]
     public function serve(Media $media): BinaryFileResponse
     {
