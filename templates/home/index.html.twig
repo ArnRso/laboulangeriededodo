@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="text-center py-5">
+        <h1 class="mb-3">La Boulangerie de Dodo</h1>
+        {% if app.user %}
+            <p class="text-body-secondary">Vous êtes connecté.</p>
+        {% else %}
+            <a class="btn btn-primary" href="{{ path('app_login') }}">Se connecter</a>
+        {% endif %}
+    </div>
+{% endblock %}
