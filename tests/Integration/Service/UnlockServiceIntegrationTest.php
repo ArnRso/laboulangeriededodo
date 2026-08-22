@@ -31,7 +31,7 @@ class UnlockServiceIntegrationTest extends KernelTestCase
 
     public function testMediasAreOrderedByPosition(): void
     {
-        $pack = $this->createPack(24);
+        $pack = $this->createPack(1440);
         // Insertion volontairement désordonnée pour vérifier le tri en base.
         $this->createMedia($pack, 2, 'Troisième');
         $this->createMedia($pack, 0, 'Premier');
@@ -50,7 +50,7 @@ class UnlockServiceIntegrationTest extends KernelTestCase
 
     public function testOpenedMediaIsDetectedFromDatabase(): void
     {
-        $pack = $this->createPack(24);
+        $pack = $this->createPack(1440);
         $first = $this->createMedia($pack, 0, 'Premier');
         $this->createMedia($pack, 1, 'Deuxième');
         $user = $this->createUser();
@@ -69,7 +69,7 @@ class UnlockServiceIntegrationTest extends KernelTestCase
 
     public function testAccessOfAnotherUserDoesNotLeak(): void
     {
-        $pack = $this->createPack(24);
+        $pack = $this->createPack(1440);
         $first = $this->createMedia($pack, 0, 'Premier');
         $dorian = $this->createUser('dorian@example.com');
         $someoneElse = $this->createUser('autre@example.com');
@@ -91,8 +91,8 @@ class UnlockServiceIntegrationTest extends KernelTestCase
 
     public function testMediaFromAnotherPackIsNotCounted(): void
     {
-        $pack = $this->createPack(24);
-        $otherPack = $this->createPack(24);
+        $pack = $this->createPack(1440);
+        $otherPack = $this->createPack(1440);
         $this->createMedia($pack, 0, 'Dans le pack');
         $foreign = $this->createMedia($otherPack, 0, 'Hors du pack');
         $user = $this->createUser();
@@ -110,10 +110,10 @@ class UnlockServiceIntegrationTest extends KernelTestCase
         self::assertFalse($states[0]->opened);
     }
 
-    private function createPack(int $delayHours): Pack
+    private function createPack(int $delayMinutes): Pack
     {
         $pack = new Pack();
-        $pack->setName('Pack de test')->setUnlockDelayHours($delayHours)->setPublished(true);
+        $pack->setName('Pack de test')->setUnlockDelayMinutes($delayMinutes)->setPublished(true);
         $this->entityManager->persist($pack);
 
         return $pack;

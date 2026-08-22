@@ -137,7 +137,7 @@ class JourneyControllerTest extends WebTestCase
 
     public function testSecondMediaStaysLockedUntilTheDelayHasElapsed(): void
     {
-        [$pack, $medias] = $this->startedPack(3, unlockDelayHours: 24);
+        [$pack, $medias] = $this->startedPack(3, unlockDelayMinutes: 1440);
 
         $this->client->request('GET', sprintf('/mon-espace/medias/%d', (int) $medias[0]->getId()));
         $this->client->request('GET', sprintf('/mon-espace/medias/%d', (int) $medias[1]->getId()));
@@ -147,7 +147,7 @@ class JourneyControllerTest extends WebTestCase
 
     public function testSecondMediaOpensOnceTheDelayHasElapsed(): void
     {
-        [$pack, $medias] = $this->startedPack(3, unlockDelayHours: 24);
+        [$pack, $medias] = $this->startedPack(3, unlockDelayMinutes: 1440);
 
         $this->client->request('GET', sprintf('/mon-espace/medias/%d', (int) $medias[0]->getId()));
 
@@ -176,7 +176,7 @@ class JourneyControllerTest extends WebTestCase
 
     public function testOpenedMediaStaysAccessible(): void
     {
-        [$pack, $medias] = $this->startedPack(3, unlockDelayHours: 24);
+        [$pack, $medias] = $this->startedPack(3, unlockDelayMinutes: 1440);
 
         $this->client->request('GET', sprintf('/mon-espace/medias/%d', (int) $medias[0]->getId()));
         $this->client->request('GET', sprintf('/mon-espace/medias/%d', (int) $medias[0]->getId()));
@@ -201,7 +201,7 @@ class JourneyControllerTest extends WebTestCase
 
     public function testHistoryOnlyListsOpenedMedias(): void
     {
-        [$pack, $medias] = $this->startedPack(3, unlockDelayHours: 24);
+        [$pack, $medias] = $this->startedPack(3, unlockDelayMinutes: 1440);
 
         $this->client->request('GET', sprintf('/mon-espace/medias/%d', (int) $medias[0]->getId()));
 
@@ -224,7 +224,7 @@ class JourneyControllerTest extends WebTestCase
 
     public function testCountdownIsShownForTheLockedMedia(): void
     {
-        [$pack, $medias] = $this->startedPack(3, unlockDelayHours: 24);
+        [$pack, $medias] = $this->startedPack(3, unlockDelayMinutes: 1440);
 
         $this->client->request('GET', sprintf('/mon-espace/medias/%d', (int) $medias[0]->getId()));
         $this->client->request('GET', '/mon-espace');
@@ -235,9 +235,9 @@ class JourneyControllerTest extends WebTestCase
     /**
      * @return array{0: Pack, 1: list<Media>}
      */
-    private function startedPack(int $mediaCount, int $unlockDelayHours = 24): array
+    private function startedPack(int $mediaCount, int $unlockDelayMinutes = 1440): array
     {
-        $pack = $this->packFactory->createPack(unlockDelayHours: $unlockDelayHours);
+        $pack = $this->packFactory->createPack(unlockDelayMinutes: $unlockDelayMinutes);
         $medias = $this->packFactory->createMedias($pack, $mediaCount);
         $this->progressionService->startPack($this->dorian, $pack);
 

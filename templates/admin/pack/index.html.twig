@@ -29,7 +29,7 @@
                                 <a href="{{ path('app_admin_pack_show', {id: pack.id}) }}">{{ pack.name }}</a>
                             </td>
                             <td class="text-center">{{ pack.mediaCount }}</td>
-                            <td class="text-center">{{ pack.unlockDelayHours }} h</td>
+                            <td class="text-center">{{ pack.delayLabel }}</td>
                             <td class="text-center">
                                 {% if pack.published %}
                                     <span class="badge text-bg-success">Oui</span>

@@ -35,7 +35,7 @@ class AppFixtures extends Fixture
             $pack = new Pack();
             $pack->setName($definition['name'])
                 ->setDescription($definition['description'])
-                ->setUnlockDelayHours($definition['delay'])
+                ->setUnlockDelayMinutes($definition['delay'])
                 ->setPosition($position)
                 ->setPublished(true);
             $manager->persist($pack);
@@ -70,7 +70,7 @@ class AppFixtures extends Fixture
             [
                 'name' => 'Nos années lycée',
                 'description' => 'Retour sur les débuts, les fous rires et les mauvaises coupes de cheveux.',
-                'delay' => 24,
+                'delay' => 1440,
                 'medias' => [
                     [
                         'title' => 'Le premier jour',
@@ -95,7 +95,7 @@ class AppFixtures extends Fixture
             [
                 'name' => 'Les grandes aventures',
                 'description' => 'Les voyages, les projets fous et les nuits blanches.',
-                'delay' => 12,
+                'delay' => 720,
                 'medias' => [
                     [
                         'title' => 'Le road trip',

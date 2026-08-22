@@ -16,7 +16,7 @@ use Psr\Clock\ClockInterface;
  * Règles :
  *  - les médias sont ouverts dans l'ordre de leur position ;
  *  - le premier média est disponible dès le démarrage du pack ;
- *  - le suivant se débloque `unlockDelayHours` après la dernière ouverture ;
+ *  - le suivant se débloque `unlockDelayMinutes` après la dernière ouverture ;
  *  - un média déjà ouvert le reste définitivement.
  */
 class UnlockService
@@ -93,7 +93,7 @@ class UnlockService
         }
 
         return $lastOpenedAt->add(
-            new \DateInterval(sprintf('PT%dH', $progress->getPack()->getUnlockDelayHours()))
+            new \DateInterval(sprintf('PT%dM', $progress->getPack()->getUnlockDelayMinutes()))
         );
     }
 

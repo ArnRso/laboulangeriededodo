@@ -108,7 +108,7 @@ class ProgressionServiceTest extends KernelTestCase
     public function testSecondMediaIsRefusedBeforeTheDelay(): void
     {
         $user = $this->userFactory->createRecipient();
-        $pack = $this->packFactory->createPack(unlockDelayHours: 24);
+        $pack = $this->packFactory->createPack(unlockDelayMinutes: 1440);
         $medias = $this->packFactory->createMedias($pack, 3);
         $progress = $this->progressionService->startPack($user, $pack);
 
@@ -148,7 +148,7 @@ class ProgressionServiceTest extends KernelTestCase
     public function testOpeningTheLastMediaCompletesThePack(): void
     {
         $user = $this->userFactory->createRecipient();
-        $pack = $this->packFactory->createPack(unlockDelayHours: 24);
+        $pack = $this->packFactory->createPack(unlockDelayMinutes: 1440);
         $medias = $this->packFactory->createMedias($pack, 2);
         $progress = $this->progressionService->startPack($user, $pack);
 

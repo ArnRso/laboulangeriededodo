@@ -5,7 +5,6 @@ namespace App\Form;
 use App\Entity\Pack;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -30,8 +29,8 @@ class PackType extends AbstractType
                 'required' => false,
                 'attr' => ['rows' => 3],
             ])
-            ->add('unlockDelayHours', IntegerType::class, [
-                'label' => 'Délai entre deux médias (heures)',
+            ->add('unlockDelayMinutes', DelayType::class, [
+                'label' => 'Délai entre deux médias',
                 'help' => 'Temps d\'attente avant que le média suivant ne devienne accessible.',
             ])
             ->add('published', CheckboxType::class, [
