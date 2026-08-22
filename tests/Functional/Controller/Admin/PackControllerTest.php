@@ -95,6 +95,19 @@ class PackControllerTest extends WebTestCase
         self::assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
+    public function testCreateRejectsHoursAboveTheMaximum(): void
+    {
+        $this->client->request('GET', '/admin/packs/nouveau');
+        $this->client->submitForm('Créer', [
+            'pack[name]' => 'Pack',
+            'pack[unlockDelayMinutes][hours]' => 10000,
+            'pack[unlockDelayMinutes][minutes]' => 0,
+        ]);
+
+        self::assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
+        self::assertNull($this->packRepository->findOneBy(['name' => 'Pack']));
+    }
+
     public function testCreateAcceptsADelayUnderAnHour(): void
     {
         $this->client->request('GET', '/admin/packs/nouveau');
