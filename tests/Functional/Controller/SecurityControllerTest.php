@@ -31,6 +31,14 @@ class SecurityControllerTest extends WebTestCase
         self::assertSelectorExists('form input[name="_username"]');
     }
 
+    public function testLoginPasswordFieldOffersAVisibilityToggle(): void
+    {
+        $crawler = $this->client->request('GET', '/connexion');
+
+        self::assertCount(1, $crawler->filter('[data-controller="password-visibility"]'));
+        self::assertSelectorExists('[data-action="password-visibility#toggle"]');
+    }
+
     public function testValidCredentialsLogTheUserIn(): void
     {
         $this->userFactory->createAdmin('admin@example.com', 'un-mot-de-passe-valide');
