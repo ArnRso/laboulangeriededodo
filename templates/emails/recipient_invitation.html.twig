@@ -1,0 +1,22 @@
+{% extends 'emails/base_email.html.twig' %}
+
+{% block subject %}Une surprise t'attend{% endblock %}
+
+{% block content %}
+    <h1 style="margin: 0 0 16px; font-size: 22px;">Quelque chose a été préparé pour toi</h1>
+
+    <p style="margin: 0 0 16px; line-height: 1.5;">
+        Des souvenirs t'attendent, regroupés en plusieurs collections.
+        Tu en ouvriras un peu chaque jour, pour faire durer le plaisir.
+    </p>
+
+    <p style="margin: 0 0 24px;">
+        <a href="{{ invitationUrl }}" style="display: inline-block; padding: 12px 24px; background-color: #0d6efd; color: #ffffff; text-decoration: none; border-radius: 6px;">
+            Découvrir
+        </a>
+    </p>
+
+    <p style="margin: 0; font-size: 14px; color: #6c757d; line-height: 1.5;">
+        Ce lien est valable {{ expirationDays }} jours.
+    </p>
+{% endblock %}
