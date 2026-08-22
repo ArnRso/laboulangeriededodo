@@ -19,6 +19,12 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class DelayType extends AbstractType
 {
     /**
+     * Un mois de délai : au-delà, la valeur relève plus de la faute de frappe
+     * que d'une intention.
+     */
+    public const MAX_HOURS = 720;
+
+    /**
      * @param array<string, mixed> $options
      */
     public function buildForm(FormBuilderInterface $builder, array $options): void
@@ -27,12 +33,24 @@ class DelayType extends AbstractType
             ->add('hours', IntegerType::class, [
                 'label' => 'Heures',
                 'required' => false,
-                'attr' => ['min' => 0, 'placeholder' => '0'],
+                'attr' => [
+                    'min' => 0,
+                    'max' => self::MAX_HOURS,
+                    'step' => 1,
+                    'placeholder' => '0',
+                    'inputmode' => 'numeric',
+                ],
             ])
             ->add('minutes', IntegerType::class, [
                 'label' => 'Minutes',
                 'required' => false,
-                'attr' => ['min' => 0, 'max' => 59, 'placeholder' => '0'],
+                'attr' => [
+                    'min' => 0,
+                    'max' => 59,
+                    'step' => 1,
+                    'placeholder' => '0',
+                    'inputmode' => 'numeric',
+                ],
             ]);
 
         $builder->addModelTransformer(new CallbackTransformer(
@@ -74,8 +92,11 @@ class DelayType extends AbstractType
                 return;
             }
 
-            if ($hours < 0) {
-                $form->get('hours')->addError(new FormError('Le nombre d\'heures ne peut pas être négatif.'));
+            if ($hours < 0 || $hours > self::MAX_HOURS) {
+                $form->get('hours')->addError(new FormError(sprintf(
+                    'Le nombre d\'heures doit être compris entre 0 et %d.',
+                    self::MAX_HOURS,
+                )));
 
                 return;
             }
