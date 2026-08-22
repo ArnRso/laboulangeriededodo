@@ -8,9 +8,11 @@ use App\Repository\MediaRepository;
 use App\Repository\PackRepository;
 use App\Service\PackManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/admin/packs')]
@@ -73,12 +75,9 @@ class PackController extends AbstractController
     }
 
     #[Route('/{id}/supprimer', name: 'app_admin_pack_delete', methods: ['POST'], requirements: ['id' => '\d+'])]
-    public function delete(Request $request, Pack $pack, PackManager $packManager): Response
+    #[IsCsrfTokenValid(new Expression('"delete_pack_" ~ args["pack"].getId()'))]
+    public function delete(Pack $pack, PackManager $packManager): Response
     {
-        if (!$this->isCsrfTokenValid('delete_pack_'.$pack->getId(), (string) $request->request->get('_token'))) {
-            throw $this->createAccessDeniedException('Jeton CSRF invalide.');
-        }
-
         $packManager->deletePack($pack);
         $this->addFlash('success', 'Pack supprimé.');
 

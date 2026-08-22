@@ -10,9 +10,10 @@ use App\Security\Voter\PackVoter;
 use App\Service\ProgressionService;
 use App\Service\UnlockService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 /**
@@ -45,12 +46,9 @@ class JourneyController extends AbstractController
     }
 
     #[Route('/packs/{id}/commencer', name: 'app_journey_start', methods: ['POST'], requirements: ['id' => '\d+'])]
-    public function start(Request $request, Pack $pack, ProgressionService $progressionService): Response
+    #[IsCsrfTokenValid(new Expression('"start_pack_" ~ args["pack"].getId()'))]
+    public function start(Pack $pack, ProgressionService $progressionService): Response
     {
-        if (!$this->isCsrfTokenValid('start_pack_'.$pack->getId(), (string) $request->request->get('_token'))) {
-            throw $this->createAccessDeniedException('Jeton CSRF invalide.');
-        }
-
         try {
             $progressionService->startPack($this->getAppUser(), $pack);
         } catch (\LogicException $exception) {

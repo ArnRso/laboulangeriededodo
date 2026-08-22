@@ -183,7 +183,9 @@ class PackControllerTest extends WebTestCase
             '_token' => 'jeton-invalide',
         ]);
 
-        self::assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+        // Un jeton invalide invalide la session : le firewall renvoie vers la
+        // connexion plutôt que de servir un 403.
+        self::assertResponseRedirects();
         self::assertNotNull($this->packRepository->find((int) $pack->getId()), 'Le pack ne doit pas être supprimé.');
     }
 
