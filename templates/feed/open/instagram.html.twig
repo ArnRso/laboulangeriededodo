@@ -1,0 +1,77 @@
+{% extends 'base_feed.html.twig' %}
+
+{% set data = media.appData %}
+{% set username = data.username|default('dodo.du.passe') %}
+
+{% block title %}{{ media.title }} · Instagram{% endblock %}
+{% block body_class %}f-open f-open-ig{% endblock %}
+
+{% block body %}
+    {{ include('feed/_aura_toast.html.twig', {media: media, justOpened: justOpened}, with_context: false) }}
+
+    <main class="f-wrap f-wrap-open">
+        <div class="f-bar f-bar-line">
+            <a class="f-back" href="{{ path('app_feed') }}" aria-label="Retour">‹</a>
+            <b>Publication</b>
+            <span class="f-bar-spacer"></span>
+        </div>
+
+        <div class="ig-head">
+            <span class="ig-ring"><span>{{ recipient and recipient.avatar ? recipient.avatar.value : '🦤' }}</span></span>
+            <div>
+                <b>{{ username }}</b>
+                {% if data.location|default('') %}<small>{{ data.location }}</small>{% endif %}
+            </div>
+            <span class="ig-dots" aria-hidden="true">···</span>
+        </div>
+
+        {{ include('feed/_media.html.twig', {media: media, class: 'ig-media'}, with_context: false) }}
+
+        <div class="ig-acts" aria-hidden="true"><span>♡</span><span>💬</span><span>✈︎</span><span class="ig-save">🔖</span></div>
+
+        <div class="ig-likes">
+            Aimé par {% if data.likedBy|default('') %}<b>{{ data.likedBy }}</b> et {% endif %}<b>{{ data.likesCount|default(0)|number_format(0, ',', ' ') }} autres personnes</b>
+        </div>
+
+        <div class="ig-cap">
+            <b>{{ username }}</b> {{ media.title }}{% if media.description %}. {{ media.description }}{% endif %}
+            {% if data.hashtags|default('') %}<span class="ig-tag">{{ data.hashtags }}</span>{% endif %}
+        </div>
+
+        {% set comments = [] %}
+        {% for line in data.comments|default('')|split('\n') %}
+            {% if line|trim %}{% set comments = comments|merge([line|trim]) %}{% endif %}
+        {% endfor %}
+
+        {% if comments is not empty %}
+            <div class="ig-more">Voir les {{ (comments|length * 29) + 1 }} commentaires</div>
+            {% for comment in comments %}
+                {% set parts = comment|split(':', 2) %}
+                <div class="ig-cm">
+                    {% if parts|length == 2 %}<b>{{ parts[0]|trim }}</b> {{ parts[1]|trim }}{% else %}{{ comment }}{% endif %}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <div class="ig-time">{{ data.timeAgo|default('Il y a longtemps') }}</div>
+
+        <div class="ig-add" aria-hidden="true">
+            <span class="ig-add-av">{{ recipient and recipient.avatar ? recipient.avatar.value : '🦤' }}</span>
+            <span>Ajouter un commentaire…</span>
+            <b>Publier</b>
+        </div>
+
+        <div class="ig-badge">
+            <span class="ig-ring"><span>{{ media.auraPoints < 0 ? '💀' : '👑' }}</span></span>
+            <div>
+                <b>{% if data.badge|default('') %}Nouveau badge débloqué{% else %}Aura mise à jour{% endif %}</b>
+                <small>{{ data.badge|default(media.auraPoints < 0 ? 'Cette décision était objectivement catastrophique.' : 'Ne la gaspille pas.') }}</small>
+            </div>
+            <span class="ig-aura {{ media.auraPoints < 0 ? 'ig-aura-neg' : '' }}">{{ media.auraPoints > 0 ? '+' : '' }}{{ media.auraPoints }} aura</span>
+        </div>
+
+        {% if not preview %}
+            <a class="ig-back" href="{{ path('app_feed') }}">Retour aux notifications</a>
+        {% endif %}
+    </main>
+{% endblock %}

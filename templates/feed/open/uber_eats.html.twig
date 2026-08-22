@@ -1,0 +1,62 @@
+{% extends 'base_feed.html.twig' %}
+
+{% set data = media.appData %}
+
+{% block title %}{{ media.title }} · Uber Eats{% endblock %}
+{% block body_class %}f-open f-open-ue{% endblock %}
+
+{% block body %}
+    {{ include('feed/_aura_toast.html.twig', {media: media, justOpened: justOpened}, with_context: false) }}
+
+    <main class="f-wrap f-wrap-open">
+        <div class="f-bar">
+            <a class="f-back" href="{{ path('app_feed') }}" aria-label="Retour">‹</a>
+            <b>Détails de la commande</b>
+            <span class="f-bar-spacer"></span>
+        </div>
+
+        <header class="ue-hero">
+            <div class="ue-status"><i>✓</i>Commande livrée</div>
+            <h1>{{ media.title }}</h1>
+            <p>Commande n° {{ media.position + 1 }} · livrée par {{ data.courier|default('Dodo du passé') }}</p>
+        </header>
+
+        <div class="ue-map" aria-hidden="true">
+            <span class="ue-map-a">{{ recipient and recipient.avatar ? recipient.avatar.value : '🦤' }}</span>
+            <span class="ue-map-z">🎁</span>
+            <small>{{ data.trip|default('Ton adolescence → Aujourd\'hui') }}</small>
+        </div>
+
+        <section class="ue-sec">
+            <h2>Ta commande</h2>
+            <div class="ue-item">
+                <span class="ue-qty">1×</span>
+                <div class="ue-item-body">
+                    <b>{{ media.title }}</b>
+                    {% if media.description %}<p>{{ media.description }}</p>{% endif %}
+                </div>
+            </div>
+
+            {{ include('feed/_media.html.twig', {media: media, class: 'ue-media'}, with_context: false) }}
+        </section>
+
+        <section class="ue-receipt">
+            <div class="ue-row"><span>Sous-total</span><span>{{ media.auraPoints > 0 ? '+' : '' }}{{ media.auraPoints }} aura</span></div>
+            <div class="ue-row"><span>Frais de service</span><span>0 aura</span></div>
+            <div class="ue-row"><span>Pourboire au livreur</span><span>0 aura (radin)</span></div>
+            <div class="ue-row ue-row-total"><span>Total</span><span class="{{ media.auraPoints < 0 ? 'ue-neg' : '' }}">{{ media.auraPoints > 0 ? '+' : '' }}{{ media.auraPoints }} aura</span></div>
+        </section>
+
+        <section class="ue-rate">
+            <small>Note ta commande</small>
+            {% set stars = data.stars|default(5) %}
+            <div class="ue-stars" aria-label="{{ stars }} étoiles sur 5">
+                {% for i in 1..5 %}<span class="{{ i <= stars ? 'on' : '' }}">★</span>{% endfor %}
+            </div>
+        </section>
+    </main>
+
+    {% if not preview %}
+        <div class="f-cta"><a href="{{ path('app_feed') }}">Retour aux notifications</a></div>
+    {% endif %}
+{% endblock %}

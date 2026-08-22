@@ -1,0 +1,58 @@
+{% extends 'admin/_layout.html.twig' %}
+
+{% block title %}Notifications{% endblock %}
+
+{% block admin_body %}
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+            <h1 class="h3 mb-0">Le fil</h1>
+            <p class="text-body-secondary mb-0 small">Dans l'ordre où Dorian les recevra. Chaque délai court à partir de l'ouverture de la précédente.</p>
+        </div>
+        <a class="btn btn-primary" href="{{ path('app_admin_notification_choose') }}">Nouvelle notification</a>
+    </div>
+
+    {% if medias is empty %}
+        <div class="alert alert-info">Le fil est vide. Ajoute une première notification : elle sera disponible dès l'activation du compte.</div>
+    {% else %}
+        <ol class="list-group list-group-numbered">
+            {% for media in medias %}
+                <li class="list-group-item d-flex justify-content-between align-items-center gap-3{{ media.published ? '' : ' list-group-item-light' }}">
+                    <div class="d-flex align-items-center gap-3 flex-grow-1 min-w-0">
+                        <span class="fs-4" title="{{ media.appKind.label }}">{{ media.appKind.icon }}</span>
+                        <div class="min-w-0">
+                            <div class="fw-semibold text-truncate">
+                                {{ media.title }}
+                                {% if not media.published %}<span class="badge text-bg-secondary ms-1">Brouillon</span>{% endif %}
+                            </div>
+                            <small class="text-body-secondary">
+                                {{ media.appKind.label }} · {{ media.type.label }} ·
+                                {% if loop.first %}immédiate{% else %}{{ media.delayLabel }} après la précédente{% endif %} ·
+                                <span class="{{ media.auraPoints < 0 ? 'text-danger' : 'text-success' }}">{{ media.auraPoints > 0 ? '+' : '' }}{{ media.auraPoints }} aura</span>
+                            </small>
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-1 flex-shrink-0">
+                        <form method="post" action="{{ path('app_admin_notification_move', {id: media.id}) }}">
+                            <input type="hidden" name="_token" value="{{ csrf_token('move_media_' ~ media.id) }}">
+                            <input type="hidden" name="direction" value="up">
+                            <button type="submit" class="btn btn-sm btn-outline-secondary" {{ loop.first ? 'disabled' : '' }} aria-label="Monter">↑</button>
+                        </form>
+                        <form method="post" action="{{ path('app_admin_notification_move', {id: media.id}) }}">
+                            <input type="hidden" name="_token" value="{{ csrf_token('move_media_' ~ media.id) }}">
+                            <input type="hidden" name="direction" value="down">
+                            <button type="submit" class="btn btn-sm btn-outline-secondary" {{ loop.last ? 'disabled' : '' }} aria-label="Descendre">↓</button>
+                        </form>
+                        <a class="btn btn-sm btn-outline-primary" href="{{ path('app_admin_notification_preview', {id: media.id}) }}">Aperçu</a>
+                        <a class="btn btn-sm btn-outline-secondary" href="{{ path('app_admin_notification_edit', {id: media.id}) }}">Modifier</a>
+                        <form method="post" action="{{ path('app_admin_notification_delete', {id: media.id}) }}"
+                              onsubmit="return confirm('Supprimer cette notification ?');">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete_media_' ~ media.id) }}">
+                            <button type="submit" class="btn btn-sm btn-outline-danger">Supprimer</button>
+                        </form>
+                    </div>
+                </li>
+            {% endfor %}
+        </ol>
+    {% endif %}
+{% endblock %}

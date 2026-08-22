@@ -1,0 +1,27 @@
+{#
+    Le souvenir lui-même, quel que soit son type.
+
+    Paramètres :
+      - media : Media
+      - class : classes CSS du conteneur (optionnel)
+#}
+<div class="f-media {{ class|default('') }} f-media-{{ media.type.value }}">
+    {% if media.type.value == 'image' %}
+        <img src="{{ path('app_media_file', {id: media.id}) }}" alt="{{ media.title }}">
+    {% elseif media.type.value == 'video' %}
+        <video controls playsinline preload="metadata" src="{{ path('app_media_file', {id: media.id}) }}">
+            Votre navigateur ne peut pas lire cette vidéo.
+        </video>
+    {% elseif media.type.value == 'audio' %}
+        <audio controls preload="metadata" src="{{ path('app_media_file', {id: media.id}) }}">
+            Votre navigateur ne peut pas lire cet audio.
+        </audio>
+    {% elseif media.type.value == 'text' %}
+        <p class="f-media-text">{{ media.textContent|nl2br }}</p>
+    {% elseif media.type.value == 'link' %}
+        <a class="f-media-link" href="{{ media.url }}" target="_blank" rel="noopener noreferrer">
+            <span>🔗</span>
+            <span>Ouvrir le lien ↗</span>
+        </a>
+    {% endif %}
+</div>

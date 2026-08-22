@@ -1,0 +1,91 @@
+{% extends 'base_feed.html.twig' %}
+
+{% block title %}Notifications{% endblock %}
+
+{% block body %}
+    <main class="f-wrap" data-controller="clock">
+        <header class="f-clock">
+            <div class="f-clock-time" data-clock-target="time">{{ now|date('H:i') }}</div>
+            <div class="f-clock-date" data-clock-target="date">{{ dateLabel }}</div>
+            <div class="f-aura">
+                ✨ <b>{{ auraTotal|number_format(0, ',', ' ') }} aura</b>
+                · {{ auraToday >= 0 ? '+' : '' }}{{ auraToday|number_format(0, ',', ' ') }} aujourd'hui
+            </div>
+        </header>
+
+        {% if overview.isEmpty %}
+            <div class="f-grp">Rien pour l'instant</div>
+            <div class="f-n f-n-static">
+                <span class="f-app f-app-plain">📭</span>
+                <span class="f-b">
+                    <span class="f-t">Aucune notification</span>
+                    <span class="f-m">Le fil se remplit bientôt. Repasse un peu plus tard.</span>
+                </span>
+            </div>
+        {% else %}
+            {% if overview.fresh %}
+                <div class="f-grp">Nouveau</div>
+                {{ include('feed/_card.html.twig', {state: overview.fresh, variant: 'fresh'}, with_context: false) }}
+            {% endif %}
+
+            {% if overview.next %}
+                <div class="f-grp">
+                    En route
+                    <span>{% if overview.fresh %}part quand tu auras ouvert celle-ci{% else %}elle arrive{% endif %}</span>
+                </div>
+
+                <div class="f-n f-n-doctolib f-n-static">
+                    <span class="f-app" style="background: #107ACA">🩺</span>
+                    <span class="f-b">
+                        <span class="f-h"><b>Doctolib</b><small>rappel</small></span>
+                        <span class="f-t">Rappel de rendez-vous · Dr Passé</span>
+                        <span class="f-m">Spécialiste des décisions catastrophiques</span>
+                        {% if overview.next.availableAt %}
+                            <span class="f-slot"
+                                  data-controller="countdown"
+                                  data-countdown-available-at-value="{{ overview.next.availableAt|date('c') }}">
+                                📅 Dans <b data-countdown-target="output">{{ overview.next.availableAt|date('H:i:s') }}</b>
+                            </span>
+                        {% else %}
+                            <span class="f-slot">📅 {{ overview.next.media.delayLabel }} après ouverture</span>
+                        {% endif %}
+                        <span class="f-m">Canon event. Cette journée était inévitable.</span>
+                    </span>
+                </div>
+            {% elseif overview.isFinished %}
+                <div class="f-grp">Fin de saison</div>
+                <div class="f-n f-n-static">
+                    <span class="f-app f-app-plain">🏁</span>
+                    <span class="f-b">
+                        <span class="f-t">Plus rien ne devait arriver.</span>
+                        <span class="f-m">Tu as tout vu. Tu peux relire, ou faire semblant de ne pas avoir compris.</span>
+                    </span>
+                </div>
+            {% endif %}
+
+            {% if overview.seen is not empty %}
+                <div class="f-grp">Déjà consultées <span>{{ overview.seen|length }}</span></div>
+
+                <div data-controller="stack">
+                    {% for state in overview.seen %}
+                        {{ include('feed/_card.html.twig', {state: state, variant: 'seen', hidden: loop.index > 3}, with_context: false) }}
+                    {% endfor %}
+
+                    {% if overview.seen|length > 3 %}
+                        <button type="button" class="f-stack" data-stack-target="button" data-action="stack#reveal">
+                            <span class="f-stack-icons">
+                                {% for state in overview.seen|slice(3, 4) %}
+                                    <i style="background: {{ state.media.appKind.color }}">{{ state.media.appKind.icon }}</i>
+                                {% endfor %}
+                            </span>
+                            <span class="f-stack-text">
+                                <b>{{ overview.seen|length - 3 }} autre{{ overview.seen|length - 3 > 1 ? 's' : '' }} notification{{ overview.seen|length - 3 > 1 ? 's' : '' }}</b>
+                                <small>Afficher ▾</small>
+                            </span>
+                        </button>
+                    {% endif %}
+                </div>
+            {% endif %}
+        {% endif %}
+    </main>
+{% endblock %}

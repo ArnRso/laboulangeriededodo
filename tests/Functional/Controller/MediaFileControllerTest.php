@@ -4,7 +4,7 @@ namespace App\Tests\Functional\Controller;
 
 use App\Entity\Media;
 use App\Enum\MediaType;
-use App\Tests\Factory\PackFactory;
+use App\Tests\Factory\MediaFactory;
 use App\Tests\Factory\UserFactory;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
@@ -15,7 +15,7 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 class MediaFileControllerTest extends WebTestCase
 {
     private KernelBrowser $client;
-    private PackFactory $packFactory;
+    private MediaFactory $mediaFactory;
     private UserFactory $userFactory;
     private EntityManagerInterface $entityManager;
 
@@ -25,29 +25,23 @@ class MediaFileControllerTest extends WebTestCase
 
         $container = self::getContainer();
         $this->entityManager = $container->get(EntityManagerInterface::class);
-        $this->packFactory = new PackFactory($this->entityManager);
-        $this->userFactory = new UserFactory(
-            $this->entityManager,
-            $container->get(UserPasswordHasherInterface::class),
-        );
+        $this->mediaFactory = new MediaFactory($this->entityManager);
+        $this->userFactory = new UserFactory($this->entityManager, $container->get(UserPasswordHasherInterface::class));
     }
 
     public function testAnonymousVisitorIsRedirectedToLogin(): void
     {
-        $media = $this->createFileMedia();
+        $media = $this->createFileMedia(0);
 
         $this->client->request('GET', sprintf('/medias/%d/fichier', (int) $media->getId()));
 
         self::assertResponseRedirects();
-        self::assertStringContainsString(
-            '/connexion',
-            (string) $this->client->getResponse()->headers->get('Location'),
-        );
+        self::assertStringContainsString('/connexion', (string) $this->client->getResponse()->headers->get('Location'));
     }
 
     public function testAdminCanDownloadAnyFile(): void
     {
-        $media = $this->createFileMedia();
+        $media = $this->createFileMedia(0);
         $this->client->loginUser($this->userFactory->createAdmin());
 
         $this->client->request('GET', sprintf('/medias/%d/fichier', (int) $media->getId()));
@@ -55,23 +49,33 @@ class MediaFileControllerTest extends WebTestCase
         self::assertResponseIsSuccessful();
     }
 
-    public function testRecipientWithoutProgressIsDenied(): void
+    public function testRecipientCanDownloadTheFileOfAnArrivedNotification(): void
     {
-        $media = $this->createFileMedia();
+        $media = $this->createFileMedia(0);
         $this->client->loginUser($this->userFactory->createRecipient());
 
         $this->client->request('GET', sprintf('/medias/%d/fichier', (int) $media->getId()));
 
+        self::assertResponseIsSuccessful();
+    }
+
+    public function testRecipientIsDeniedTheFileOfALockedNotification(): void
+    {
+        $this->mediaFactory->createNotification(0, 'Première');
+        $locked = $this->createFileMedia(1);
+        $this->client->loginUser($this->userFactory->createRecipient());
+
+        $this->client->request('GET', sprintf('/medias/%d/fichier', (int) $locked->getId()));
+
         self::assertResponseStatusCodeSame(
             Response::HTTP_FORBIDDEN,
-            'Sans progression sur le pack, le fichier reste inaccessible.',
+            'Deviner l\'URL du fichier ne doit pas contourner le délai.',
         );
     }
 
     public function testMissingFileReturnsNotFound(): void
     {
-        $pack = $this->packFactory->createPack();
-        $media = $this->packFactory->createMedia($pack, 0, 'Sans fichier');
+        $media = $this->mediaFactory->createNotification(0, 'Sans fichier');
         $media->setType(MediaType::IMAGE)->setFilePath('fichier-absent.png');
         $this->entityManager->flush();
 
@@ -83,8 +87,7 @@ class MediaFileControllerTest extends WebTestCase
 
     public function testMediaWithoutFilePathReturnsNotFound(): void
     {
-        $pack = $this->packFactory->createPack();
-        $media = $this->packFactory->createMedia($pack, 0, 'Texte');
+        $media = $this->mediaFactory->createNotification(0, 'Texte');
 
         $this->client->loginUser($this->userFactory->createAdmin());
         $this->client->request('GET', sprintf('/medias/%d/fichier', (int) $media->getId()));
@@ -92,10 +95,9 @@ class MediaFileControllerTest extends WebTestCase
         self::assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
     }
 
-    private function createFileMedia(): Media
+    private function createFileMedia(int $position): Media
     {
-        $pack = $this->packFactory->createPack();
-        $media = $this->packFactory->createMedia($pack, 0, 'Une photo');
+        $media = $this->mediaFactory->createNotification($position, 'Une photo');
         $media->setType(MediaType::IMAGE)->setFilePath('test-fixture.png');
 
         $directory = $this->uploadDirectory();

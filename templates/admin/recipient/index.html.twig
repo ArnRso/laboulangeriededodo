@@ -10,7 +10,8 @@
             {% if recipient %}
                 <div class="alert {{ recipient.password ? 'alert-success' : 'alert-warning' }}">
                     {% if recipient.password %}
-                        <strong>{{ recipient.email }}</strong> a activé son compte.
+                        {{ recipient.avatar ? recipient.avatar.value ~ ' ' : '' }}<strong>{{ recipient.publicName }}</strong>
+                        ({{ recipient.email }}) a activé son compte.
                     {% elseif hasPendingInvitation %}
                         Une invitation est en attente pour <strong>{{ recipient.email }}</strong>.
                         Vous pouvez la renvoyer ci-dessous.
@@ -28,6 +29,20 @@
             {% if not recipient or not recipient.password %}
                 {{ form_start(form) }}
                     {{ form_row(form.email) }}
+                    {{ form_row(form.displayName) }}
+
+                    <div class="mb-3">
+                        {{ form_label(form.avatar) }}
+                        <div class="d-flex flex-wrap gap-2">
+                            {% for choice in form.avatar %}
+                                <label class="btn btn-outline-secondary fs-4 px-3" for="{{ choice.vars.id }}" title="{{ choice.vars.label|split('  ')|last }}">
+                                    {{ form_widget(choice, {attr: {class: 'visually-hidden'}}) }}
+                                    {{ choice.vars.label|split('  ')|first }}
+                                </label>
+                            {% endfor %}
+                        </div>
+                        {{ form_errors(form.avatar) }}
+                    </div>
 
                     <button type="submit" class="btn btn-primary mt-2">
                         {{ recipient ? 'Renvoyer l\'invitation' : 'Envoyer l\'invitation' }}

@@ -4,7 +4,6 @@ namespace App\Repository;
 
 use App\Entity\Media;
 use App\Entity\MediaAccess;
-use App\Entity\Pack;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -24,32 +23,39 @@ class MediaAccessRepository extends ServiceEntityRepository
         return $this->findOneBy(['user' => $user, 'media' => $media]);
     }
 
-    public function countForUserAndPack(User $user, Pack $pack): int
-    {
-        return (int) $this->createQueryBuilder('ma')
-            ->select('COUNT(ma.id)')
-            ->join('ma.media', 'm')
-            ->andWhere('ma.user = :user')
-            ->andWhere('m.pack = :pack')
-            ->setParameter('user', $user)
-            ->setParameter('pack', $pack)
-            ->getQuery()
-            ->getSingleScalarResult();
-    }
-
     /**
+     * Ouvertures du destinataire, la plus récente en premier.
+     *
      * @return list<MediaAccess>
      */
-    public function findForUserAndPack(User $user, Pack $pack): array
+    public function findForUser(User $user): array
     {
         return $this->createQueryBuilder('ma')
             ->join('ma.media', 'm')
+            ->addSelect('m')
             ->andWhere('ma.user = :user')
-            ->andWhere('m.pack = :pack')
             ->setParameter('user', $user)
-            ->setParameter('pack', $pack)
-            ->orderBy('m.position', 'ASC')
+            ->orderBy('ma.openedAt', 'DESC')
+            ->addOrderBy('m.position', 'DESC')
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * Aura cumulée par les ouvertures, éventuellement à partir d'une date.
+     */
+    public function sumAuraForUser(User $user, ?\DateTimeImmutable $since = null): int
+    {
+        $builder = $this->createQueryBuilder('ma')
+            ->select('COALESCE(SUM(m.auraPoints), 0)')
+            ->join('ma.media', 'm')
+            ->andWhere('ma.user = :user')
+            ->setParameter('user', $user);
+
+        if (null !== $since) {
+            $builder->andWhere('ma.openedAt >= :since')->setParameter('since', $since);
+        }
+
+        return (int) $builder->getQuery()->getSingleScalarResult();
     }
 }

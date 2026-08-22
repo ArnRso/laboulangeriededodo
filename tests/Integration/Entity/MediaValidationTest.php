@@ -3,7 +3,6 @@
 namespace App\Tests\Integration\Entity;
 
 use App\Entity\Media;
-use App\Entity\Pack;
 use App\Enum\MediaType;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -22,9 +21,7 @@ class MediaValidationTest extends KernelTestCase
 
     public function testLinkMediaRequiresUrl(): void
     {
-        $media = $this->createMedia(MediaType::LINK);
-
-        self::assertViolation($this->validator->validate($media), 'url');
+        self::assertViolation($this->validator->validate($this->createMedia(MediaType::LINK)), 'url');
     }
 
     public function testLinkMediaWithUrlIsValid(): void
@@ -37,9 +34,7 @@ class MediaValidationTest extends KernelTestCase
 
     public function testTextMediaRequiresContent(): void
     {
-        $media = $this->createMedia(MediaType::TEXT);
-
-        self::assertViolation($this->validator->validate($media), 'textContent');
+        self::assertViolation($this->validator->validate($this->createMedia(MediaType::TEXT)), 'textContent');
     }
 
     public function testTextMediaRejectsWhitespaceOnlyContent(): void
@@ -52,9 +47,7 @@ class MediaValidationTest extends KernelTestCase
 
     public function testImageMediaRequiresFile(): void
     {
-        $media = $this->createMedia(MediaType::IMAGE);
-
-        self::assertViolation($this->validator->validate($media), 'file');
+        self::assertViolation($this->validator->validate($this->createMedia(MediaType::IMAGE)), 'file');
     }
 
     public function testImageMediaWithExistingPathIsValid(): void
@@ -106,6 +99,14 @@ class MediaValidationTest extends KernelTestCase
         self::assertViolation($this->validator->validate($media), 'title');
     }
 
+    public function testNegativeDelayIsRefused(): void
+    {
+        $media = $this->createMedia(MediaType::TEXT);
+        $media->setTextContent('du contenu')->setDelayMinutes(-5);
+
+        self::assertViolation($this->validator->validate($media), 'delayMinutes');
+    }
+
     /**
      * Le contenu compte : getMimeType() inspecte les octets du fichier plutôt
      * que son extension, ce qui est justement ce qui déjoue un renommage.
@@ -130,11 +131,8 @@ class MediaValidationTest extends KernelTestCase
 
     private function createMedia(MediaType $type): Media
     {
-        $pack = new Pack();
-        $pack->setName('Pack');
-
         $media = new Media();
-        $media->setPack($pack)->setTitle('Titre')->setType($type);
+        $media->setTitle('Titre')->setType($type);
 
         return $media;
     }

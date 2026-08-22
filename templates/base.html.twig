@@ -34,9 +34,9 @@
                             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                                 {% if is_granted('ROLE_ADMIN') %}
                                     <li class="nav-item">
-                                        <a class="nav-link{{ route starts with 'app_admin_pack' or route starts with 'app_admin_media' ? ' active' : '' }}"
-                                           href="{{ path('app_admin_pack_index') }}">
-                                            <i class="bi bi-collection me-1" aria-hidden="true"></i>Packs
+                                        <a class="nav-link{{ route starts with 'app_admin_notification' ? ' active' : '' }}"
+                                           href="{{ path('app_admin_notification_index') }}">
+                                            <i class="bi bi-bell me-1" aria-hidden="true"></i>Notifications
                                         </a>
                                     </li>
                                     <li class="nav-item">
@@ -47,9 +47,9 @@
                                     </li>
                                 {% else %}
                                     <li class="nav-item">
-                                        <a class="nav-link{{ route starts with 'app_journey' ? ' active' : '' }}"
-                                           href="{{ path('app_journey') }}">
-                                            <i class="bi bi-stars me-1" aria-hidden="true"></i>Mes souvenirs
+                                        <a class="nav-link{{ route starts with 'app_feed' ? ' active' : '' }}"
+                                           href="{{ path('app_feed') }}">
+                                            <i class="bi bi-bell me-1" aria-hidden="true"></i>Mes notifications
                                         </a>
                                     </li>
                                 {% endif %}

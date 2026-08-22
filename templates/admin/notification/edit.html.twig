@@ -1,0 +1,30 @@
+{% extends 'admin/_layout.html.twig' %}
+
+{% block title %}Modifier {{ media.title }}{% endblock %}
+
+{% block admin_body %}
+    <div class="d-flex justify-content-between align-items-start mb-4">
+        <div>
+            <h1 class="h3 mb-1">{{ media.appKind.icon }} Modifier la notification</h1>
+            <p class="text-body-secondary mb-0">{{ media.appKind.label }} · l'application ne se change pas, supprime et recrée si besoin.</p>
+        </div>
+        <a class="btn btn-outline-primary" href="{{ path('app_admin_notification_preview', {id: media.id}) }}">Aperçu</a>
+    </div>
+
+    <div class="row">
+        <div class="col-12 col-lg-7">
+            {% if media.filePath %}
+                <div class="alert alert-secondary">
+                    Fichier actuel : <a href="{{ path('app_media_file', {id: media.id}) }}" target="_blank">{{ media.originalName ?? media.filePath }}</a>
+                </div>
+            {% endif %}
+
+            {{ include('admin/notification/_form.html.twig', {
+                form: form,
+                appKind: media.appKind,
+                submitLabel: 'Enregistrer',
+                cancelPath: path('app_admin_notification_index'),
+            }, with_context: false) }}
+        </div>
+    </div>
+{% endblock %}

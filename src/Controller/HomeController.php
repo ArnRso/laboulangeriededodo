@@ -15,7 +15,7 @@ class HomeController extends AbstractController
         $user = $this->getUser();
 
         if ($user instanceof User) {
-            return $this->redirectToRoute($user->isAdmin() ? 'app_admin_pack_index' : 'app_journey');
+            return $this->redirectToRoute($user->isAdmin() ? 'app_admin_notification_index' : 'app_feed');
         }
 
         return $this->render('home/index.html.twig');

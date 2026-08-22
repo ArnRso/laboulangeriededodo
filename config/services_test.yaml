@@ -7,7 +7,9 @@ services:
     # on les conserve accessibles pour pouvoir les récupérer dans les tests.
     App\Service\:
         resource: '../src/Service/'
-        exclude: '../src/Service/UnlockState.php'
+        exclude:
+            - '../src/Service/NotificationState.php'
+            - '../src/Service/FeedOverview.php'
         public: true
 
     App\Service\InvitationMailer:

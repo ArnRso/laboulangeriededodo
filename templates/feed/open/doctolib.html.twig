@@ -1,0 +1,65 @@
+{% extends 'base_feed.html.twig' %}
+
+{% set data = media.appData %}
+
+{% block title %}{{ media.title }} · Doctolib{% endblock %}
+{% block body_class %}f-open f-open-dl{% endblock %}
+
+{% block body %}
+    {{ include('feed/_aura_toast.html.twig', {media: media, justOpened: justOpened}, with_context: false) }}
+
+    <main class="f-wrap f-wrap-open">
+        <header class="dl-top">
+            <div class="f-bar f-bar-inverse">
+                <a class="f-back" href="{{ path('app_feed') }}" aria-label="Retour">‹</a>
+                <b>Mon rendez-vous</b>
+                <span class="f-bar-spacer"></span>
+            </div>
+            <div class="dl-ok"><i>✓</i><b>Rendez-vous honoré</b></div>
+            <p>Canon event · Cette journée était inévitable. Tu as accepté ton destin.</p>
+        </header>
+
+        <section class="dl-card dl-pr">
+            <span class="dl-av">🩺</span>
+            <div>
+                <b>{{ data.practitioner|default('Dr Passé') }}</b>
+                <small>{{ data.specialty|default('Spécialiste des décisions catastrophiques') }}{% if data.sector|default('') %}<br>{{ data.sector }}{% endif %}</small>
+            </div>
+        </section>
+
+        <section class="dl-card">
+            <div class="dl-row"><span class="dl-ic">📅</span><div><b>{{ 'now'|date('d/m/Y') }}</b><span class="dl-tm">{{ 'now'|date('H:i') }}</span></div></div>
+            {% if data.address|default('') %}
+                <div class="dl-row"><span class="dl-ic">📍</span><div><b>Cabinet</b><span>{{ data.address|nl2br }}</span></div></div>
+            {% endif %}
+            <div class="dl-row"><span class="dl-ic">📝</span><div><b>Motif de consultation</b><span>{{ media.title }}</span></div></div>
+        </section>
+
+        <h2 class="dl-h2">Document partagé par le praticien</h2>
+        <section class="dl-card">
+            {{ include('feed/_media.html.twig', {media: media, class: 'dl-media'}, with_context: false) }}
+        </section>
+
+        {% if media.description %}
+            <h2 class="dl-h2">Compte-rendu</h2>
+            <section class="dl-card"><p class="dl-cr">{{ media.description }}</p></section>
+        {% endif %}
+
+        <h2 class="dl-h2">Remboursement</h2>
+        <section class="dl-card">
+            <div class="dl-refund {{ media.auraPoints < 0 ? 'dl-refund-neg' : '' }}">
+                <div>
+                    <b>{{ data.refundLabel|default(media.auraPoints < 0 ? 'Dépassement d\'honoraires non remboursé' : 'Pris en charge par la mutuelle du passé') }}</b>
+                    <span>{{ media.auraPoints < 0 ? 'Reste à charge, désolé.' : 'Aucun reste à charge' }}</span>
+                </div>
+                <span class="dl-refund-v">{{ media.auraPoints > 0 ? '+' : '' }}{{ media.auraPoints }} aura</span>
+            </div>
+        </section>
+    </main>
+
+    {% if not preview %}
+        <div class="f-cta">
+            <a href="{{ path('app_feed') }}">Retour aux notifications</a>
+        </div>
+    {% endif %}
+{% endblock %}
