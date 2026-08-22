@@ -50,6 +50,21 @@ class JourneyControllerTest extends WebTestCase
         self::assertStringContainsString('/connexion', (string) $client->getResponse()->headers->get('Location'));
     }
 
+    public function testNavigationShowsTheRecipientLinksOnly(): void
+    {
+        $crawler = $this->client->request('GET', '/mon-espace');
+
+        self::assertSelectorTextContains('.navbar', 'Mes souvenirs');
+        self::assertSelectorTextNotContains('.navbar', 'Packs', 'L\'administration ne doit pas apparaître.');
+        self::assertSelectorTextNotContains('.navbar', 'Destinataire');
+        self::assertSelectorExists('.navbar .dropdown-menu a[href="/deconnexion"]');
+        self::assertCount(
+            0,
+            $crawler->filter('.navbar a[href="/admin/mon-compte"]'),
+            'Le destinataire n\'a pas accès à l\'espace admin.',
+        );
+    }
+
     public function testChoiceScreenListsAvailablePacks(): void
     {
         $pack = $this->packFactory->createPack('Nos années lycée');
