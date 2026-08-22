@@ -4,8 +4,7 @@ namespace App\Security\Voter;
 
 use App\Entity\Media;
 use App\Entity\User;
-use App\Repository\PackProgressRepository;
-use App\Service\UnlockService;
+use App\Service\FeedUnlockService;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Vote;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
@@ -18,8 +17,7 @@ class MediaVoter extends Voter
     public const string VIEW = 'view';
 
     public function __construct(
-        private readonly PackProgressRepository $packProgressRepository,
-        private readonly UnlockService $unlockService,
+        private readonly FeedUnlockService $unlockService,
     ) {
     }
 
@@ -28,9 +26,6 @@ class MediaVoter extends Voter
         return self::VIEW === $attribute && $subject instanceof Media;
     }
 
-    /**
-     * @throws \DateMalformedIntervalStringException
-     */
     protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token, ?Vote $vote = null): bool
     {
         $user = $token->getUser();
@@ -39,17 +34,11 @@ class MediaVoter extends Voter
             return false;
         }
 
-        // L'administration prépare les packs : elle voit tout.
+        // L'administration prépare le fil : elle voit tout, brouillons compris.
         if ($user->isAdmin()) {
             return true;
         }
 
-        $progress = $this->packProgressRepository->findOneByUserAndPack($user, $subject->getPack());
-
-        if (null === $progress) {
-            return false;
-        }
-
-        return $this->unlockService->canOpen($user, $progress, $subject);
+        return $this->unlockService->canOpen($user, $subject);
     }
 }

@@ -1,12 +1,23 @@
-{% extends 'base.html.twig' %}
+{% extends 'base_feed.html.twig' %}
+
+{% block title %}La Boulangerie de Dodo{% endblock %}
 
 {% block body %}
-    <div class="text-center py-5">
-        <h1 class="mb-3">La Boulangerie de Dodo</h1>
-        {% if app.user %}
-            <p class="text-body-secondary">Vous êtes connecté.</p>
-        {% else %}
-            <a class="btn btn-primary" href="{{ path('app_login') }}">Se connecter</a>
-        {% endif %}
-    </div>
+    <main class="f-wrap">
+        <header class="f-clock">
+            <div class="f-clock-time">🔔</div>
+            <div class="f-clock-date">quelque chose t'attend</div>
+        </header>
+
+        <a class="f-n f-n-fresh f-n-doctolib" href="{{ path('app_login') }}">
+            <span class="f-dot" aria-hidden="true"></span>
+            <span class="f-app" style="background: #107ACA">🩺</span>
+            <span class="f-b">
+                <span class="f-h"><b>Doctolib</b><small>maintenant</small></span>
+                <span class="f-t">Rappel de rendez-vous · Dr Passé</span>
+                <span class="f-m">Tu as des notifications en attente. Connecte-toi pour accepter ton destin.</span>
+                <span class="f-btn">Se connecter</span>
+            </span>
+        </a>
+    </main>
 {% endblock %}

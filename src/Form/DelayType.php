@@ -76,9 +76,12 @@ class DelayType extends AbstractType
             },
         ));
 
+        $allowZero = $options['allow_zero'];
+        \assert(\is_bool($allowZero));
+
         // Les bornes sont vérifiées sur les champs saisis pour que le message
         // se rattache à celui qui est fautif plutôt qu'au total.
-        $builder->addEventListener(FormEvents::POST_SUBMIT, static function (FormEvent $event): void {
+        $builder->addEventListener(FormEvents::POST_SUBMIT, static function (FormEvent $event) use ($allowZero): void {
             $form = $event->getForm();
             $rawHours = $form->get('hours')->getData();
             $rawMinutes = $form->get('minutes')->getData();
@@ -101,7 +104,7 @@ class DelayType extends AbstractType
                 return;
             }
 
-            if (0 === $hours * 60 + $minutes) {
+            if (!$allowZero && 0 === $hours * 60 + $minutes) {
                 $form->addError(new FormError('Le délai doit être d\'au moins une minute.'));
             }
         });
@@ -109,8 +112,11 @@ class DelayType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setDefaults([
-            'error_bubbling' => false,
-        ]);
+        $resolver
+            ->setDefaults([
+                'error_bubbling' => false,
+                'allow_zero' => false,
+            ])
+            ->setAllowedTypes('allow_zero', 'bool');
     }
 }

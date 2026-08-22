@@ -1,0 +1,22 @@
+{#
+    Le gain (ou la perte) d'aura, affiché à la première ouverture.
+
+    Paramètres :
+      - media      : Media
+      - justOpened : bool
+#}
+{% if justOpened %}
+    {% set positive = media.auraPoints >= 0 %}
+    <div class="f-toast {{ positive ? '' : 'f-toast-neg' }}" data-controller="aura-toast" role="status">
+        <b>{{ positive ? '✨ +' : '💀 ' }}{{ media.auraPoints }} aura</b>
+        <span>
+            {% if media.auraMessage %}
+                {{ media.auraMessage }}
+            {% elseif positive %}
+                Ne la gaspille pas.
+            {% else %}
+                Cette décision était objectivement catastrophique.
+            {% endif %}
+        </span>
+    </div>
+{% endif %}

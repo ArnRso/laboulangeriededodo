@@ -1,0 +1,61 @@
+{#
+    Une notification dans le fil, habillée aux couleurs de son application.
+
+    Paramètres :
+      - state   : NotificationState
+      - variant : 'fresh' (arrivée, non lue) ou 'seen' (déjà consultée)
+      - hidden  : replié dans la pile (optionnel)
+#}
+{% set media = state.media %}
+{% set app = media.appKind %}
+{% set data = media.appData %}
+
+<a class="f-n f-n-{{ app.value }} f-n-{{ variant }}"
+   href="{{ path('app_feed_open', {id: media.id}) }}"
+   {{ hidden|default(false) ? 'hidden' : '' }}>
+    {% if variant == 'fresh' %}<span class="f-dot" aria-hidden="true"></span>{% endif %}
+
+    <span class="f-app" style="background: {{ app.color }}">{{ app.icon }}</span>
+
+    <span class="f-b">
+        <span class="f-h">
+            <b>{{ app.label }}</b>
+            <small>{% if variant == 'fresh' %}maintenant{% else %}✓ {{ state.openedAt|date('d/m') }}{% endif %}</small>
+        </span>
+
+        {% if variant == 'fresh' %}
+            <span class="f-t">
+                {% if app.value == 'uber_eats' %}Ta commande est arrivée 🎁
+                {% elseif app.value == 'instagram' %}{{ data.username|default('dodo.du.passe') }} a publié une photo
+                {% elseif app.value == 'tinder' %}C'est un match ! 💘
+                {% else %}Rappel de rendez-vous · {{ data.practitioner|default('Dr Passé') }}
+                {% endif %}
+            </span>
+            <span class="f-m">
+                1 × <b>{{ media.title }}</b>
+                {% if app.value == 'uber_eats' %} · livrée par {{ data.courier|default('Dodo du passé') }}{% endif %}
+                · {{ media.auraPoints > 0 ? '+' : '' }}{{ media.auraPoints }} aura
+                {% if app.value == 'uber_eats' %}inclus, pas de pourboire{% endif %}
+            </span>
+            {% if app.value == 'uber_eats' %}
+                <span class="f-track" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+            {% endif %}
+            <span class="f-btn">
+                {% if app.value == 'uber_eats' %}Ouvrir la commande
+                {% elseif app.value == 'instagram' %}Voir la publication
+                {% elseif app.value == 'tinder' %}Voir le match
+                {% else %}Voir le rendez-vous
+                {% endif %}
+            </span>
+        {% else %}
+            <span class="f-t">{{ media.title }}</span>
+            {% if media.description %}
+                <span class="f-m f-m-clip">{{ media.description }}</span>
+            {% endif %}
+        {% endif %}
+    </span>
+
+    {% if variant == 'seen' %}
+        <span class="f-aurachip{{ media.auraPoints < 0 ? ' f-aurachip-neg' : '' }}">{{ media.auraPoints > 0 ? '+' : '' }}{{ media.auraPoints }}</span>
+    {% endif %}
+</a>

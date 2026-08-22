@@ -53,7 +53,7 @@ class SecurityControllerTest extends WebTestCase
 
         // La racine oriente ensuite chacun vers son espace.
         $this->client->followRedirect();
-        self::assertResponseRedirects('/admin/packs');
+        self::assertResponseRedirects('/admin/notifications');
     }
 
     public function testTheRecipientLandsOnTheirJourney(): void
@@ -111,7 +111,7 @@ class SecurityControllerTest extends WebTestCase
 
     public function testAdminAreaRejectsAnonymousVisitors(): void
     {
-        $this->client->request('GET', '/admin/packs');
+        $this->client->request('GET', '/admin/notifications');
 
         self::assertResponseRedirects();
         self::assertStringContainsString(
@@ -124,7 +124,7 @@ class SecurityControllerTest extends WebTestCase
     {
         $this->client->loginUser($this->userFactory->createRecipient());
 
-        $this->client->request('GET', '/admin/packs');
+        $this->client->request('GET', '/admin/notifications');
 
         self::assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }

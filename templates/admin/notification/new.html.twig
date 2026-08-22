@@ -1,0 +1,19 @@
+{% extends 'admin/_layout.html.twig' %}
+
+{% block title %}Nouvelle notification {{ appKind.label }}{% endblock %}
+
+{% block admin_body %}
+    <h1 class="h3 mb-1">{{ appKind.icon }} Nouvelle notification {{ appKind.label }}</h1>
+    <p class="text-body-secondary mb-4">Étape 2 sur 2 — {{ appKind.pitch }}</p>
+
+    <div class="row">
+        <div class="col-12 col-lg-7">
+            {{ include('admin/notification/_form.html.twig', {
+                form: form,
+                appKind: appKind,
+                submitLabel: 'Ajouter au fil',
+                cancelPath: path('app_admin_notification_choose'),
+            }, with_context: false) }}
+        </div>
+    </div>
+{% endblock %}

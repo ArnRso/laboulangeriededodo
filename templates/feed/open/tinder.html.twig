@@ -1,0 +1,79 @@
+{% extends 'base_feed.html.twig' %}
+
+{% set data = media.appData %}
+{% set matchName = data.matchName|default(media.title) %}
+
+{% block title %}{{ media.title }} · Tinder{% endblock %}
+{% block body_class %}f-open f-open-td{% endblock %}
+
+{% block status %}{% endblock %}
+
+{% block body %}
+    {{ include('feed/_aura_toast.html.twig', {media: media, justOpened: justOpened}, with_context: false) }}
+
+    <div class="td-confetti" aria-hidden="true">
+        <i style="left:10%;animation-delay:-1s"></i><i style="left:25%;animation-delay:-4s"></i><i style="left:45%;animation-delay:-2s"></i>
+        <i style="left:62%;animation-delay:-6s"></i><i style="left:80%;animation-delay:-3s"></i><i style="left:92%;animation-delay:-5s"></i>
+    </div>
+
+    <main class="f-wrap f-wrap-open td-wrap">
+        <a class="td-close" href="{{ path('app_feed') }}" aria-label="Fermer">✕</a>
+
+        <div class="td-match">
+            <div class="td-match-title">C'est un match !</div>
+            <p>Toi et <b>{{ matchName }}</b> vous êtes likés.</p>
+        </div>
+
+        <div class="td-pair" aria-hidden="true">
+            <span class="td-c">{{ recipient and recipient.avatar ? recipient.avatar.value : '🦤' }}</span>
+            <span class="td-heart">💘</span>
+            <span class="td-c td-c-match">{{ data.matchEmoji|default('💘') }}</span>
+        </div>
+
+        <div class="td-drama">
+            <span>
+                Drama level <b>{{ data.dramaLevel|default(50) }} %</b>
+                · <b class="{{ media.auraPoints < 0 ? 'td-neg' : '' }}">{{ media.auraPoints > 0 ? '+' : '' }}{{ media.auraPoints }} aura</b>
+                {% if media.auraMessage %} · {{ media.auraMessage|lower }}{% endif %}
+            </span>
+        </div>
+
+        <div class="td-card">
+            <div class="td-photo">
+                {% if media.type.value == 'image' %}
+                    <img src="{{ path('app_media_file', {id: media.id}) }}" alt="{{ media.title }}">
+                {% else %}
+                    <span class="td-photo-emoji">{{ data.matchEmoji|default('💘') }}</span>
+                {% endif %}
+                <span class="td-dots" aria-hidden="true"><i class="on"></i><i></i><i></i></span>
+                <div class="td-meta">
+                    <h1>{{ matchName }}{% if data.matchAge|default('') %} <span>{{ data.matchAge }}</span>{% endif %}</h1>
+                    {% if data.locationLine|default('') %}<small>{{ data.locationLine }}</small>{% endif %}
+                </div>
+            </div>
+            <div class="td-body">
+                {% if media.description %}<p>{{ media.description }}</p>{% endif %}
+
+                {% set chips = [] %}
+                {% for line in data.chips|default('')|split('\n') %}
+                    {% if line|trim %}{% set chips = chips|merge([line|trim]) %}{% endif %}
+                {% endfor %}
+                {% if chips is not empty %}
+                    <div class="td-chips">
+                        {% for chip in chips %}<span class="td-chip {{ loop.first ? 'td-chip-hot' : '' }}">{{ chip }}</span>{% endfor %}
+                    </div>
+                {% endif %}
+
+                {% if media.type.value != 'image' %}
+                    {{ include('feed/_media.html.twig', {media: media, class: 'td-media'}, with_context: false) }}
+                {% endif %}
+            </div>
+        </div>
+
+        {% if not preview %}
+            <div class="td-btns">
+                <a class="td-btn td-btn-s" href="{{ path('app_feed') }}">Retour aux notifications</a>
+            </div>
+        {% endif %}
+    </main>
+{% endblock %}

@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Enum\AppKind;
 use App\Enum\MediaType;
 use App\Repository\MediaRepository;
 use Doctrine\ORM\Mapping as ORM;
@@ -10,6 +11,10 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use Vich\UploaderBundle\Mapping\Attribute as Vich;
 
+/**
+ * Une notification du fil : un souvenir déguisé en message d'une application
+ * connue, qui arrive un certain temps après l'ouverture de la précédente.
+ */
 #[ORM\Entity(repositoryClass: MediaRepository::class)]
 #[Vich\Uploadable]
 class Media
@@ -19,12 +24,11 @@ class Media
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(inversedBy: 'medias')]
-    #[ORM\JoinColumn(nullable: false)]
-    private Pack $pack;
-
     #[ORM\Column]
     private int $position = 0;
+
+    #[ORM\Column(enumType: AppKind::class)]
+    private AppKind $appKind = AppKind::UBER_EATS;
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
@@ -49,6 +53,36 @@ class Media
     #[Assert\Url]
     private ?string $url = null;
 
+    /**
+     * Minutes d'attente après l'ouverture de la notification précédente.
+     * Sans effet sur la première du fil, disponible immédiatement.
+     */
+    #[ORM\Column]
+    #[Assert\PositiveOrZero]
+    private int $delayMinutes = 1440;
+
+    /**
+     * Aura gagnée — ou perdue — à l'ouverture. Négatif volontairement possible :
+     * certaines décisions étaient objectivement catastrophiques.
+     */
+    #[ORM\Column]
+    private int $auraPoints = 100;
+
+    #[ORM\Column(type: 'text', nullable: true)]
+    private ?string $auraMessage = null;
+
+    /**
+     * Détails propres à l'application imitée (pseudo Instagram, praticien
+     * Doctolib…), dont la forme est dictée par le formulaire de chaque app.
+     *
+     * @var array<string, mixed>
+     */
+    #[ORM\Column(type: 'json')]
+    private array $appData = [];
+
+    #[ORM\Column]
+    private bool $published = true;
+
     #[ORM\Column]
     private \DateTimeImmutable $updatedAt;
 
@@ -65,18 +99,6 @@ class Media
         return $this->id;
     }
 
-    public function getPack(): Pack
-    {
-        return $this->pack;
-    }
-
-    public function setPack(Pack $pack): static
-    {
-        $this->pack = $pack;
-
-        return $this;
-    }
-
     public function getPosition(): int
     {
         return $this->position;
@@ -85,6 +107,18 @@ class Media
     public function setPosition(int $position): static
     {
         $this->position = $position;
+
+        return $this;
+    }
+
+    public function getAppKind(): AppKind
+    {
+        return $this->appKind;
+    }
+
+    public function setAppKind(AppKind $appKind): static
+    {
+        $this->appKind = $appKind;
 
         return $this;
     }
@@ -173,6 +207,101 @@ class Media
         return $this;
     }
 
+    public function getDelayMinutes(): int
+    {
+        return $this->delayMinutes;
+    }
+
+    public function setDelayMinutes(int $delayMinutes): static
+    {
+        $this->delayMinutes = $delayMinutes;
+
+        return $this;
+    }
+
+    public function getDelayHoursPart(): int
+    {
+        return intdiv($this->delayMinutes, 60);
+    }
+
+    public function getDelayMinutesPart(): int
+    {
+        return $this->delayMinutes % 60;
+    }
+
+    /**
+     * Délai formaté pour l'affichage, par exemple « 1 h 30 » ou « 45 min ».
+     */
+    public function getDelayLabel(): string
+    {
+        $hours = $this->getDelayHoursPart();
+        $minutes = $this->getDelayMinutesPart();
+
+        if (0 === $hours) {
+            return sprintf('%d min', $minutes);
+        }
+
+        if (0 === $minutes) {
+            return sprintf('%d h', $hours);
+        }
+
+        return sprintf('%d h %02d', $hours, $minutes);
+    }
+
+    public function getAuraPoints(): int
+    {
+        return $this->auraPoints;
+    }
+
+    public function setAuraPoints(int $auraPoints): static
+    {
+        $this->auraPoints = $auraPoints;
+
+        return $this;
+    }
+
+    public function getAuraMessage(): ?string
+    {
+        return $this->auraMessage;
+    }
+
+    public function setAuraMessage(?string $auraMessage): static
+    {
+        $this->auraMessage = $auraMessage;
+
+        return $this;
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function getAppData(): array
+    {
+        return $this->appData;
+    }
+
+    /**
+     * @param array<string, mixed> $appData
+     */
+    public function setAppData(array $appData): static
+    {
+        $this->appData = $appData;
+
+        return $this;
+    }
+
+    public function isPublished(): bool
+    {
+        return $this->published;
+    }
+
+    public function setPublished(bool $published): static
+    {
+        $this->published = $published;
+
+        return $this;
+    }
+
     public function getUpdatedAt(): \DateTimeImmutable
     {
         return $this->updatedAt;
@@ -184,8 +313,8 @@ class Media
     }
 
     /**
-     * Chaque type de média a besoin de son propre contenu : sans cette règle, un
-     * média vide se retrouverait dans un pack et bloquerait la progression.
+     * Chaque type de média a besoin de son propre contenu : sans cette règle, une
+     * notification vide se retrouverait dans le fil et bloquerait la progression.
      */
     #[Assert\Callback]
     public function validateContent(ExecutionContextInterface $context): void
@@ -202,7 +331,7 @@ class Media
                 ->addViolation();
         }
 
-        if (null === $this->filePath && null === $this->file && $this->type->isFile()) {
+        if ($this->type->isFile() && null === $this->filePath && null === $this->file) {
             $context->buildViolation('Un média de ce type doit avoir un fichier.')
                 ->atPath('file')
                 ->addViolation();

@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use App\Entity\User;
+use App\Enum\Avatar;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Random\RandomException;
@@ -33,12 +34,15 @@ readonly class RecipientInviter
      * @throws RandomException
      * @throws TransportExceptionInterface
      */
-    public function invite(string $email): User
+    public function invite(string $email, ?string $displayName = null, ?Avatar $avatar = null): User
     {
         $existing = $this->findRecipient();
 
         if (null === $existing) {
             $user = $this->invitationService->invite($email, [User::ROLE_RECIPIENT]);
+            $user->setDisplayName($displayName)->setAvatar($avatar);
+            $this->entityManager->flush();
+
             $token = $user->getInvitationToken();
 
             if (null === $token) {
@@ -53,6 +57,10 @@ readonly class RecipientInviter
         if (null !== $existing->getPassword()) {
             throw new \LogicException('Le destinataire a déjà activé son compte.');
         }
+
+        // Un renvoi permet aussi de corriger le prénom ou l'avatar.
+        $existing->setDisplayName($displayName ?? $existing->getDisplayName())
+            ->setAvatar($avatar ?? $existing->getAvatar());
 
         $token = $this->invitationService->refreshInvitationToken($existing);
         $this->entityManager->flush();

@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Enum\Avatar;
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -41,6 +42,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $invitationExpiresAt = null;
+
+    #[ORM\Column(length: 60, nullable: true)]
+    #[Assert\Length(max: 60)]
+    private ?string $displayName = null;
+
+    #[ORM\Column(enumType: Avatar::class, nullable: true)]
+    private ?Avatar $avatar = null;
 
     #[ORM\Column]
     private \DateTimeImmutable $createdAt;
@@ -134,6 +142,42 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setInvitationExpiresAt(?\DateTimeImmutable $invitationExpiresAt): static
     {
         $this->invitationExpiresAt = $invitationExpiresAt;
+
+        return $this;
+    }
+
+    public function getDisplayName(): ?string
+    {
+        return $this->displayName;
+    }
+
+    public function setDisplayName(?string $displayName): static
+    {
+        $this->displayName = $displayName;
+
+        return $this;
+    }
+
+    /**
+     * Nom affiché dans l'interface : le prénom choisi, sinon la partie locale de l'email.
+     */
+    public function getPublicName(): string
+    {
+        if (null !== $this->displayName && '' !== $this->displayName) {
+            return $this->displayName;
+        }
+
+        return explode('@', $this->email, 2)[0];
+    }
+
+    public function getAvatar(): ?Avatar
+    {
+        return $this->avatar;
+    }
+
+    public function setAvatar(?Avatar $avatar): static
+    {
+        $this->avatar = $avatar;
 
         return $this;
     }

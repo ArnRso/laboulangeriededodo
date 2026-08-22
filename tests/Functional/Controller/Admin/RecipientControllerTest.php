@@ -3,11 +3,13 @@
 namespace App\Tests\Functional\Controller\Admin;
 
 use App\Entity\User;
+use App\Enum\Avatar;
 use App\Repository\UserRepository;
 use App\Tests\Factory\UserFactory;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
@@ -36,6 +38,8 @@ class RecipientControllerTest extends WebTestCase
         $this->client->request('GET', '/admin/destinataire');
         $this->client->submitForm('Envoyer l\'invitation', [
             'invite_recipient[email]' => 'dorian@example.com',
+            'invite_recipient[displayName]' => 'Dodo',
+            'invite_recipient[avatar]' => '🦤',
         ]);
 
         self::assertResponseRedirects('/admin/destinataire');
@@ -45,6 +49,21 @@ class RecipientControllerTest extends WebTestCase
         self::assertContains(User::ROLE_RECIPIENT, $recipient->getRoles());
         self::assertNull($recipient->getPassword(), 'Le destinataire choisit son mot de passe.');
         self::assertNotNull($recipient->getInvitationToken());
+        self::assertSame('Dodo', $recipient->getDisplayName());
+        self::assertSame(Avatar::DODO, $recipient->getAvatar());
+    }
+
+    public function testDisplayNameIsRequired(): void
+    {
+        $this->client->request('GET', '/admin/destinataire');
+        $this->client->submitForm('Envoyer l\'invitation', [
+            'invite_recipient[email]' => 'dorian@example.com',
+            'invite_recipient[displayName]' => '',
+            'invite_recipient[avatar]' => '🦤',
+        ]);
+
+        self::assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
+        self::assertNull($this->userRepository->findOneByEmail('dorian@example.com'));
     }
 
     public function testInvitationEmailIsSentToTheRecipient(): void
@@ -52,6 +71,8 @@ class RecipientControllerTest extends WebTestCase
         $this->client->request('GET', '/admin/destinataire');
         $this->client->submitForm('Envoyer l\'invitation', [
             'invite_recipient[email]' => 'dorian@example.com',
+            'invite_recipient[displayName]' => 'Dodo',
+            'invite_recipient[avatar]' => '🦤',
         ]);
 
         $email = $this->getSentEmail();
@@ -65,6 +86,8 @@ class RecipientControllerTest extends WebTestCase
         $this->client->request('GET', '/admin/destinataire');
         $this->client->submitForm('Envoyer l\'invitation', [
             'invite_recipient[email]' => 'dorian@example.com',
+            'invite_recipient[displayName]' => 'Dodo',
+            'invite_recipient[avatar]' => '🦤',
         ]);
 
         $firstToken = $this->readTokenFromDatabase('dorian@example.com');
