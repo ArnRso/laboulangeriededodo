@@ -25,13 +25,15 @@ class PackProgressRepository extends ServiceEntityRepository
 
     public function findActiveForUser(User $user): ?PackProgress
     {
-        return $this->createQueryBuilder('pp')
+        $results = $this->createQueryBuilder('pp')
             ->andWhere('pp.user = :user')
             ->andWhere('pp.completedAt IS NULL')
             ->setParameter('user', $user)
             ->setMaxResults(1)
             ->getQuery()
-            ->getOneOrNullResult();
+            ->getResult();
+
+        return $results[0] ?? null;
     }
 
     /**

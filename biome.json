@@ -1,0 +1,40 @@
+{
+    "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
+    "files": {
+        "includes": [
+            "assets/**/*.js",
+            "!assets/vendor",
+            "!assets/controllers/csrf_protection_controller.js",
+            "!assets/stimulus_bootstrap.js"
+        ]
+    },
+    "javascript": {
+        "parser": {
+            "jsxEverywhere": false
+        },
+        "formatter": {
+            "quoteStyle": "single",
+            "semicolons": "always"
+        },
+        "globals": ["Turbo", "Stimulus"]
+    },
+    "formatter": {
+        "enabled": true,
+        "indentStyle": "space",
+        "indentWidth": 4,
+        "lineWidth": 120
+    },
+    "linter": {
+        "enabled": true,
+        "rules": {
+            "preset": "recommended"
+        }
+    },
+    "assist": {
+        "actions": {
+            "source": {
+                "organizeImports": "on"
+            }
+        }
+    }
+}

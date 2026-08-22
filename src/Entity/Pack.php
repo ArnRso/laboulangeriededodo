@@ -19,7 +19,7 @@ class Pack
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
-    private ?string $name = null;
+    private string $name;
 
     #[ORM\Column(type: 'text', nullable: true)]
     private ?string $description = null;
@@ -55,7 +55,7 @@ class Pack
         return $this->id;
     }
 
-    public function getName(): ?string
+    public function getName(): string
     {
         return $this->name;
     }
@@ -140,9 +140,8 @@ class Pack
 
     public function removeMedia(Media $media): static
     {
-        if ($this->medias->removeElement($media) && $media->getPack() === $this) {
-            $media->setPack(null);
-        }
+        // orphanRemoval se charge de la suppression en base.
+        $this->medias->removeElement($media);
 
         return $this;
     }
@@ -158,6 +157,8 @@ class Pack
             ->where(Criteria::expr()->eq('position', $position))
             ->setMaxResults(1);
 
-        return $this->medias->matching($criteria)->first() ?: null;
+        $media = $this->medias->matching($criteria)->first();
+
+        return false === $media ? null : $media;
     }
 }

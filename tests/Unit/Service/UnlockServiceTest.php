@@ -25,9 +25,9 @@ class UnlockServiceTest extends TestCase
 
         $states = $this->createService($medias, [])->getPackState($progress->getUser(), $progress);
 
-        $this->assertTrue($states[0]->unlockable, 'Le premier média doit être ouvrable immédiatement.');
-        $this->assertFalse($states[1]->unlockable, 'Le deuxième média doit rester verrouillé.');
-        $this->assertFalse($states[2]->unlockable);
+        self::assertTrue($states[0]->unlockable, 'Le premier média doit être ouvrable immédiatement.');
+        self::assertFalse($states[1]->unlockable, 'Le deuxième média doit rester verrouillé.');
+        self::assertFalse($states[2]->unlockable);
     }
 
     public function testNextMediaIsLockedBeforeDelayHasElapsed(): void
@@ -38,9 +38,9 @@ class UnlockServiceTest extends TestCase
 
         $states = $this->createService($medias, [$medias[0]])->getPackState($progress->getUser(), $progress);
 
-        $this->assertTrue($states[0]->opened);
-        $this->assertFalse($states[1]->unlockable, 'Seulement 6h écoulées sur 24h.');
-        $this->assertEquals(
+        self::assertTrue($states[0]->opened);
+        self::assertFalse($states[1]->unlockable, 'Seulement 6h écoulées sur 24h.');
+        self::assertEquals(
             new \DateTimeImmutable('2026-01-02 06:00:00'),
             $states[1]->availableAt,
         );
@@ -54,8 +54,8 @@ class UnlockServiceTest extends TestCase
 
         $states = $this->createService($medias, [$medias[0]])->getPackState($progress->getUser(), $progress);
 
-        $this->assertTrue($states[1]->unlockable, '26h écoulées : le média suivant est ouvrable.');
-        $this->assertFalse($states[2]->unlockable, 'Le troisième reste verrouillé.');
+        self::assertTrue($states[1]->unlockable, '26h écoulées : le média suivant est ouvrable.');
+        self::assertFalse($states[2]->unlockable, 'Le troisième reste verrouillé.');
     }
 
     public function testDelayIsExactlyElapsed(): void
@@ -66,7 +66,7 @@ class UnlockServiceTest extends TestCase
 
         $states = $this->createService($medias, [$medias[0]])->getPackState($progress->getUser(), $progress);
 
-        $this->assertTrue($states[1]->unlockable, 'À la seconde exacte, le média doit être ouvrable.');
+        self::assertTrue($states[1]->unlockable, 'À la seconde exacte, le média doit être ouvrable.');
     }
 
     public function testOnlyOneMediaUnlocksEvenAfterLongAbsence(): void
@@ -77,9 +77,9 @@ class UnlockServiceTest extends TestCase
 
         $states = $this->createService($medias, [$medias[0]])->getPackState($progress->getUser(), $progress);
 
-        $this->assertTrue($states[1]->unlockable);
-        $this->assertFalse($states[2]->unlockable, 'Une absence prolongée ne débloque pas plusieurs médias.');
-        $this->assertFalse($states[3]->unlockable);
+        self::assertTrue($states[1]->unlockable);
+        self::assertFalse($states[2]->unlockable, 'Une absence prolongée ne débloque pas plusieurs médias.');
+        self::assertFalse($states[3]->unlockable);
     }
 
     public function testOpenedMediaStaysAccessible(): void
@@ -90,9 +90,9 @@ class UnlockServiceTest extends TestCase
 
         $states = $this->createService($medias, [$medias[0], $medias[1]])->getPackState($progress->getUser(), $progress);
 
-        $this->assertTrue($states[0]->isAccessible());
-        $this->assertTrue($states[1]->isAccessible());
-        $this->assertFalse($states[2]->isAccessible(), 'Le délai vient de repartir.');
+        self::assertTrue($states[0]->isAccessible());
+        self::assertTrue($states[1]->isAccessible());
+        self::assertFalse($states[2]->isAccessible(), 'Le délai vient de repartir.');
     }
 
     public function testCustomDelayIsHonoured(): void
@@ -103,12 +103,12 @@ class UnlockServiceTest extends TestCase
 
         $states = $this->createService($medias, [$medias[0]])->getPackState($progress->getUser(), $progress);
 
-        $this->assertFalse($states[1]->unlockable, '30 min écoulées sur 1h.');
+        self::assertFalse($states[1]->unlockable, '30 min écoulées sur 1h.');
 
         $progress->setLastOpenedAt(new \DateTimeImmutable('2026-01-01 10:30:00'));
         $states = $this->createService($medias, [$medias[0]])->getPackState($progress->getUser(), $progress);
 
-        $this->assertTrue($states[1]->unlockable, '1h30 écoulée sur 1h.');
+        self::assertTrue($states[1]->unlockable, '1h30 écoulée sur 1h.');
     }
 
     public function testCanOpenRejectsLockedMedia(): void
@@ -118,9 +118,9 @@ class UnlockServiceTest extends TestCase
         $progress = $this->createProgress($pack, lastOpenedAt: new \DateTimeImmutable(self::NOW));
         $service = $this->createService($medias, [$medias[0]]);
 
-        $this->assertTrue($service->canOpen($progress->getUser(), $progress, $medias[0]));
-        $this->assertFalse($service->canOpen($progress->getUser(), $progress, $medias[1]));
-        $this->assertFalse($service->canOpen($progress->getUser(), $progress, $medias[2]));
+        self::assertTrue($service->canOpen($progress->getUser(), $progress, $medias[0]));
+        self::assertFalse($service->canOpen($progress->getUser(), $progress, $medias[1]));
+        self::assertFalse($service->canOpen($progress->getUser(), $progress, $medias[2]));
     }
 
     public function testCanOpenRejectsMediaFromAnotherPack(): void
@@ -132,7 +132,7 @@ class UnlockServiceTest extends TestCase
         $foreignMedia = new Media();
         $this->setId($foreignMedia, 999);
 
-        $this->assertFalse(
+        self::assertFalse(
             $this->createService($medias, [])->canOpen($progress->getUser(), $progress, $foreignMedia),
             'Un média hors du pack courant ne doit jamais être ouvrable.',
         );
@@ -143,7 +143,7 @@ class UnlockServiceTest extends TestCase
         $pack = $this->createPack(24);
         $progress = $this->createProgress($pack, lastOpenedAt: null);
 
-        $this->assertSame([], $this->createService([], [])->getPackState($progress->getUser(), $progress));
+        self::assertSame([], $this->createService([], [])->getPackState($progress->getUser(), $progress));
     }
 
     public function testNextAvailabilityDateIsNullBeforeFirstOpening(): void
@@ -151,7 +151,7 @@ class UnlockServiceTest extends TestCase
         $pack = $this->createPack(24);
         $progress = $this->createProgress($pack, lastOpenedAt: null);
 
-        $this->assertNull($this->createService([], [])->getNextAvailabilityDate($progress));
+        self::assertNull($this->createService([], [])->getNextAvailabilityDate($progress));
     }
 
     /**
@@ -160,7 +160,7 @@ class UnlockServiceTest extends TestCase
      */
     private function createService(array $medias, array $opened): UnlockService
     {
-        $mediaRepository = $this->createStub(MediaRepository::class);
+        $mediaRepository = self::createStub(MediaRepository::class);
         $mediaRepository->method('findByPackOrdered')->willReturn($medias);
 
         $accesses = array_map(
@@ -173,7 +173,7 @@ class UnlockServiceTest extends TestCase
             $opened,
         );
 
-        $accessRepository = $this->createStub(MediaAccessRepository::class);
+        $accessRepository = self::createStub(MediaAccessRepository::class);
         $accessRepository->method('findForUserAndPack')->willReturn($accesses);
 
         return new UnlockService($mediaRepository, $accessRepository, new MockClock(self::NOW));

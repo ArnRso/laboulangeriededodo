@@ -1,0 +1,24 @@
+{
+    "name": "laboulangeriededodo",
+    "version": "1.0.0",
+    "directories": {
+        "test": "tests"
+    },
+    "scripts": {
+        "lint:js": "biome check assets",
+        "fix:js": "biome check --write assets"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/ArnRso/laboulangeriededodo.git"
+    },
+    "type": "module",
+    "bugs": {
+        "url": "https://github.com/ArnRso/laboulangeriededodo/issues"
+    },
+    "homepage": "https://github.com/ArnRso/laboulangeriededodo#readme",
+    "devDependencies": {
+        "@biomejs/biome": "^2.5.10"
+    },
+    "private": true
+}

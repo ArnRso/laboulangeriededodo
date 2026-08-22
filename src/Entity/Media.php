@@ -20,14 +20,14 @@ class Media
 
     #[ORM\ManyToOne(inversedBy: 'medias')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Pack $pack = null;
+    private Pack $pack;
 
     #[ORM\Column]
     private int $position = 0;
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
-    private ?string $title = null;
+    private string $title;
 
     #[ORM\Column(type: 'text', nullable: true)]
     private ?string $description = null;
@@ -64,12 +64,12 @@ class Media
         return $this->id;
     }
 
-    public function getPack(): ?Pack
+    public function getPack(): Pack
     {
         return $this->pack;
     }
 
-    public function setPack(?Pack $pack): static
+    public function setPack(Pack $pack): static
     {
         $this->pack = $pack;
 
@@ -88,7 +88,7 @@ class Media
         return $this;
     }
 
-    public function getTitle(): ?string
+    public function getTitle(): string
     {
         return $this->title;
     }

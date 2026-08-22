@@ -36,12 +36,15 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
 
     public function findOneByValidInvitationToken(string $token): ?User
     {
-        return $this->createQueryBuilder('u')
+        $results = $this->createQueryBuilder('u')
             ->andWhere('u.invitationToken = :token')
             ->andWhere('u.invitationExpiresAt > :now')
             ->setParameter('token', $token)
             ->setParameter('now', new \DateTimeImmutable())
+            ->setMaxResults(1)
             ->getQuery()
-            ->getOneOrNullResult();
+            ->getResult();
+
+        return $results[0] ?? null;
     }
 }
