@@ -1,35 +1,80 @@
-{% extends 'base.html.twig' %}
+{% extends is_granted('ROLE_ADMIN') ? 'base.html.twig' : 'base_feed.html.twig' %}
 
 {% block title %}Mon compte{% endblock %}
 
 {% block body %}
-    <h1 class="h3 mb-1">Mon compte</h1>
-    <p class="text-body-secondary mb-4">{{ app.user.email }}</p>
+    {% if is_granted('ROLE_ADMIN') %}
+        <h1 class="h3 mb-1">Mon compte</h1>
+        <p class="text-body-secondary mb-4">{{ app.user.email }}</p>
 
-    <div class="row">
-        <div class="col-12 col-lg-6">
-            <h2 class="h5 mb-3">Changer de mot de passe</h2>
+        <div class="row">
+            <div class="col-12 col-lg-6">
+                <h2 class="h5 mb-3">Changer de mot de passe</h2>
 
-            {{ form_start(form) }}
-                <div class="mb-3">
-                    {{ form_label(form.currentPassword) }}
-                    {{ include('components/_password_field.html.twig', {field: form.currentPassword}, with_context: false) }}
-                </div>
+                {{ form_start(form) }}
+                    <div class="mb-3">
+                        {{ form_label(form.currentPassword) }}
+                        {{ include('components/_password_field.html.twig', {field: form.currentPassword}, with_context: false) }}
+                    </div>
 
-                <hr class="my-4">
+                    <hr class="my-4">
 
-                <div class="mb-3">
-                    {{ form_label(form.newPassword.first) }}
-                    {{ include('components/_password_field.html.twig', {field: form.newPassword.first}, with_context: false) }}
-                </div>
+                    <div class="mb-3">
+                        {{ form_label(form.newPassword.first) }}
+                        {{ include('components/_password_field.html.twig', {field: form.newPassword.first}, with_context: false) }}
+                    </div>
 
-                <div class="mb-3">
-                    {{ form_label(form.newPassword.second) }}
-                    {{ include('components/_password_field.html.twig', {field: form.newPassword.second}, with_context: false) }}
-                </div>
+                    <div class="mb-3">
+                        {{ form_label(form.newPassword.second) }}
+                        {{ include('components/_password_field.html.twig', {field: form.newPassword.second}, with_context: false) }}
+                    </div>
 
-                <button type="submit" class="btn btn-primary">Enregistrer</button>
-            {{ form_end(form) }}
+                    <button type="submit" class="btn btn-primary">Enregistrer</button>
+                {{ form_end(form) }}
+            </div>
         </div>
-    </div>
+    {% else %}
+        <main class="f-wrap">
+            <div class="f-bar">
+                <a class="f-back f-back-glass" href="{{ path('app_feed') }}" aria-label="Retour">‹</a>
+                <b>Options</b>
+                <span class="f-bar-spacer"></span>
+            </div>
+
+            {% for message in app.flashes('success') %}
+                <div class="f-flash f-flash-ok" role="status">{{ message }}</div>
+            {% endfor %}
+
+            <div class="f-card f-card-profile">
+                <span class="f-card-avatar">{{ app.user.avatar ? app.user.avatar.value : '🦤' }}</span>
+                <div>
+                    <b>{{ app.user.publicName }}</b>
+                    <small>{{ app.user.email }}</small>
+                </div>
+            </div>
+
+            {{ form_start(form, {attr: {class: 'f-card'}}) }}
+                <h1 class="f-card-title">Changer de mot de passe</h1>
+
+                <div class="f-field">
+                    <label class="f-label" for="{{ form.currentPassword.vars.id }}">Mot de passe actuel</label>
+                    {{ include('components/_password_field_feed.html.twig', {field: form.currentPassword}, with_context: false) }}
+                </div>
+
+                <div class="f-field">
+                    <label class="f-label" for="{{ form.newPassword.first.vars.id }}">Nouveau mot de passe</label>
+                    {{ include('components/_password_field_feed.html.twig', {field: form.newPassword.first}, with_context: false) }}
+                </div>
+
+                <div class="f-field">
+                    <label class="f-label" for="{{ form.newPassword.second.vars.id }}">Confirmer le nouveau mot de passe</label>
+                    {{ include('components/_password_field_feed.html.twig', {field: form.newPassword.second}, with_context: false) }}
+                </div>
+
+                <button type="submit" class="f-submit">Enregistrer</button>
+            {{ form_end(form) }}
+
+            <a class="f-link-danger" href="{{ path('app_logout') }}">Se déconnecter</a>
+        </main>
+    {% endif %}
 {% endblock %}
