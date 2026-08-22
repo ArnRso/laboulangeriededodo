@@ -63,15 +63,13 @@
                                         <span class="text-truncate" style="max-width: 14rem;">{{ app.user.email }}</span>
                                     </a>
                                     <ul class="dropdown-menu dropdown-menu-end">
-                                        {% if is_granted('ROLE_ADMIN') %}
-                                            <li>
-                                                <a class="dropdown-item{{ route == 'app_admin_account' ? ' active' : '' }}"
-                                                   href="{{ path('app_admin_account') }}">
-                                                    <i class="bi bi-key me-2" aria-hidden="true"></i>Mon compte
-                                                </a>
-                                            </li>
-                                            <li><hr class="dropdown-divider"></li>
-                                        {% endif %}
+                                        <li>
+                                            <a class="dropdown-item{{ route == 'app_account' ? ' active' : '' }}"
+                                               href="{{ path('app_account') }}">
+                                                <i class="bi bi-key me-2" aria-hidden="true"></i>Mon compte
+                                            </a>
+                                        </li>
+                                        <li><hr class="dropdown-divider"></li>
                                         <li>
                                             <a class="dropdown-item" href="{{ path('app_logout') }}">
                                                 <i class="bi bi-box-arrow-right me-2" aria-hidden="true"></i>Déconnexion

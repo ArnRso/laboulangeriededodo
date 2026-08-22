@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller\Admin;
+namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\ChangePasswordType;
@@ -11,11 +11,14 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[Route('/admin/mon-compte')]
-#[IsGranted('ROLE_ADMIN')]
+/**
+ * Changement de mot de passe, ouvert à l'administration comme au destinataire.
+ */
+#[Route('/mon-compte')]
+#[IsGranted('ROLE_USER')]
 class AccountController extends AbstractController
 {
-    #[Route('', name: 'app_admin_account', methods: ['GET', 'POST'])]
+    #[Route('', name: 'app_account', methods: ['GET', 'POST'])]
     public function index(Request $request, PasswordChanger $passwordChanger): Response
     {
         $user = $this->getUser();
@@ -35,11 +38,11 @@ class AccountController extends AbstractController
                 $passwordChanger->change($user, $currentPassword, $newPassword);
                 $this->addFlash('success', 'Votre mot de passe a été modifié.');
 
-                return $this->redirectToRoute('app_admin_account');
+                return $this->redirectToRoute('app_account');
             }
         }
 
-        return $this->render('admin/account/index.html.twig', [
+        return $this->render('account/index.html.twig', [
             'form' => $form,
         ]);
     }
