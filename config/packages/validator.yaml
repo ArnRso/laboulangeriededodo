@@ -5,6 +5,13 @@ framework:
         #auto_mapping:
         #    App\Entity\: []
 
+# La vérification interroge haveibeenpwned : inutile hors production, et
+# bloquante quand la machine est hors ligne.
+when@dev:
+    framework:
+        validation:
+            not_compromised_password: false
+
 when@test:
     framework:
         validation:

@@ -20,10 +20,23 @@
                            class="form-control" autocomplete="email" required autofocus>
                 </div>
 
-                <div class="mb-3">
+                <div class="mb-3" data-controller="password-visibility">
                     <label for="password" class="form-label">Mot de passe</label>
-                    <input type="password" id="password" name="_password"
-                           class="form-control" autocomplete="current-password" required>
+
+                    <div class="input-group">
+                        <input type="password" id="password" name="_password"
+                               class="form-control" autocomplete="current-password" required
+                               data-password-visibility-target="input">
+
+                        <button type="button" class="btn btn-outline-secondary"
+                                data-action="password-visibility#toggle"
+                                data-password-visibility-target="button"
+                                aria-label="Afficher le mot de passe"
+                                aria-pressed="false"
+                                tabindex="-1">
+                            <i class="bi bi-eye" data-password-visibility-target="icon" aria-hidden="true"></i>
+                        </button>
+                    </div>
                 </div>
 
                 <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">

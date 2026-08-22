@@ -34,6 +34,20 @@ class InvitationControllerTest extends WebTestCase
         self::assertSelectorTextContains('body', 'invite@example.com');
     }
 
+    public function testPasswordFieldsOfferAVisibilityToggle(): void
+    {
+        $this->userFactory->createInvited('invite@example.com', 'token-valide');
+
+        $crawler = $this->client->request('GET', '/invitation/token-valide');
+
+        self::assertCount(
+            2,
+            $crawler->filter('[data-controller="password-visibility"]'),
+            'Les deux champs mot de passe ont leur bouton d\'affichage.',
+        );
+        self::assertCount(2, $crawler->filter('[data-password-visibility-target="input"]'));
+    }
+
     public function testUnknownTokenIsRejected(): void
     {
         $this->client->request('GET', '/invitation/token-inexistant');
@@ -123,6 +137,23 @@ class InvitationControllerTest extends WebTestCase
         $user = self::getContainer()->get(UserRepository::class)->findOneByEmail('invite@example.com');
         self::assertNotNull($user);
         self::assertNull($user->getPassword());
+    }
+
+    public function testPasswordAtTheMinimumLengthIsAccepted(): void
+    {
+        $this->userFactory->createInvited('invite@example.com', 'token-valide');
+
+        $this->client->request('GET', '/invitation/token-valide');
+        $this->client->submitForm('Enregistrer', [
+            'define_password[plainPassword][first]' => 'sixcar',
+            'define_password[plainPassword][second]' => 'sixcar',
+        ]);
+
+        self::assertResponseRedirects('/connexion');
+
+        $user = self::getContainer()->get(UserRepository::class)->findOneByEmail('invite@example.com');
+        self::assertNotNull($user);
+        self::assertNotNull($user->getPassword(), 'Six caractères suffisent.');
     }
 
     public function testCompletedAccountCanLogIn(): void
