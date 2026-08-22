@@ -1,0 +1,39 @@
+{% extends 'admin/_layout.html.twig' %}
+
+{% block title %}Destinataire{% endblock %}
+
+{% block admin_body %}
+    <h1 class="h3 mb-4">Destinataire</h1>
+
+    <div class="row">
+        <div class="col-12 col-lg-6">
+            {% if recipient %}
+                <div class="alert {{ recipient.password ? 'alert-success' : 'alert-warning' }}">
+                    {% if recipient.password %}
+                        <strong>{{ recipient.email }}</strong> a activé son compte.
+                    {% elseif hasPendingInvitation %}
+                        Une invitation est en attente pour <strong>{{ recipient.email }}</strong>.
+                        Vous pouvez la renvoyer ci-dessous.
+                    {% else %}
+                        L'invitation de <strong>{{ recipient.email }}</strong> a expiré.
+                        Renvoyez-la pour lui donner un nouveau lien.
+                    {% endif %}
+                </div>
+            {% else %}
+                <p class="text-body-secondary">
+                    Aucun destinataire pour le moment. Saisissez son adresse pour lui envoyer l'invitation.
+                </p>
+            {% endif %}
+
+            {% if not recipient or not recipient.password %}
+                {{ form_start(form) }}
+                    {{ form_row(form.email) }}
+
+                    <button type="submit" class="btn btn-primary mt-2">
+                        {{ recipient ? 'Renvoyer l\'invitation' : 'Envoyer l\'invitation' }}
+                    </button>
+                {{ form_end(form) }}
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

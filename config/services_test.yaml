@@ -5,10 +5,9 @@ services:
 
     # Les services applicatifs sans consommateur sont inlinés à la compilation :
     # on les conserve accessibles pour pouvoir les récupérer dans les tests.
-    App\Service\UnlockService:
-        public: true
-
-    App\Service\InvitationService:
+    App\Service\:
+        resource: '../src/Service/'
+        exclude: '../src/Service/UnlockState.php'
         public: true
 
     App\Service\InvitationMailer:

@@ -1,0 +1,13 @@
+{{ form_start(form) }}
+    {{ form_row(form.title) }}
+    {{ form_row(form.description) }}
+    {{ form_row(form.type) }}
+    {{ form_row(form.file) }}
+    {{ form_row(form.textContent) }}
+    {{ form_row(form.url) }}
+
+    <div class="d-flex gap-2 mt-3">
+        <button type="submit" class="btn btn-primary">{{ submitLabel }}</button>
+        <a class="btn btn-outline-secondary" href="{{ cancelPath }}">Annuler</a>
+    </div>
+{{ form_end(form) }}

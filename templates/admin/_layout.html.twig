@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="d-flex flex-wrap gap-2 mb-4">
+        <a class="btn btn-sm {{ app.request.attributes.get('_route') starts with 'app_admin_pack' ? 'btn-primary' : 'btn-outline-primary' }}"
+           href="{{ path('app_admin_pack_index') }}">Packs</a>
+        <a class="btn btn-sm {{ app.request.attributes.get('_route') == 'app_admin_recipient' ? 'btn-primary' : 'btn-outline-primary' }}"
+           href="{{ path('app_admin_recipient') }}">Destinataire</a>
+    </div>
+
+    {% block admin_body %}{% endblock %}
+{% endblock %}

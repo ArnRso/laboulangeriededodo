@@ -38,7 +38,7 @@ class MediaAccessRepository extends ServiceEntityRepository
     }
 
     /**
-     * @return MediaAccess[]
+     * @return list<MediaAccess>
      */
     public function findForUserAndPack(User $user, Pack $pack): array
     {
