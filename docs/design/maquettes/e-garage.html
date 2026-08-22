@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>E — Pop Garage</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bungee&family=Figtree:ital,wght@0,500;0,700;0,800;1,700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --cream:#FFF4E6; --ink:#151515; --pink:#FF2D95; --yellow:#FFD60A; --cyan:#2DE2FF; --lime:#B6F54A;
+  --white:#fff; --muted:#5B5563;
+  --shadow:6px 6px 0 var(--ink);
+}
+*{box-sizing:border-box;margin:0}
+body{font-family:'Figtree',sans-serif;color:var(--ink);background:var(--cream);min-height:100vh;overflow-x:hidden;position:relative}
+/* halftone pop background */
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+  background-image:radial-gradient(var(--pink) 1.4px,transparent 1.6px);background-size:16px 16px;opacity:.14}
+/* diagonal racing stripes top-right */
+.stripes{position:fixed;right:-140px;top:-60px;width:420px;height:180px;transform:rotate(-24deg);z-index:0;opacity:.9;
+  background:repeating-linear-gradient(90deg,var(--pink) 0 18px,var(--yellow) 18px 36px,var(--cyan) 36px 54px,var(--ink) 54px 60px)}
+.wrap{position:relative;z-index:1;padding:18px 18px 112px;max-width:430px;margin:0 auto}
+.bungee{font-family:'Bungee',cursive;font-weight:400}
+
+/* HUD */
+.hud{display:flex;align-items:center;gap:12px;margin-bottom:18px}
+.avatar{width:60px;height:60px;border-radius:16px;background:var(--yellow);border:3px solid var(--ink);box-shadow:4px 4px 0 var(--ink);display:grid;place-items:center;font-size:30px;flex:none;transform:rotate(-4deg)}
+.who{flex:1;min-width:0}
+.who .name{font-family:'Bungee';font-size:20px;letter-spacing:.5px;line-height:1}
+.who .tag{display:inline-block;margin-top:6px;background:var(--ink);color:var(--yellow);font-weight:800;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;padding:4px 8px;transform:skewX(-8deg)}
+.who .tag span{display:inline-block;transform:skewX(8deg)}
+.trophy{flex:none;background:var(--white);border:3px solid var(--ink);box-shadow:4px 4px 0 var(--ink);border-radius:14px;padding:8px 10px;text-align:center;text-decoration:none;color:var(--ink)}
+.trophy b{display:block;font-family:'Bungee';font-size:16px}
+.trophy small{font-size:10px;font-weight:800;letter-spacing:1px}
+
+/* world card */
+.world{background:var(--white);border:3px solid var(--ink);border-radius:22px;box-shadow:var(--shadow);padding:18px 16px 16px;position:relative;overflow:hidden}
+.world .plate{position:absolute;right:12px;top:12px;background:var(--cyan);border:3px solid var(--ink);border-radius:8px;padding:3px 8px;font-family:'Bungee';font-size:12px;letter-spacing:1px;transform:rotate(4deg);box-shadow:3px 3px 0 var(--ink)}
+.world .tag{font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--pink)}
+.world h1{font-family:'Bungee';font-size:28px;line-height:1.02;margin:6px 0 6px;text-transform:uppercase}
+.world h1 em{font-style:normal;color:var(--pink);-webkit-text-stroke:1px var(--ink)}
+.world p{color:var(--muted);font-size:14px;font-weight:500;margin-bottom:16px}
+.joke{font-style:italic;font-weight:700;color:var(--ink)}
+
+/* rainbow road */
+.road{position:relative;margin:4px 0 2px;padding:16px 0}
+.road::before{content:"";position:absolute;left:8px;right:8px;top:50%;height:14px;transform:translateY(-50%);border:3px solid var(--ink);border-radius:99px;
+  background:linear-gradient(90deg,#E40303 0 16.6%,#FF8C00 16.6% 33.3%,#FFED00 33.3% 50%,#008026 50% 66.6%,#24408E 66.6% 83.3%,#732982 83.3% 100%)}
+.road .done-mask{position:absolute;left:8px;top:50%;height:14px;transform:translateY(-50%);width:calc(60% - 8px);pointer-events:none}
+.road .todo{position:absolute;right:8px;top:50%;height:14px;transform:translateY(-50%);width:calc(40% - 6px);border-radius:0 99px 99px 0;background:repeating-linear-gradient(90deg,#fff 0 6px,#cfcfcf 6px 12px);border:3px solid var(--ink);border-left:0;opacity:.95}
+.nodes{position:relative;display:grid;grid-template-columns:repeat(5,1fr)}
+.node{justify-self:center;width:44px;height:44px;border-radius:50%;border:3px solid var(--ink);display:grid;place-items:center;font-size:18px;background:var(--white);box-shadow:3px 3px 0 var(--ink)}
+.node.done{background:var(--lime)}
+.node.now{width:62px;height:62px;font-size:30px;background:var(--yellow);animation:rev .9s ease-in-out infinite}
+.node.flag{background:repeating-conic-gradient(var(--ink) 0 25%,#fff 0 50%) 0 0/12px 12px;font-size:0}
+.node.lock{background:#ECE6DC;color:#8a8a8a}
+@keyframes rev{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-4px) rotate(3deg)}}
+.labels{display:grid;grid-template-columns:repeat(5,1fr);font-size:10px;font-weight:800;text-align:center;color:var(--muted);margin:8px 0 16px;text-transform:uppercase;letter-spacing:.5px}
+
+.cta{display:flex;align-items:center;gap:12px;background:var(--pink);color:#fff;border:3px solid var(--ink);border-radius:16px;padding:12px 14px;text-decoration:none;box-shadow:var(--shadow);transition:transform .1s}
+.cta:active{transform:translate(3px,3px);box-shadow:3px 3px 0 var(--ink)}
+.cta .ico{font-size:36px;filter:drop-shadow(2px 2px 0 var(--ink))}
+.cta b{font-family:'Bungee';font-size:17px;display:block;line-height:1.05;text-shadow:2px 2px 0 var(--ink)}
+.cta span{font-size:12px;font-weight:700;opacity:.95}
+.cta .go{margin-left:auto;background:var(--yellow);color:var(--ink);font-family:'Bungee';font-size:13px;padding:8px 12px;border:3px solid var(--ink);border-radius:10px;white-space:nowrap}
+
+.next{margin-top:12px;display:flex;align-items:center;justify-content:space-between;background:var(--ink);color:#fff;border-radius:14px;padding:12px 14px;position:relative;overflow:hidden}
+.next::after{content:"";position:absolute;right:-20px;top:-20px;width:90px;height:90px;background:repeating-conic-gradient(#fff 0 25%,transparent 0 50%) 0 0/14px 14px;opacity:.12;transform:rotate(20deg)}
+.next small{font-size:11px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--yellow);display:block}
+.next .t{font-family:'Bungee';font-size:30px;color:var(--cyan);letter-spacing:1px;line-height:1.1}
+.next .g{font-size:34px}
+
+/* badges */
+h2{font-family:'Bungee';font-size:16px;margin:22px 0 10px;display:flex;justify-content:space-between;align-items:baseline;text-transform:uppercase}
+h2 a{font-family:'Figtree';font-size:12px;font-weight:800;color:var(--pink);text-decoration:underline}
+.badges{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.badge{background:var(--white);border:3px solid var(--ink);border-radius:16px;padding:10px 8px;text-align:center;box-shadow:4px 4px 0 var(--ink);transform:rotate(-1.5deg)}
+.badge:nth-child(2n){transform:rotate(1.5deg)}
+.badge .i{width:46px;height:46px;margin:0 auto 6px;border-radius:50%;border:3px solid var(--ink);display:grid;place-items:center;font-size:22px}
+.b1 .i{background:var(--yellow)}.b2 .i{background:var(--cyan)}.b3 .i{background:var(--pink)}
+.badge b{font-size:11px;font-weight:800;display:block;line-height:1.15}
+.badge small{display:block;font-size:9px;color:var(--muted);font-weight:700;margin-top:2px}
+.badge.off{background:#EFE9DF;box-shadow:none;border-style:dashed;opacity:.7}
+.badge.off .i{background:#fff;border-style:dashed;filter:grayscale(1);opacity:.6}
+
+/* worlds */
+.worlds{display:flex;gap:12px;overflow-x:auto;padding:4px 4px 10px;scroll-snap-type:x mandatory}
+.w{flex:0 0 156px;scroll-snap-align:start;border:3px solid var(--ink);border-radius:16px;padding:12px;min-height:110px;display:flex;flex-direction:column;justify-content:flex-end;position:relative;overflow:hidden;text-decoration:none;color:var(--ink);box-shadow:4px 4px 0 var(--ink);background:var(--white)}
+.w .e{position:absolute;right:8px;top:6px;font-size:36px}
+.w b{font-family:'Bungee';font-size:12px;line-height:1.1;text-transform:uppercase}
+.w span{font-size:11px;font-weight:700;color:var(--muted)}
+.w.done{background:var(--lime)}.w.now{background:var(--yellow)}
+.w.lockw{background:#EFE9DF;box-shadow:none;border-style:dashed;color:var(--muted)}
+
+nav{position:fixed;left:50%;transform:translateX(-50%);bottom:14px;width:calc(100% - 36px);max-width:394px;background:var(--white);border:3px solid var(--ink);border-radius:20px;box-shadow:var(--shadow);padding:8px 10px;display:flex;justify-content:space-around;z-index:2}
+nav a{text-decoration:none;color:var(--muted);font-size:10px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 12px;border-radius:12px;border:3px solid transparent}
+nav a.on{color:var(--ink);background:var(--yellow);border-color:var(--ink)}
+nav i{font-style:normal;font-size:20px}
+</style>
+</head>
+<body>
+<div class="stripes"></div>
+<div class="wrap">
+
+  <div class="hud">
+    <div class="avatar">🦤</div>
+    <div class="who">
+      <div class="name">DODO</div>
+      <div class="tag"><span>Pilote du dimanche</span></div>
+    </div>
+    <a class="trophy" href="#"><b>3/8</b><small>TROPHÉES</small></a>
+  </div>
+
+  <section class="world">
+    <div class="plate">MONDE 01</div>
+    <div class="tag">Course en cours</div>
+    <h1>Nos années <em>lycée</em></h1>
+    <p>Retour sur les débuts, les fous rires et les mauvaises coupes de cheveux. <span class="joke">Surtout les coupes.</span></p>
+
+    <div class="road">
+      <div class="todo"></div>
+      <div class="nodes">
+        <div class="node done">✓</div><div class="node done">✓</div><div class="node now">🎁</div><div class="node lock">🔒</div><div class="node flag">🏁</div>
+      </div>
+    </div>
+    <div class="labels"><span>Départ</span><span>Stand</span><span>Ici</span><span>Demain</span><span>Arrivée</span></div>
+
+    <a class="cta" href="#">
+      <div class="ico">🎁</div>
+      <div><b>Souvenir prêt !</b><span>Allez, ouvre la boîte à gants.</span></div>
+      <div class="go">GO →</div>
+    </a>
+
+    <div class="next">
+      <div><small>Prochain ravitaillement</small><div class="t">23:14:02</div></div>
+      <div class="g">⛽</div>
+    </div>
+  </section>
+
+  <h2>Trophées <a href="#">voir les 8</a></h2>
+  <div class="badges">
+    <div class="badge b1"><div class="i">🚗</div><b>Premier tour de piste</b><small>1er souvenir ouvert</small></div>
+    <div class="badge b2"><div class="i">🎵</div><b>Bande originale</b><small>un audio écouté</small></div>
+    <div class="badge b3"><div class="i">👑</div><b>Drama Queen</b><small>une vidéo regardée</small></div>
+    <div class="badge off"><div class="i">🔧</div><b>Contrôle technique</b><small>finir un monde</small></div>
+    <div class="badge off"><div class="i">🪪</div><b>Permis à points</b><small>5 souvenirs</small></div>
+    <div class="badge off"><div class="i">🏳️‍🌈</div><b>Queen of the Desert</b><small>3 mondes</small></div>
+  </div>
+
+  <h2>Mondes <a href="#">le garage</a></h2>
+  <div class="worlds">
+    <a class="w done" href="#"><span class="e">🏁</span><b>Échauffement</b><span>Terminé · 3 souvenirs</span></a>
+    <a class="w now" href="#"><span class="e">🎒</span><b>Nos années lycée</b><span>2 / 5 · en course</span></a>
+    <div class="w lockw"><span class="e">🔒</span><b>Les grandes aventures</b><span>Finis d'abord le monde 1, champion.</span></div>
+  </div>
+</div>
+
+<nav><a class="on" href="#"><i>🏎️</i>Course</a><a href="#"><i>🏆</i>Trophées</a><a href="#"><i>🦤</i>Moi</a></nav>
+</body>
+</html>

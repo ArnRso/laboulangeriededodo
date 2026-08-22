@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A — Pâtisserie</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --cream:#FFF7EA; --paper:#FFFFFF; --butter:#FFD56B; --caramel:#E89B3C;
+  --berry:#FF6B8B; --pistache:#9CD5A4; --cocoa:#3B2A22; --cocoa-2:#8A6E5E;
+  --shadow:0 10px 30px rgba(59,42,34,.10);
+}
+*{box-sizing:border-box;margin:0}
+body{font-family:'Nunito',sans-serif;background:var(--cream);color:var(--cocoa);min-height:100vh;overflow-x:hidden;position:relative}
+body::before,body::after{content:"";position:fixed;border-radius:50%;z-index:0;pointer-events:none}
+body::before{width:260px;height:260px;background:var(--butter);opacity:.55;top:-90px;right:-80px}
+body::after{width:200px;height:200px;background:var(--berry);opacity:.35;bottom:40px;left:-90px}
+.wrap{position:relative;z-index:1;padding:22px 20px 110px;max-width:430px;margin:0 auto}
+header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.brand{font-family:'Baloo 2',cursive;font-weight:800;font-size:18px;display:flex;gap:8px;align-items:center}
+.brand .dot{width:30px;height:30px;border-radius:10px;background:var(--butter);display:grid;place-items:center;font-size:16px;transform:rotate(-8deg)}
+.avatar{width:36px;height:36px;border-radius:12px;background:var(--pistache);display:grid;place-items:center;font-weight:800}
+h1{font-family:'Baloo 2',cursive;font-weight:800;font-size:34px;line-height:1.05;letter-spacing:-.5px;margin:6px 0 4px}
+.sub{color:var(--cocoa-2);font-size:15px;margin-bottom:18px}
+.progress{background:var(--paper);border-radius:20px;padding:14px 16px;box-shadow:var(--shadow);display:flex;align-items:center;gap:14px;margin-bottom:22px}
+.ring{width:54px;height:54px;border-radius:50%;background:conic-gradient(var(--caramel) 0 40%,#F4E7D2 40% 100%);display:grid;place-items:center;flex:none}
+.ring span{width:40px;height:40px;border-radius:50%;background:var(--paper);display:grid;place-items:center;font-family:'Baloo 2';font-weight:800;font-size:13px}
+.progress b{display:block;font-size:15px}
+.progress small{color:var(--cocoa-2)}
+.list{display:flex;flex-direction:column;gap:14px}
+.card{background:var(--paper);border-radius:24px;padding:16px;box-shadow:var(--shadow);display:flex;gap:14px;align-items:center;position:relative;overflow:hidden;text-decoration:none;color:inherit}
+.tile{width:64px;height:64px;border-radius:18px;flex:none;display:grid;place-items:center;font-size:28px}
+.card .t{flex:1;min-width:0}
+.card .t b{display:block;font-size:16px;line-height:1.2}
+.card .t span{font-size:13px;color:var(--cocoa-2)}
+.pill{font-size:12px;font-weight:700;padding:6px 10px;border-radius:999px;white-space:nowrap}
+.opened .tile{background:#FFF0C2}
+.opened .pill{background:#E5F5E7;color:#2E7D3A}
+.next{background:linear-gradient(135deg,var(--butter),#FFC24A);box-shadow:0 14px 34px rgba(232,155,60,.35);transform:rotate(-1.2deg)}
+.next .tile{background:var(--paper);animation:wiggle 2.2s ease-in-out infinite}
+.next .t b{font-size:18px}
+.next .t span{color:#7A5310}
+.next .pill{background:var(--cocoa);color:var(--butter)}
+.locked{opacity:.92}
+.locked .tile{background:#F3EBDD;color:var(--cocoa-2)}
+.locked .t b{color:var(--cocoa-2)}
+.timer{font-family:'Baloo 2';font-weight:800;font-size:18px;letter-spacing:.5px;color:var(--berry)}
+.timer small{display:block;font-family:'Nunito';font-weight:600;font-size:11px;color:var(--cocoa-2);letter-spacing:0}
+.tape{position:absolute;right:-26px;top:14px;background:var(--berry);color:#fff;font-size:10px;font-weight:800;padding:4px 34px;transform:rotate(35deg);letter-spacing:1px}
+@keyframes wiggle{0%,100%{transform:rotate(0)}50%{transform:rotate(-6deg) scale(1.05)}}
+nav{position:fixed;left:50%;transform:translateX(-50%);bottom:18px;width:calc(100% - 40px);max-width:390px;background:var(--cocoa);color:#fff;border-radius:26px;padding:12px 14px;display:flex;justify-content:space-around;box-shadow:0 18px 40px rgba(59,42,34,.28);z-index:2}
+nav a{color:#D9C7B8;text-decoration:none;font-size:11px;font-weight:700;display:flex;flex-direction:column;align-items:center;gap:4px}
+nav a.on{color:var(--butter)}
+nav i{font-style:normal;font-size:20px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand"><span class="dot">🥐</span>La Boulangerie de Dodo</div>
+    <div class="avatar">D</div>
+  </header>
+
+  <h1>Nos années<br>lycée</h1>
+  <p class="sub">Retour sur les débuts, les fous rires et les mauvaises coupes de cheveux.</p>
+
+  <div class="progress">
+    <div class="ring"><span>2/5</span></div>
+    <div><b>Fournée en cours</b><small>2 souvenirs dégustés, 3 au four</small></div>
+  </div>
+
+  <div class="list">
+    <a class="card opened" href="#"><div class="tile">📝</div><div class="t"><b>Le premier jour</b><span>Texte · découvert hier</span></div><span class="pill">Vu</span></a>
+    <a class="card opened" href="#"><div class="tile">🎵</div><div class="t"><b>La chanson de l'époque</b><span>Lien · découvert ce matin</span></div><span class="pill">Vu</span></a>
+    <a class="card next" href="#"><div class="tile">🎁</div><div class="t"><b>Un souvenir vient de sortir du four</b><span>Il est chaud, il t'attend</span></div><span class="pill">Ouvrir</span></a>
+    <div class="card locked"><div class="tile">🔒</div><div class="t"><b>Encore au four</b><span>Patience…</span></div><div class="timer">23:14:02<small>avant ouverture</small></div><div class="tape">BIENTÔT</div></div>
+    <div class="card locked"><div class="tile">🔒</div><div class="t"><b>Encore au four</b><span>Après le précédent</span></div></div>
+  </div>
+</div>
+<nav>
+  <a class="on" href="#"><i>🍞</i>Fournée</a>
+  <a href="#"><i>📚</i>Collections</a>
+  <a href="#"><i>👤</i>Moi</a>
+</nav>
+</body>
+</html>

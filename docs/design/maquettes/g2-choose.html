@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>G2 — Choisir une saison</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#FFFFFF;--ink:#111114;--muted:#6E6E78;--line:#ECECF1;--soft:#F5F5F8;--pink:#FF3B7F;--green:#1DB954;--gold:#FFB800}
+*{box-sizing:border-box;margin:0}
+body{font-family:'Plus Jakarta Sans',-apple-system,sans-serif;color:var(--ink);background:var(--bg);min-height:100vh;overflow:hidden}
+.wrap{max-width:430px;margin:0 auto;padding:10px 18px 96px;position:relative;height:100vh}
+.status{display:flex;justify-content:space-between;font-size:13px;font-weight:700;padding:4px 0 8px}
+.top{display:flex;justify-content:space-between;align-items:center;margin:6px 0 14px}
+.top b{font-size:22px;font-weight:800;letter-spacing:-.5px}
+.top small{font-size:12px;font-weight:700;color:var(--muted)}
+
+.deck{position:relative;height:560px}
+.card{position:absolute;inset:0;border-radius:22px;overflow:hidden;box-shadow:0 16px 40px rgba(17,17,20,.18);background:#fff;border:1px solid var(--line)}
+.card.b2{transform:scale(.96) translateY(14px);z-index:1;filter:brightness(.97)}
+.card.b3{transform:scale(.92) translateY(28px);z-index:0;filter:brightness(.94)}
+.card.top1{z-index:2;transform:rotate(-2deg)}
+.photo{height:62%;position:relative;display:grid;place-items:center;font-size:110px;background:linear-gradient(160deg,#FFD6EC,#FFE3D0 50%,#D9D0FF)}
+.photo::after{content:"";position:absolute;inset:auto 0 0 0;height:45%;background:linear-gradient(180deg,transparent,rgba(0,0,0,.55))}
+.dots{position:absolute;top:10px;left:12px;right:12px;display:flex;gap:4px}
+.dots i{flex:1;height:3px;border-radius:99px;background:rgba(255,255,255,.5)}
+.dots i.on{background:#fff}
+.meta{position:absolute;left:16px;right:16px;bottom:14px;color:#fff;z-index:1}
+.meta h1{font-size:30px;font-weight:800;letter-spacing:-.5px;line-height:1}
+.meta h1 span{font-weight:600;font-size:24px;opacity:.9}
+.meta .dist{font-size:13px;font-weight:700;margin-top:4px;opacity:.95}
+.body{padding:14px 16px}
+.body p{font-size:14px;line-height:1.4;color:var(--ink)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.chip{font-size:12px;font-weight:700;border:1px solid var(--line);border-radius:999px;padding:5px 10px;background:var(--soft)}
+.chip.hot{border-color:var(--pink);color:var(--pink);background:#FFF0F5}
+.stamp{position:absolute;top:26px;right:-10px;border:4px solid var(--green);color:var(--green);font-weight:800;font-size:28px;padding:4px 14px;border-radius:8px;transform:rotate(18deg);letter-spacing:2px;opacity:.0}
+
+.actions{display:flex;justify-content:center;gap:22px;margin-top:18px}
+.a{width:62px;height:62px;border-radius:50%;background:#fff;border:1px solid var(--line);box-shadow:0 8px 20px rgba(17,17,20,.12);display:grid;place-items:center;font-size:26px;text-decoration:none}
+.a.no{color:#FF4458}.a.yes{color:var(--green);width:72px;height:72px;font-size:32px}.a.star{color:var(--gold)}
+.hint{text-align:center;font-size:12px;color:var(--muted);font-weight:600;margin-top:10px}
+
+nav{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--line);display:flex;justify-content:space-around;padding:10px 8px 22px}
+nav a{text-decoration:none;color:var(--ink);font-size:10px;font-weight:700;display:flex;flex-direction:column;align-items:center;gap:3px;opacity:.45}
+nav a.on{opacity:1}
+nav i{font-style:normal;font-size:22px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="status"><span>23:25</span><span>🏳️‍🌈 ▮▮▮</span></div>
+  <div class="top"><b>Choisis ta saison</b><small>2 disponibles</small></div>
+
+  <div class="deck">
+    <div class="card b3"></div>
+    <div class="card b2"></div>
+    <div class="card top1">
+      <div class="photo">🎒
+        <div class="dots"><i class="on"></i><i></i><i></i><i></i><i></i></div>
+        <div class="meta"><h1>Nos années lycée <span>5</span></h1><div class="dist">📍 À 2 km de ton adolescence · 24 h entre chaque souvenir</div></div>
+      </div>
+      <div class="body">
+        <p>Retour sur les débuts, les fous rires et les mauvaises coupes de cheveux. Surtout les coupes.</p>
+        <div class="chips">
+          <span class="chip hot">🚩 1 red flag</span>
+          <span class="chip">🎵 1 bande originale</span>
+          <span class="chip">📝 3 lore drops</span>
+          <span class="chip">✨ +400 aura</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="actions">
+    <a class="a no" href="#">✕</a>
+    <a class="a yes" href="#">♥</a>
+    <a class="a star" href="#">★</a>
+  </div>
+  <p class="hint">Swipe à droite pour commencer. Une saison à la fois, champion.</p>
+</div>
+
+<nav>
+  <a href="#"><i>🏠</i>Accueil</a>
+  <a class="on" href="#"><i>🃏</i>Saisons</a>
+  <a href="#"><i>🏆</i>Achv</a>
+  <a href="#"><i>🦤</i>Profil</a>
+</nav>
+</body>
+</html>

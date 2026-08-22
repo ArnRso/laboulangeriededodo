@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ouverture — Instagram</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#000;--muted:#737373;--line:#EFEFEF;--blue:#0095F6;--pink:#FF5CA8}
+*{box-sizing:border-box;margin:0}
+body{font-family:'Plus Jakarta Sans',-apple-system,sans-serif;color:var(--ink);background:#fff;min-height:100vh}
+.wrap{max-width:430px;margin:0 auto;padding-bottom:40px}
+.bar{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:1px solid var(--line)}
+.bar a{text-decoration:none;color:var(--ink);font-size:22px;font-weight:800}
+.bar b{font-size:15px;font-weight:800}
+.ph{display:flex;align-items:center;gap:10px;padding:10px 12px}
+.ph .av{width:34px;height:34px;border-radius:50%;padding:2px;background:conic-gradient(#F9CE34,#EE2A7B,#6228D7,#F9CE34)}
+.ph .av span{display:grid;place-items:center;width:100%;height:100%;border-radius:50%;background:#fff;font-size:16px;border:2px solid #fff}
+.ph b{font-size:13px;font-weight:800;display:block}
+.ph small{font-size:11px;color:var(--muted);font-weight:600}
+.ph .dots{margin-left:auto;font-weight:800;letter-spacing:1px}
+.img{position:relative;aspect-ratio:4/5;background:linear-gradient(160deg,#FFD6EC,#FFE3D0 50%,#D9D0FF);display:grid;place-items:center;font-size:110px}
+.img .pag{position:absolute;top:10px;right:10px;background:rgba(0,0,0,.6);color:#fff;font-size:11px;font-weight:800;border-radius:999px;padding:3px 8px}
+.img .heart{position:absolute;font-size:90px;opacity:0;animation:pop 1.6s ease-out .6s forwards}
+@keyframes pop{0%{opacity:0;transform:scale(.4)}25%{opacity:1;transform:scale(1.1)}70%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(1)}}
+.acts{display:flex;gap:16px;padding:10px 12px 4px;font-size:22px}
+.acts .save{margin-left:auto}
+.dotsrow{text-align:center;font-size:8px;color:var(--blue);letter-spacing:3px;margin-top:-26px;margin-bottom:6px}
+.likes{padding:0 12px;font-size:13px;font-weight:800}
+.cap{padding:4px 12px 0;font-size:13px;line-height:1.4}
+.cap b{font-weight:800}
+.cap .tag{color:#00376B}
+.more{padding:4px 12px;font-size:13px;color:var(--muted);font-weight:600}
+.cm{padding:4px 12px;font-size:13px;line-height:1.4}
+.cm b{font-weight:800}
+.time{padding:6px 12px 10px;font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+.add{display:flex;align-items:center;gap:10px;padding:10px 12px;border-top:1px solid var(--line)}
+.add .av{width:30px;height:30px;border-radius:50%;background:#FFE3D0;display:grid;place-items:center;font-size:15px}
+.add span{flex:1;font-size:13px;color:var(--muted);font-weight:600}
+.add b{color:var(--blue);font-size:13px}
+.badge{margin:14px 12px 0;border:1px solid var(--line);border-radius:14px;padding:12px;display:flex;gap:12px;align-items:center;background:linear-gradient(90deg,#fff,#FFF5FA)}
+.badge .i{width:44px;height:44px;border-radius:50%;padding:2px;background:conic-gradient(#F9CE34,#EE2A7B,#6228D7,#F9CE34);flex:none}
+.badge .i span{display:grid;place-items:center;width:100%;height:100%;border-radius:50%;background:#fff;font-size:20px;border:2px solid #fff}
+.badge b{font-size:13px;font-weight:800;display:block}
+.badge small{font-size:12px;color:var(--muted);font-weight:600}
+.badge .aura{margin-left:auto;color:var(--pink);font-weight:800;font-size:14px;white-space:nowrap}
+.back{display:block;margin:14px 12px 0;text-align:center;background:var(--blue);color:#fff;text-decoration:none;border-radius:10px;padding:13px;font-weight:800;font-size:14px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="bar"><a href="#">‹</a><b>Publication</b><span style="width:22px"></span></div>
+
+  <div class="ph">
+    <div class="av"><span>🦤</span></div>
+    <div><b>dodo.du.passe</b><small>Nos années lycée · Septembre 2015</small></div>
+    <div class="dots">···</div>
+  </div>
+
+  <div class="img"><span>📸</span><div class="pag">1/3</div><div class="heart">❤️</div></div>
+
+  <div class="acts"><span>♡</span><span>💬</span><span>✈︎</span><span class="save">🔖</span></div>
+  <div class="dotsrow">●○○</div>
+
+  <div class="likes">Aimé par <b>ta.mere</b> et <b>1 240 autres personnes</b></div>
+  <div class="cap"><b>dodo.du.passe</b> Le premier jour. Là où tout a commencé. Septembre, un bus, et une coupe de cheveux que personne n'a validée. <span class="tag">#LoreUnlocked #CanonEvent #MainCharacterEnergy</span></div>
+  <div class="more">Voir les 87 commentaires</div>
+  <div class="cm"><b>marie</b> tu avais dit « je reste une heure » 💀</div>
+  <div class="cm"><b>dodo.du.passe</b> il était 4h12 et je regrette rien</div>
+  <div class="time">Il y a 11 ans</div>
+
+  <div class="add"><div class="av">🦤</div><span>Ajouter un commentaire…</span><b>Publier</b></div>
+
+  <div class="badge">
+    <div class="i"><span>👑</span></div>
+    <div><b>Nouveau badge débloqué</b><small>Icon · Main character energy</small></div>
+    <div class="aura">+100 aura</div>
+  </div>
+
+  <a class="back" href="#">Retour aux notifications</a>
+</div>
+</body>
+</html>

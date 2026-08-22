@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ouverture — Doctolib</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--blue:#107ACA;--blue-d:#0D5FA0;--soft:#EEF5FC;--ink:#1F2B3A;--muted:#6B7785;--line:#E3E8EE;--green:#1A9B5B;--pink:#FF5CA8}
+*{box-sizing:border-box;margin:0}
+body{font-family:'Plus Jakarta Sans',-apple-system,sans-serif;color:var(--ink);background:#F5F7FA;min-height:100vh}
+.wrap{max-width:430px;margin:0 auto;padding-bottom:120px}
+.top{background:var(--blue);color:#fff;padding:12px 16px 22px;border-radius:0 0 22px 22px}
+.top .bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.top .bar a{color:#fff;text-decoration:none;font-size:20px;font-weight:800}
+.top .bar b{font-size:14px;font-weight:800}
+.top .ok{display:flex;align-items:center;gap:10px}
+.top .ok i{width:30px;height:30px;border-radius:50%;background:#fff;color:var(--green);display:grid;place-items:center;font-style:normal;font-weight:800;font-size:15px}
+.top .ok b{font-size:20px;font-weight:800}
+.top p{font-size:12px;opacity:.9;font-weight:600;margin-top:4px}
+.card{background:#fff;border:1px solid var(--line);border-radius:16px;margin:12px 16px 0;padding:14px}
+.pr{display:flex;gap:12px;align-items:center}
+.pr .av{width:52px;height:52px;border-radius:50%;background:var(--soft);display:grid;place-items:center;font-size:26px;flex:none}
+.pr b{font-size:15px;font-weight:800;display:block}
+.pr small{font-size:12px;color:var(--muted);font-weight:600;display:block;line-height:1.3}
+.row{display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-top:1px solid var(--line)}
+.row:first-child{border-top:0;padding-top:0}
+.row .ic{width:22px;text-align:center;font-size:16px;flex:none}
+.row b{font-size:13px;font-weight:800;display:block}
+.row span{font-size:13px;color:var(--muted);font-weight:600;line-height:1.35}
+.row .tm{font-size:22px;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-.5px;color:var(--ink)}
+h2{font-size:11px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin:18px 16px 6px}
+.doc{display:flex;gap:12px;align-items:center;padding:10px 0;border-top:1px solid var(--line)}
+.doc:first-of-type{border-top:0;padding-top:0}
+.doc .f{width:44px;height:44px;border-radius:10px;background:var(--soft);display:grid;place-items:center;font-size:20px;flex:none}
+.doc b{font-size:13px;font-weight:800;display:block}
+.doc small{font-size:11px;color:var(--muted);font-weight:600}
+.doc .dl{margin-left:auto;color:var(--blue);font-weight:800;font-size:13px;white-space:nowrap}
+.audio{margin-top:10px;background:var(--soft);border-radius:12px;padding:10px 12px;display:flex;gap:10px;align-items:center}
+.audio .p{width:36px;height:36px;border-radius:50%;background:var(--blue);color:#fff;display:grid;place-items:center;font-size:14px;padding-left:2px}
+.audio .w{flex:1;height:22px;background:repeating-linear-gradient(90deg,var(--blue) 0 2px,transparent 2px 5px);mask:linear-gradient(90deg,#000 0 40%,rgba(0,0,0,.3) 40%);opacity:.8;border-radius:4px}
+.audio small{font-size:11px;font-weight:800;color:var(--blue-d)}
+.cr{font-size:13px;line-height:1.5;color:var(--ink)}
+.refund{display:flex;justify-content:space-between;align-items:center;background:#EAF8F0;border:1px solid #CDEBD9;border-radius:12px;padding:10px 12px;margin-top:4px}
+.refund b{font-size:13px;font-weight:800;color:var(--green)}
+.refund span{font-size:12px;color:var(--muted);font-weight:600}
+.refund .v{font-size:15px;font-weight:800;color:var(--pink)}
+.cta{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--line);padding:10px 16px 26px;display:flex;flex-direction:column;gap:8px}
+.cta a{display:block;text-align:center;text-decoration:none;border-radius:10px;padding:13px;font-weight:800;font-size:14px;max-width:398px;margin:0 auto;width:100%}
+.cta .p{background:var(--blue);color:#fff}
+.cta .s{background:#fff;color:var(--blue);border:1.5px solid var(--blue)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div class="bar"><a href="#">‹</a><b>Mon rendez-vous</b><span style="width:20px"></span></div>
+    <div class="ok"><i>✓</i><b>Rendez-vous honoré</b></div>
+    <p>Canon event · Cette journée était inévitable. Tu as accepté ton destin.</p>
+  </div>
+
+  <div class="card">
+    <div class="pr">
+      <div class="av">🩺</div>
+      <div><b>Dr Passé</b><small>Spécialiste des décisions catastrophiques<br>Conventionné secteur 2015</small></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="row"><div class="ic">📅</div><div><b>Samedi 23 août</b><span class="tm">23:25</span></div></div>
+    <div class="row"><div class="ic">📍</div><div><b>Ton adolescence</b><span>2<sup>e</sup> étage, porte du fond · Interphone « Dodo »</span></div></div>
+    <div class="row"><div class="ic">📝</div><div><b>Motif de consultation</b><span>Le voyage scolaire. Trois jours mémorables.</span></div></div>
+  </div>
+
+  <h2>Documents partagés par le praticien</h2>
+  <div class="card">
+    <div class="doc"><div class="f">🎙️</div><div><b>chanson-de-lepoque.mp3</b><small>Audio · 3 min 12 · à écouter une seule fois, puis à assumer</small></div><span class="dl">Ouvrir</span></div>
+    <div class="audio"><div class="p">▶</div><div class="w"></div><small>1:14 / 3:12</small></div>
+  </div>
+
+  <h2>Compte-rendu</h2>
+  <div class="card"><p class="cr">Le bus, la pluie, et cette partie de cartes interminable. Le patient a perdu trois fois de suite et a contesté les règles à chaque manche. Pronostic : aucune amélioration en onze ans.</p></div>
+
+  <h2>Remboursement</h2>
+  <div class="card" style="padding:10px 12px">
+    <div class="refund"><div><b>Pris en charge par la mutuelle du passé</b><br><span>Aucun reste à charge</span></div><div class="v">+100 aura</div></div>
+  </div>
+</div>
+
+<div class="cta"><a class="p" href="#">Retour aux notifications</a><a class="s" href="#">Ajouter à mon calendrier (pourquoi)</a></div>
+</body>
+</html>

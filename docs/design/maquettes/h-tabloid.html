@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>H — Tabloïd queer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:ital,wght@0,500;0,700;0,900;1,700&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#FFF9EE;--ink:#111;--red:#FF2E4D;--pink:#FF4FB8;--acid:#D4FF3A;--blue:#2B6BFF;--yellow:#FFE23A;--muted:#5E5B66}
+*{box-sizing:border-box;margin:0}
+body{font-family:'Archivo',sans-serif;color:var(--ink);background:var(--paper);min-height:100vh;overflow-x:hidden;position:relative}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.08;background-image:radial-gradient(#000 1.2px,transparent 1.3px);background-size:7px 7px}
+.wrap{position:relative;z-index:1;padding:14px 14px 112px;max-width:430px;margin:0 auto}
+.anton{font-family:'Anton';font-weight:400;text-transform:uppercase}
+.masthead{display:flex;justify-content:space-between;align-items:center;border-top:4px solid var(--ink);border-bottom:2px solid var(--ink);padding:6px 0;margin-bottom:10px}
+.masthead .name{font-family:'Anton';font-size:22px;letter-spacing:1px;text-transform:uppercase}
+.masthead .name span{color:var(--red)}
+.masthead .ed{font-size:10px;font-weight:900;letter-spacing:2px;text-transform:uppercase}
+.ticker{background:var(--ink);color:var(--acid);font-size:11px;font-weight:900;letter-spacing:1px;text-transform:uppercase;padding:6px 10px;white-space:nowrap;overflow:hidden;margin-bottom:12px}
+.ticker span{display:inline-block;animation:tick 14s linear infinite}
+@keyframes tick{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+.cover{position:relative;background:var(--pink);padding:14px 14px 16px;overflow:hidden;border:3px solid var(--ink);box-shadow:8px 8px 0 var(--ink)}
+.cover .kicker{display:inline-block;background:var(--ink);color:var(--yellow);font-size:10px;font-weight:900;letter-spacing:3px;text-transform:uppercase;padding:4px 8px}
+.cover h1{font-family:'Anton';font-size:48px;line-height:.9;text-transform:uppercase;margin:8px 0 6px;color:#fff;-webkit-text-stroke:2px var(--ink);text-shadow:4px 4px 0 var(--ink)}
+.cover h1 em{font-style:normal;color:var(--acid)}
+.cover p{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:12px}
+.cover p i{background:var(--yellow);font-style:italic;padding:0 4px}
+.sticker{position:absolute;right:-14px;top:10px;background:var(--acid);border:3px solid var(--ink);font-family:'Anton';font-size:13px;letter-spacing:1px;padding:6px 16px;transform:rotate(8deg);text-transform:uppercase;box-shadow:3px 3px 0 var(--ink)}
+.aura{position:absolute;left:12px;bottom:12px;background:#fff;border:3px solid var(--ink);padding:4px 10px;font-family:'Anton';font-size:18px;letter-spacing:1px;box-shadow:3px 3px 0 var(--ink)}
+.aura small{font-family:'Archivo';font-size:9px;font-weight:900;letter-spacing:2px;display:block;color:var(--muted)}
+.stripes{position:absolute;right:-40px;bottom:-30px;width:200px;height:80px;transform:rotate(-20deg);background:repeating-linear-gradient(90deg,#E40303 0 12px,#FF8C00 12px 24px,#FFED00 24px 36px,#008026 36px 48px,#24408E 48px 60px,#732982 60px 72px);border:3px solid var(--ink)}
+
+.drama{margin:14px 0 12px;border:3px solid var(--ink);background:#fff;padding:10px 12px;box-shadow:5px 5px 0 var(--ink)}
+.drama .h{display:flex;justify-content:space-between;font-family:'Anton';font-size:14px;letter-spacing:1px;text-transform:uppercase}
+.drama .h b{color:var(--red)}
+.bar{margin-top:8px;height:16px;border:3px solid var(--ink);background:#fff;position:relative}
+.bar i{position:absolute;inset:0;width:40%;background:repeating-linear-gradient(-45deg,var(--red) 0 8px,var(--pink) 8px 16px)}
+.bar b{position:absolute;left:40%;top:-12px;transform:translateX(-50%);font-size:26px;filter:drop-shadow(2px 2px 0 var(--ink))}
+.legend{display:grid;grid-template-columns:repeat(5,1fr);font-size:9px;font-weight:900;letter-spacing:1px;text-transform:uppercase;margin-top:6px;color:var(--muted)}
+.legend span:nth-child(-n+2){color:var(--ink);text-decoration:line-through}
+.legend span:nth-child(3){color:var(--red)}
+
+.head{display:block;text-decoration:none;color:var(--ink);border:3px solid var(--ink);background:var(--acid);padding:12px;box-shadow:6px 6px 0 var(--ink);position:relative}
+.head small{font-size:10px;font-weight:900;letter-spacing:3px;text-transform:uppercase;background:var(--ink);color:var(--acid);padding:3px 6px}
+.head b{font-family:'Anton';font-size:30px;line-height:.95;text-transform:uppercase;display:block;margin:8px 0 4px}
+.head span{font-size:13px;font-weight:700}
+.head .go{position:absolute;right:10px;bottom:10px;background:var(--red);color:#fff;border:3px solid var(--ink);font-family:'Anton';font-size:14px;padding:6px 12px;letter-spacing:1px}
+
+.canon{margin-top:12px;border:3px dashed var(--ink);padding:12px;display:flex;justify-content:space-between;align-items:center;background:#fff}
+.canon small{font-size:10px;font-weight:900;letter-spacing:3px;text-transform:uppercase;display:block;color:var(--blue)}
+.canon .t{font-family:'Anton';font-size:34px;letter-spacing:1px;line-height:1;font-variant-numeric:tabular-nums}
+.canon .q{font-size:11px;font-weight:700;font-style:italic;text-align:right;max-width:120px;color:var(--muted)}
+
+h2{font-family:'Anton';font-size:16px;letter-spacing:1px;text-transform:uppercase;margin:18px 0 8px;border-bottom:3px solid var(--ink);display:flex;justify-content:space-between}
+h2 a{font-family:'Archivo';font-size:10px;font-weight:900;color:var(--red)}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.col{border:3px solid var(--ink);background:#fff;padding:10px;box-shadow:4px 4px 0 var(--ink)}
+.col small{font-size:9px;font-weight:900;letter-spacing:2px;text-transform:uppercase;color:var(--red)}
+.col b{font-family:'Anton';font-size:16px;line-height:1;display:block;margin:4px 0;text-transform:uppercase}
+.col span{font-size:11px;font-weight:700;color:var(--muted)}
+.col.flag{background:var(--yellow)}
+
+nav{position:fixed;left:50%;transform:translateX(-50%);bottom:14px;width:calc(100% - 28px);max-width:402px;background:#fff;border:3px solid var(--ink);box-shadow:6px 6px 0 var(--ink);padding:6px 8px;display:flex;justify-content:space-around;z-index:2}
+nav a{text-decoration:none;color:var(--ink);font-family:'Anton';font-size:12px;letter-spacing:1px;text-transform:uppercase;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 14px}
+nav a.on{background:var(--ink);color:var(--acid)}
+nav i{font-style:normal;font-size:18px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="masthead"><div class="name">Dodo <span>Daily</span></div><div class="ed">N° 3 · 22 août</div></div>
+  <div class="ticker"><span>★ Breaking : son niveau de drama vient d'augmenter ★ Hot take du jour : la coupe de 2015 était un choix ★ Uber rating en tant qu'ami : 4,8 ★ Breaking : son niveau de drama vient d'augmenter ★ Hot take du jour : la coupe de 2015 était un choix ★ Uber rating en tant qu'ami : 4,8 ★</span></div>
+
+  <section class="cover">
+    <span class="kicker">Saison 1 · exclusif</span>
+    <div class="sticker">Main character</div>
+    <h1>Nos années <em>lycée</em></h1>
+    <p>Retour sur les débuts, les fous rires et les mauvaises coupes de cheveux. <i>Surtout les coupes.</i></p>
+    <div class="aura">1 240<small>Aura</small></div>
+    <div class="stripes"></div>
+    <div style="height:52px"></div>
+  </section>
+
+  <div class="drama">
+    <div class="h"><span>Drama level</span><b>87 %</b></div>
+    <div class="bar"><i></i><b>🦤</b></div>
+    <div class="legend"><span>Lore</span><span>Lore</span><span>Side quest</span><span>Canon</span><span>Finale</span></div>
+  </div>
+
+  <a class="head" href="#">
+    <small>Side quest du jour</small>
+    <b>Lore unlocked</b>
+    <span>Tu pensais connaître toute l'histoire. Tu avais tort. <strong>+100 aura.</strong></span>
+    <div class="go">Lire →</div>
+  </a>
+
+  <div class="canon">
+    <div><small>Canon event 🔒</small><div class="t">23:14:02</div></div>
+    <div class="q">« Cette journée était inévitable. »</div>
+  </div>
+
+  <h2>Achievements <a href="#">3 / 8</a></h2>
+  <div class="cols">
+    <div class="col"><small>Débloqué</small><b>Premier tour de piste</b><span>1er souvenir ouvert</span></div>
+    <div class="col"><small>Débloqué</small><b>Leaked footage</b><span>une vidéo « qui n'aurait jamais dû sortir »</span></div>
+    <div class="col flag"><small>Prochain</small><b>Red flag 🚩</b><span>ouvre un souvenir à −500 aura</span></div>
+    <div class="col"><small>Verrouillé</small><b>Queen of the desert</b><span>finis 3 saisons</span></div>
+  </div>
+</div>
+<nav><a class="on" href="#"><i>📰</i>Une</a><a href="#"><i>🏆</i>Achv</a><a href="#"><i>🦤</i>Moi</a></nav>
+</body>
+</html>

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>G3-B — Verrouillé sombre</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#F4F3FA;--muted:rgba(244,243,250,.62);--pink:#FF5CA8;--glass:rgba(40,36,70,.62)}
+*{box-sizing:border-box;margin:0}
+body{font-family:'Plus Jakarta Sans',-apple-system,sans-serif;color:var(--ink);min-height:100vh;background:radial-gradient(700px 500px at 80% -10%,#6B3FD9 0%,transparent 60%),radial-gradient(600px 400px at -10% 100%,#FF4FB0 0%,transparent 55%),linear-gradient(180deg,#1A1536,#0E0B22 70%);background-attachment:fixed}
+.wrap{max-width:430px;margin:0 auto;padding:10px 14px 40px}
+.status{display:flex;justify-content:space-between;font-size:13px;font-weight:700;padding:0 6px 6px}
+.island{margin:0 auto 14px;width:210px;background:#000;border-radius:999px;padding:8px 14px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 6px 20px rgba(0,0,0,.5)}
+.island .l{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:800}
+.island .l span{width:22px;height:22px;border-radius:50%;background:#06C167;display:grid;place-items:center;font-size:11px}
+.island .r{font-size:12px;font-weight:800;color:var(--pink)}
+.clock{text-align:center;margin:0 0 18px}
+.clock .t{font-size:64px;font-weight:800;letter-spacing:-2px;line-height:1;text-shadow:0 4px 24px rgba(0,0,0,.35)}
+.clock .d{font-size:13px;font-weight:700;color:var(--muted);margin-top:4px}
+.n{display:flex;gap:12px;align-items:flex-start;background:var(--glass);backdrop-filter:blur(22px);border:1px solid rgba(255,255,255,.12);border-radius:20px;padding:12px 14px;margin-bottom:10px;text-decoration:none;color:var(--ink);position:relative}
+.n .app{width:40px;height:40px;border-radius:11px;flex:none;display:grid;place-items:center;font-size:19px;color:#fff;font-weight:800}
+.n .b{flex:1;min-width:0}
+.n .h{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.n .h b{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;color:rgba(244,243,250,.85)}
+.n .h small{font-size:11px;color:var(--muted);font-weight:700;white-space:nowrap}
+.n .t{font-size:15px;font-weight:800;line-height:1.2;margin-top:2px}
+.n .m{font-size:13px;color:rgba(244,243,250,.8);line-height:1.35;margin-top:3px}
+.n .m b{color:#fff}
+.btn{display:inline-block;margin-top:8px;border-radius:999px;padding:8px 14px;font-size:12px;font-weight:800;color:#000;background:#fff}
+/* Live Activity Uber Eats */
+.live{background:#000;border:1px solid rgba(255,255,255,.15);border-radius:22px;padding:14px;margin-bottom:12px;color:#fff}
+.live .h{display:flex;justify-content:space-between;align-items:center}
+.live .h .app{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:800}
+.live .h .app span{width:26px;height:26px;border-radius:8px;background:#06C167;display:grid;place-items:center;font-size:10px;color:#000}
+.live .h small{font-size:11px;color:rgba(255,255,255,.6);font-weight:700}
+.live .t{font-size:18px;font-weight:800;margin-top:8px}
+.live .m{font-size:12px;color:rgba(255,255,255,.7);margin-top:2px}
+.live .track{display:flex;gap:4px;margin:10px 0 6px}.live .track i{flex:1;height:5px;border-radius:99px;background:#06C167}
+.live .row{display:flex;justify-content:space-between;font-size:11px;font-weight:700;color:rgba(255,255,255,.75)}
+.live .btn{background:#06C167;color:#000;margin-top:10px}
+.dl .app{background:#107ACA}
+.dl .slot{display:flex;gap:8px;align-items:center;margin-top:8px;background:rgba(16,122,202,.22);border-radius:12px;padding:8px 10px;font-size:13px;font-weight:700;color:#8CC6F5}
+.dl .slot .tm{font-size:20px;font-weight:800;font-variant-numeric:tabular-nums;color:#fff}
+.tt .app{background:#000;border:1px solid rgba(255,255,255,.2)}.tt .stat{display:inline-block;margin-top:6px;font-size:13px;font-weight:800;color:#FE2C55}
+.ig .app{background:linear-gradient(45deg,#F9CE34,#EE2A7B 50%,#6228D7)}
+.td .app{background:linear-gradient(160deg,#FD5564,#EF4A75)}
+.td .match{font-size:20px;font-weight:800;color:#FF7A8A;line-height:1}
+.br .app{background:#fff;color:#000;font-size:10px}
+.hint{text-align:center;font-size:12px;color:var(--muted);font-weight:700;margin-top:18px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="status"><span>🦤 dodo</span><span>🏳️‍🌈 ▮▮▮</span></div>
+  <div class="island"><div class="l"><span>🛵</span>Livré</div><div class="r">✨ 1 240</div></div>
+  <div class="clock"><div class="t">23:25</div><div class="d">vendredi 22 août · Saison 1 · 2/5</div></div>
+
+  <a class="live" href="#">
+    <div class="h"><div class="app"><span>UE</span>Uber Eats</div><small>Live</small></div>
+    <div class="t">Ta commande est arrivée 🎁</div>
+    <div class="m">1 × Souvenir du jour · livré par Dodo du passé</div>
+    <div class="track"><i></i><i></i><i></i><i></i></div>
+    <div class="row"><span>Commandé</span><span>Préparé</span><span>En route</span><span>Livré ✓</span></div>
+    <span class="btn">Ouvrir · +100 aura</span>
+  </a>
+
+  <div class="n dl">
+    <div class="app">🩺</div>
+    <div class="b">
+      <div class="h"><b>Doctolib</b><small>rappel</small></div>
+      <div class="t">Rappel de rendez-vous</div>
+      <div class="m"><b>Dr Passé</b> · Spécialiste des décisions catastrophiques</div>
+      <div class="slot">📅 Demain · <span class="tm">23:14:02</span></div>
+      <span class="btn">Accepter mon destin</span>
+    </div>
+  </div>
+
+  <div class="n tt">
+    <div class="app">♪</div>
+    <div class="b">
+      <div class="h"><b>TikTok</b><small>il y a 2 h</small></div>
+      <div class="t">Ta vidéo « Le premier jour » cartonne 🔥</div>
+      <div class="m">Tu pensais connaître toute l'histoire. Tu avais tort.</div>
+      <div class="stat">+100 aura · ne la gaspille pas</div>
+    </div>
+  </div>
+
+  <div class="n ig">
+    <div class="app">📷</div>
+    <div class="b">
+      <div class="h"><b>Instagram</b><small>il y a 2 h</small></div>
+      <div class="t">dodo a débloqué un nouveau badge 👑</div>
+      <div class="m">Icon · Main character energy</div>
+    </div>
+  </div>
+
+  <div class="n td">
+    <div class="app">🔥</div>
+    <div class="b">
+      <div class="h"><b>Tinder</b><small>il y a 5 h</small></div>
+      <div class="match">C'est un match !</div>
+      <div class="m">Toi et <b>la coupe de cheveux de 2015</b>. Drama level : 87 %.</div>
+    </div>
+  </div>
+
+  <div class="n br">
+    <div class="app">BeReal.</div>
+    <div class="b">
+      <div class="h"><b>⚠️ Time to BeReal ⚠️</b><small>2 h en retard</small></div>
+      <div class="t">Lore unlocked 🧩 — « La chanson de l'époque »</div>
+    </div>
+  </div>
+
+  <p class="hint">Glisser vers le haut pour ouvrir</p>
+</div>
+</body>
+</html>
