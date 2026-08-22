@@ -1,0 +1,53 @@
+# Contrôle de version et CI
+.git/
+.gitignore
+.github/
+
+# Environnements locaux
+.env.local
+.env.*.local
+.env.test
+.env.dev
+
+# Cache, logs et données locales (recréés ou montés en volume)
+/var/cache/*
+/var/log/*
+/var/sessions/*
+/var/uploads/*
+!/var/.gitkeep
+
+# Dépendances (réinstallées dans le builder)
+/vendor/
+/node_modules/
+
+# Assets compilés (régénérés dans le builder)
+/public/assets/
+/assets/vendor/
+
+# Tests et outillage qualité
+/tests/
+/phpunit.dist.xml
+/phpstan.dist.neon
+/.phpunit.cache
+/.php-cs-fixer.dist.php
+/.php-cs-fixer.cache
+/.twig-cs-fixer.dist.php
+/.twig-cs-fixer.cache
+/biome.json
+/package.json
+/package-lock.json
+
+# IDE et système
+.idea/
+.vscode/
+.DS_Store
+*.swp
+
+# Docker de développement
+compose.yaml
+compose.override.yaml
+
+# Documentation
+README.md
+CLAUDE.md
+/docker/README.md
