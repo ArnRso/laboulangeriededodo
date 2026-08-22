@@ -7,16 +7,18 @@ use App\Entity\Pack;
 use App\Form\MediaType;
 use App\Service\PackManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/admin')]
 #[IsGranted('ROLE_ADMIN')]
 class MediaController extends AbstractController
 {
-    #[Route('/packs/{id}/medias/nouveau', name: 'app_admin_media_new', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
+    #[Route('/packs/{id}/medias/nouveau', name: 'app_admin_media_new', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
     public function new(Request $request, Pack $pack, PackManager $packManager): Response
     {
         $media = new Media();
@@ -36,7 +38,7 @@ class MediaController extends AbstractController
         ]);
     }
 
-    #[Route('/medias/{id}/modifier', name: 'app_admin_media_edit', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
+    #[Route('/medias/{id}/modifier', name: 'app_admin_media_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
     public function edit(Request $request, Media $media, PackManager $packManager): Response
     {
         $form = $this->createForm(MediaType::class, $media);
@@ -55,25 +57,19 @@ class MediaController extends AbstractController
         ]);
     }
 
-    #[Route('/medias/{id}/deplacer', name: 'app_admin_media_move', methods: ['POST'], requirements: ['id' => '\d+'])]
+    #[Route('/medias/{id}/deplacer', name: 'app_admin_media_move', requirements: ['id' => '\d+'], methods: ['POST'])]
+    #[IsCsrfTokenValid(new Expression('"move_media_" ~ args["media"].getId()'))]
     public function move(Request $request, Media $media, PackManager $packManager): Response
     {
-        if (!$this->isCsrfTokenValid('move_media_'.$media->getId(), (string) $request->request->get('_token'))) {
-            throw $this->createAccessDeniedException('Jeton CSRF invalide.');
-        }
-
         $packManager->moveMedia($media, 'up' === $request->request->get('direction') ? -1 : 1);
 
         return $this->redirectToRoute('app_admin_pack_show', ['id' => $media->getPack()->getId()]);
     }
 
-    #[Route('/medias/{id}/supprimer', name: 'app_admin_media_delete', methods: ['POST'], requirements: ['id' => '\d+'])]
-    public function delete(Request $request, Media $media, PackManager $packManager): Response
+    #[Route('/medias/{id}/supprimer', name: 'app_admin_media_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
+    #[IsCsrfTokenValid(new Expression('"delete_media_" ~ args["media"].getId()'))]
+    public function delete(Media $media, PackManager $packManager): Response
     {
-        if (!$this->isCsrfTokenValid('delete_media_'.$media->getId(), (string) $request->request->get('_token'))) {
-            throw $this->createAccessDeniedException('Jeton CSRF invalide.');
-        }
-
         $packId = $media->getPack()->getId();
         $packManager->deleteMedia($media);
         $this->addFlash('success', 'Média supprimé.');

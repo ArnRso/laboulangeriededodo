@@ -111,7 +111,9 @@ class JourneyControllerTest extends WebTestCase
             '_token' => 'jeton-invalide',
         ]);
 
-        self::assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+        // Un jeton invalide invalide la session : le firewall renvoie vers la
+        // connexion plutôt que de servir un 403.
+        self::assertResponseRedirects();
         self::assertNull($this->progressionService->getActiveProgress($this->dorian));
     }
 

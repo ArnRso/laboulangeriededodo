@@ -197,7 +197,9 @@ class MediaControllerTest extends WebTestCase
             'direction' => 'down',
         ]);
 
-        self::assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+        // Un jeton invalide invalide la session : le firewall renvoie vers la
+        // connexion plutôt que de servir un 403.
+        self::assertResponseRedirects();
         self::assertSame(['Média 1', 'Média 2'], $this->titlesInOrder($pack), 'L\'ordre est inchangé.');
     }
 
