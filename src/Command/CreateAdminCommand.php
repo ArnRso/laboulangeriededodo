@@ -5,12 +5,14 @@ namespace App\Command;
 use App\Entity\User;
 use App\Service\InvitationMailer;
 use App\Service\InvitationService;
+use Random\RandomException;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
@@ -33,6 +35,11 @@ class CreateAdminCommand extends Command
         $this->addArgument('email', InputArgument::REQUIRED, 'Adresse email de l\'administrateur');
     }
 
+    /**
+     * @throws RandomException
+     * @throws \DateMalformedIntervalStringException
+     * @throws TransportExceptionInterface
+     */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);

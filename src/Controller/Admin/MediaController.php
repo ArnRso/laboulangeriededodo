@@ -45,7 +45,7 @@ class MediaController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $packManager->updateMedia($media);
+            $packManager->updateMedia();
             $this->addFlash('success', 'Média mis à jour.');
 
             return $this->redirectToRoute('app_admin_pack_show', ['id' => $media->getPack()->getId()]);

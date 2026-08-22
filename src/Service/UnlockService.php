@@ -19,17 +19,19 @@ use Psr\Clock\ClockInterface;
  *  - le suivant se débloque `unlockDelayMinutes` après la dernière ouverture ;
  *  - un média déjà ouvert le reste définitivement.
  */
-class UnlockService
+readonly class UnlockService
 {
     public function __construct(
-        private readonly MediaRepository $mediaRepository,
-        private readonly MediaAccessRepository $mediaAccessRepository,
-        private readonly ClockInterface $clock,
+        private MediaRepository $mediaRepository,
+        private MediaAccessRepository $mediaAccessRepository,
+        private ClockInterface $clock,
     ) {
     }
 
     /**
      * @return UnlockState[] indexés par position dans le pack
+     *
+     * @throws \DateMalformedIntervalStringException
      */
     public function getPackState(User $user, PackProgress $progress): array
     {
@@ -65,17 +67,17 @@ class UnlockService
         return $states;
     }
 
+    /**
+     * @throws \DateMalformedIntervalStringException
+     */
     public function getMediaState(User $user, PackProgress $progress, Media $media): ?UnlockState
     {
-        foreach ($this->getPackState($user, $progress) as $state) {
-            if ($state->media === $media) {
-                return $state;
-            }
-        }
-
-        return null;
+        return array_find($this->getPackState($user, $progress), fn ($state) => $state->media === $media);
     }
 
+    /**
+     * @throws \DateMalformedIntervalStringException
+     */
     public function canOpen(User $user, PackProgress $progress, Media $media): bool
     {
         return $this->getMediaState($user, $progress, $media)?->isAccessible() ?? false;
@@ -83,16 +85,12 @@ class UnlockService
 
     /**
      * Date à laquelle le prochain média devient disponible, ou null s'il l'est déjà.
+     *
+     * @throws \DateMalformedIntervalStringException
      */
     public function getNextAvailabilityDate(PackProgress $progress): ?\DateTimeImmutable
     {
-        $lastOpenedAt = $progress->getLastOpenedAt();
-
-        if (null === $lastOpenedAt) {
-            return null;
-        }
-
-        return $lastOpenedAt->add(
+        return $progress->getLastOpenedAt()?->add(
             new \DateInterval(sprintf('PT%dM', $progress->getPack()->getUnlockDelayMinutes()))
         );
     }

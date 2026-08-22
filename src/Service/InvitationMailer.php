@@ -4,23 +4,27 @@ namespace App\Service;
 
 use App\Entity\User;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * Envoie les emails d'invitation, avec le lien de définition du mot de passe.
  */
-class InvitationMailer
+readonly class InvitationMailer
 {
     public function __construct(
-        private readonly MailerInterface $mailer,
-        private readonly UrlGeneratorInterface $urlGenerator,
-        private readonly string $senderAddress,
-        private readonly string $senderName,
-        private readonly string $replyToAddress,
+        private MailerInterface $mailer,
+        private UrlGeneratorInterface $urlGenerator,
+        private string $senderAddress,
+        private string $senderName,
+        private string $replyToAddress,
     ) {
     }
 
+    /**
+     * @throws TransportExceptionInterface
+     */
     public function sendAdminInvitation(User $user, string $token): void
     {
         $this->send(
@@ -31,6 +35,9 @@ class InvitationMailer
         );
     }
 
+    /**
+     * @throws TransportExceptionInterface
+     */
     public function sendRecipientInvitation(User $user, string $token): void
     {
         $this->send(
@@ -46,6 +53,8 @@ class InvitationMailer
      *                         variantes .html.twig et .txt.twig sont envoyées
      *                         ensemble, un message sans version texte étant
      *                         pénalisé par les filtres anti-spam
+     *
+     * @throws TransportExceptionInterface
      */
     private function send(User $user, string $token, string $subject, string $template): void
     {

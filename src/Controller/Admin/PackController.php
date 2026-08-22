@@ -46,7 +46,7 @@ class PackController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_admin_pack_show', methods: ['GET'], requirements: ['id' => '\d+'])]
+    #[Route('/{id}', name: 'app_admin_pack_show', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function show(Pack $pack, MediaRepository $mediaRepository): Response
     {
         return $this->render('admin/pack/show.html.twig', [
@@ -55,14 +55,14 @@ class PackController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/modifier', name: 'app_admin_pack_edit', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
+    #[Route('/{id}/modifier', name: 'app_admin_pack_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
     public function edit(Request $request, Pack $pack, PackManager $packManager): Response
     {
         $form = $this->createForm(PackType::class, $pack);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $packManager->updatePack($pack);
+            $packManager->updatePack();
             $this->addFlash('success', 'Pack mis à jour.');
 
             return $this->redirectToRoute('app_admin_pack_show', ['id' => $pack->getId()]);
@@ -74,7 +74,7 @@ class PackController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/supprimer', name: 'app_admin_pack_delete', methods: ['POST'], requirements: ['id' => '\d+'])]
+    #[Route('/{id}/supprimer', name: 'app_admin_pack_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
     #[IsCsrfTokenValid(new Expression('"delete_pack_" ~ args["pack"].getId()'))]
     public function delete(Pack $pack, PackManager $packManager): Response
     {

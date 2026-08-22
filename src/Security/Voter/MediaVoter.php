@@ -15,7 +15,7 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
  */
 class MediaVoter extends Voter
 {
-    public const VIEW = 'view';
+    public const string VIEW = 'view';
 
     public function __construct(
         private readonly PackProgressRepository $packProgressRepository,
@@ -28,6 +28,9 @@ class MediaVoter extends Voter
         return self::VIEW === $attribute && $subject instanceof Media;
     }
 
+    /**
+     * @throws \DateMalformedIntervalStringException
+     */
     protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token, ?Vote $vote = null): bool
     {
         $user = $token->getUser();
