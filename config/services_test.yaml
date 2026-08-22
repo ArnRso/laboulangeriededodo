@@ -1,0 +1,11 @@
+services:
+    # Les services applicatifs sans consommateur sont inlinés à la compilation :
+    # on les conserve accessibles pour pouvoir les récupérer dans les tests.
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
+    App\Service\:
+        resource: '../src/Service/'
+        exclude: '../src/Service/UnlockState.php'
+        public: true
