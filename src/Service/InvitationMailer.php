@@ -17,6 +17,7 @@ class InvitationMailer
         private readonly UrlGeneratorInterface $urlGenerator,
         private readonly string $senderAddress,
         private readonly string $senderName,
+        private readonly string $replyToAddress,
     ) {
     }
 
@@ -26,7 +27,7 @@ class InvitationMailer
             $user,
             $token,
             'Votre accès à l\'administration',
-            'emails/admin_invitation.html.twig',
+            'emails/admin_invitation',
         );
     }
 
@@ -36,17 +37,25 @@ class InvitationMailer
             $user,
             $token,
             'Une surprise t\'attend',
-            'emails/recipient_invitation.html.twig',
+            'emails/recipient_invitation',
         );
     }
 
+    /**
+     * @param string $template préfixe des templates, sans l'extension : les
+     *                         variantes .html.twig et .txt.twig sont envoyées
+     *                         ensemble, un message sans version texte étant
+     *                         pénalisé par les filtres anti-spam
+     */
     private function send(User $user, string $token, string $subject, string $template): void
     {
         $email = new TemplatedEmail()
             ->from(sprintf('%s <%s>', $this->senderName, $this->senderAddress))
             ->to($user->getEmail())
+            ->replyTo($this->replyToAddress)
             ->subject($subject)
-            ->htmlTemplate($template)
+            ->htmlTemplate($template.'.html.twig')
+            ->textTemplate($template.'.txt.twig')
             ->context([
                 'user' => $user,
                 'invitationUrl' => $this->urlGenerator->generate(

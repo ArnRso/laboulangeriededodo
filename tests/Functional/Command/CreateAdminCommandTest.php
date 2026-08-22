@@ -72,6 +72,27 @@ class CreateAdminCommandTest extends KernelTestCase
         self::assertSame(['nouvel-admin@example.com'], array_values(array_unique($recipients)));
     }
 
+    public function testInvitationEmailCarriesBothHtmlAndTextParts(): void
+    {
+        $this->commandTester->execute(['email' => 'nouvel-admin@example.com']);
+
+        $email = $this->getSentEmail();
+
+        self::assertNotNull($email->getHtmlBody());
+        self::assertNotNull($email->getTextBody(), 'Un message sans version texte est pénalisé par les filtres.');
+        self::assertStringContainsString('mot de passe', (string) $email->getTextBody());
+    }
+
+    public function testInvitationEmailCarriesAReplyToAddress(): void
+    {
+        $this->commandTester->execute(['email' => 'nouvel-admin@example.com']);
+
+        $replyTo = $this->getSentEmail()->getReplyTo();
+
+        self::assertCount(1, $replyTo);
+        self::assertSame('laboulangeriededodo@home-arnrso.com', $replyTo[0]->getAddress());
+    }
+
     public function testInvitationEmailContainsWorkingLink(): void
     {
         $this->commandTester->execute(['email' => 'nouvel-admin@example.com']);
