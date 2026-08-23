@@ -1,0 +1,7 @@
+# Tout ce qui touche aux fichiers des médias passe par ce stockage : pour
+# changer de support (S3, FTP…), on ne modifie que cet adaptateur.
+flysystem:
+    storages:
+        media.storage:
+            local:
+                directory: '%kernel.project_dir%/var/uploads/media'

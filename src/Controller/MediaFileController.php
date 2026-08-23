@@ -3,9 +3,10 @@
 namespace App\Controller;
 
 use App\Entity\Media;
+use League\Flysystem\FilesystemOperator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
-use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Symfony\Component\HttpFoundation\HeaderUtils;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -16,13 +17,13 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class MediaFileController extends AbstractController
 {
     public function __construct(
-        private readonly string $uploadDirectory,
+        private readonly FilesystemOperator $mediaStorage,
     ) {
     }
 
     #[Route('/medias/{id}/fichier', name: 'app_media_file', requirements: ['id' => '\d+'], methods: ['GET'])]
     #[IsGranted('view', subject: 'media')]
-    public function serve(Media $media): BinaryFileResponse
+    public function serve(Media $media): StreamedResponse
     {
         $filePath = $media->getFilePath();
 
@@ -30,17 +31,23 @@ class MediaFileController extends AbstractController
             throw $this->createNotFoundException('Ce média n\'a pas de fichier.');
         }
 
-        $absolutePath = $this->uploadDirectory.'/'.$filePath;
-
-        if (!is_file($absolutePath)) {
+        if (!$this->mediaStorage->fileExists($filePath)) {
             throw $this->createNotFoundException('Fichier introuvable.');
         }
 
-        $response = new BinaryFileResponse($absolutePath);
-        $response->setContentDisposition(
-            ResponseHeaderBag::DISPOSITION_INLINE,
+        $response = new StreamedResponse(function () use ($filePath): void {
+            $stream = $this->mediaStorage->readStream($filePath);
+            fpassthru($stream);
+            fclose($stream);
+        });
+
+        $response->headers->set('Content-Type', $this->mediaStorage->mimeType($filePath));
+        $response->headers->set('Content-Length', (string) $this->mediaStorage->fileSize($filePath));
+        $response->headers->set('Content-Disposition', HeaderUtils::makeDisposition(
+            HeaderUtils::DISPOSITION_INLINE,
             $media->getOriginalName() ?? $filePath,
-        );
+            basename($filePath),
+        ));
 
         return $response;
     }
