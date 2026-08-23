@@ -8,12 +8,16 @@
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+        {% if embedded|default(false) %}
+            {# Dans le panneau d'aperçu de l'admin : les liens sortent de l'iframe. #}
+            <base target="_top">
+        {% endif %}
         {% block javascripts %}
             {{ importmap('feed') }}
         {% endblock %}
     </head>
     <body class="f-body {% block body_class %}{% endblock %}">
-        {% if preview|default(false) %}
+        {% if preview|default(false) and not embedded|default(false) %}
             <div class="f-preview-bar">
                 <span>Aperçu · ce que verra le destinataire</span>
                 <a href="{{ path('app_admin_notification_index') }}">Retour à l'admin</a>

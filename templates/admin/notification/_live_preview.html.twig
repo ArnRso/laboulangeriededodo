@@ -1,0 +1,12 @@
+{#
+    Le téléphone de droite : l'écran d'ouverture recalculé à chaque frappe.
+    À placer dans un conteneur portant le contrôleur live-preview.
+#}
+<aside class="live-preview">
+    <p class="text-body-secondary small mb-2">Aperçu en direct — ce que verra le destinataire à l'ouverture.</p>
+    <div class="live-preview-phone">
+        <iframe title="Aperçu de la notification"
+                data-live-preview-target="frame"
+                data-action="load->live-preview#showFile"></iframe>
+    </div>
+</aside>

@@ -42,8 +42,12 @@ class MediaType extends AbstractType
         \assert($appKind instanceof AppKind);
 
         $builder
+            // Les setters du média sont typés : un champ vidé doit arriver
+            // comme une chaîne vide ou un zéro, que la validation refusera ou
+            // non, plutôt que comme un null qui ferait planter l'affectation.
             ->add('title', TextType::class, [
                 'label' => 'Titre',
+                'empty_data' => '',
             ])
             ->add('description', TextareaType::class, [
                 'label' => 'Description',
@@ -82,6 +86,7 @@ class MediaType extends AbstractType
             ])
             ->add('auraPoints', IntegerType::class, [
                 'label' => 'Aura gagnée à l\'ouverture',
+                'empty_data' => '0',
                 'help' => 'Positif par défaut. Mets une valeur négative pour une décision objectivement catastrophique.',
             ])
             ->add('auraMessage', TextareaType::class, [

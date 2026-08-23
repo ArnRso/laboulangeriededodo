@@ -86,17 +86,32 @@ class NotificationController extends AbstractController
 
     /**
      * L'écran d'ouverture tel que le destinataire le verra, sans rien enregistrer.
+     * En POST, c'est le formulaire en cours de saisie qui est rendu, pour le
+     * panneau d'aperçu en direct.
      */
-    #[Route('/{id}/apercu', name: 'app_admin_notification_preview', requirements: ['id' => '\d+'], methods: ['GET'])]
-    public function preview(Media $media): Response
+    #[Route('/{id}/apercu', name: 'app_admin_notification_preview', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
+    public function preview(Request $request, Media $media): Response
     {
-        return $this->render($media->getAppKind()->template(), [
-            'media' => $media,
-            'preview' => true,
-            'justOpened' => true,
-            'auraTotal' => 1240 + $media->getAuraPoints(),
-            'recipient' => null,
-        ]);
+        if ($request->isMethod('POST')) {
+            return $this->renderDraft($request, clone $media);
+        }
+
+        return $this->renderScreen($media, embedded: false);
+    }
+
+    /**
+     * Aperçu en direct d'une notification pas encore créée.
+     */
+    #[Route('/nouveau/{app}/apercu', name: 'app_admin_notification_draft_preview', requirements: ['app' => new EnumRequirement(AppKind::class)], methods: ['POST'])]
+    public function draftPreview(Request $request, AppKind $app, AppDetailsRegistry $registry, MediaRepository $mediaRepository): Response
+    {
+        $media = new Media();
+        $media
+            ->setAppKind($app)
+            ->setAppData($registry->defaultsFor($app))
+            ->setPosition($mediaRepository->findMaxPosition() + 1);
+
+        return $this->renderDraft($request, $media);
     }
 
     #[Route('/{id}/deplacer', name: 'app_admin_notification_move', requirements: ['id' => '\d+'], methods: ['POST'])]
@@ -116,5 +131,29 @@ class NotificationController extends AbstractController
         $this->addFlash('success', 'Notification supprimée.');
 
         return $this->redirectToRoute('app_admin_notification_index');
+    }
+
+    /**
+     * Relie la saisie au média et l'affiche même incomplète : l'aperçu suit
+     * la frappe, la validation n'intervient qu'à l'enregistrement.
+     */
+    private function renderDraft(Request $request, Media $media): Response
+    {
+        $form = $this->createForm(MediaType::class, $media, ['app_kind' => $media->getAppKind()]);
+        $form->handleRequest($request);
+
+        return $this->renderScreen($media, embedded: true);
+    }
+
+    private function renderScreen(Media $media, bool $embedded): Response
+    {
+        return $this->render($media->getAppKind()->template(), [
+            'media' => $media,
+            'preview' => true,
+            'embedded' => $embedded,
+            'justOpened' => true,
+            'auraTotal' => 1240 + $media->getAuraPoints(),
+            'recipient' => null,
+        ]);
     }
 }

@@ -285,6 +285,102 @@ class NotificationControllerTest extends WebTestCase
         self::assertSame([0, 1], array_map(static fn (Media $m): int => $m->getPosition(), $this->mediaRepository->findAllOrdered()));
     }
 
+    public function testCreationPageEmbedsTheLivePreview(): void
+    {
+        $crawler = $this->client->request('GET', '/admin/notifications/nouveau/instagram');
+
+        self::assertResponseIsSuccessful();
+        $panel = $crawler->filter('[data-controller="live-preview"]');
+        self::assertSame('/admin/notifications/nouveau/instagram/apercu', $panel->attr('data-live-preview-url-value'));
+        self::assertSelectorExists('[data-controller="live-preview"] iframe[data-live-preview-target="frame"]');
+        self::assertSelectorExists('form[data-live-preview-target="form"]');
+    }
+
+    public function testEditPageEmbedsTheLivePreviewOfTheNotification(): void
+    {
+        $media = $this->mediaFactory->createNotification(0, 'À retoucher');
+
+        $crawler = $this->client->request('GET', sprintf('/admin/notifications/%d/modifier', (int) $media->getId()));
+
+        self::assertResponseIsSuccessful();
+        self::assertSame(
+            sprintf('/admin/notifications/%d/apercu', (int) $media->getId()),
+            $crawler->filter('[data-controller="live-preview"]')->attr('data-live-preview-url-value'),
+        );
+    }
+
+    public function testLivePreviewRendersTheDraftWithoutSavingIt(): void
+    {
+        $this->client->request('POST', '/admin/notifications/nouveau/tinder/apercu', [
+            'media' => [
+                'title' => 'Brouillon jamais enregistré',
+                'description' => 'Une bio écrite à la volée',
+                'type' => MediaType::IMAGE->value,
+                'auraPoints' => -500,
+                'appData' => ['matchName' => 'La coupe de 2015', 'dramaLevel' => 87],
+            ],
+        ]);
+
+        self::assertResponseIsSuccessful();
+        self::assertSelectorTextContains('h1', 'La coupe de 2015');
+        self::assertSelectorTextContains('.td-body', 'Une bio écrite à la volée');
+        self::assertSelectorTextContains('.td-drama', '87 %');
+        self::assertSelectorExists('.td-photo img', 'Le brouillon n\'a pas de fichier : l\'emplacement est tout de même rendu pour que le navigateur y mette le sien.');
+        self::assertSelectorNotExists('.f-preview-bar', 'Dans le panneau de l\'admin, la barre d\'aperçu est de trop.');
+        self::assertSelectorExists('base[target="_top"]');
+        self::assertCount(0, $this->mediaRepository->findAll());
+    }
+
+    public function testLivePreviewOfAnExistingNotificationLeavesItUntouched(): void
+    {
+        $media = $this->mediaFactory->createNotification(0, 'Titre enregistré', AppKind::UBER_EATS);
+
+        $this->client->request('POST', sprintf('/admin/notifications/%d/apercu', (int) $media->getId()), [
+            'media' => [
+                'title' => 'Titre en cours de frappe',
+                'type' => MediaType::TEXT->value,
+                'textContent' => 'Pas encore validé',
+                'auraPoints' => 250,
+                'appData' => ['courier' => 'Dodo du futur', 'stars' => 2],
+            ],
+        ]);
+
+        self::assertResponseIsSuccessful();
+        self::assertSelectorTextContains('.ue-hero h1', 'Titre en cours de frappe');
+        self::assertSelectorTextContains('.ue-hero p', 'Dodo du futur');
+        self::assertSelectorTextContains('.ue-row-total', '+250 aura');
+
+        $reloaded = $this->mediaRepository->find($media->getId());
+        self::assertNotNull($reloaded);
+        self::assertSame('Titre enregistré', $reloaded->getTitle());
+        self::assertSame(100, $reloaded->getAuraPoints());
+    }
+
+    public function testLivePreviewToleratesAnIncompleteForm(): void
+    {
+        $this->client->request('POST', '/admin/notifications/nouveau/doctolib/apercu', [
+            'media' => ['title' => '', 'type' => MediaType::TEXT->value, 'auraPoints' => ''],
+        ]);
+
+        self::assertResponseIsSuccessful();
+        self::assertSelectorTextContains('body', 'Rendez-vous honoré');
+    }
+
+    public function testEmptiedTitleAndAuraAreRejectedRatherThanCrashing(): void
+    {
+        $this->client->request('GET', '/admin/notifications/nouveau/uber_eats');
+        $this->client->submitForm('Ajouter au fil', [
+            'media[title]' => '',
+            'media[type]' => MediaType::TEXT->value,
+            'media[textContent]' => 'Sans titre',
+            'media[auraPoints]' => '',
+        ]);
+
+        self::assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
+        self::assertSelectorExists('#media_title.is-invalid');
+        self::assertCount(0, $this->mediaRepository->findAll());
+    }
+
     private function createUploadedImage(): UploadedFile
     {
         $directory = sys_get_temp_dir().'/'.uniqid('media-test-', true);

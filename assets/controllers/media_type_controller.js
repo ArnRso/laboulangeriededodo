@@ -18,6 +18,7 @@ export default class extends Controller {
 
     select(value) {
         this.inputTarget.value = value;
+        this.dispatch('changed');
 
         const tab = this.tabTargets.find((candidate) => candidate.dataset.mediaTypeValue === value);
         const accept = tab?.dataset.mediaTypeAccept ?? '';
