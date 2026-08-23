@@ -1,0 +1,62 @@
+{% extends 'base_feed.html.twig' %}
+
+{% set data = media.appData %}
+
+{% block title %}{{ media.title }} · Netflix{% endblock %}
+{% block body_class %}f-open f-open-nf{% endblock %}
+
+{% block body %}
+    {{ include('feed/_aura_toast.html.twig', {media: media, justOpened: justOpened}, with_context: false) }}
+
+    <main class="f-wrap f-wrap-open">
+        <div class="nf-hero">
+            {{ include('feed/_media.html.twig', {media: media, class: 'nf-media'}, with_context: false) }}
+            <div class="f-bar nf-bar">
+                <a class="f-back" href="{{ path('app_feed') }}" aria-label="Retour">‹</a>
+                <span class="nf-n" aria-hidden="true">N</span>
+                <span class="f-bar-spacer"></span>
+            </div>
+        </div>
+
+        <div class="nf-kind"><span class="nf-n nf-n-small" aria-hidden="true">N</span> SÉRIE</div>
+        <h1 class="nf-title">{{ media.title }}</h1>
+
+        <div class="nf-meta">
+            <b>{{ data.match|default(98) }} % de correspondance</b>
+            <span>{{ data.year|default('2015') }}</span>
+            <span class="nf-rating">{{ data.rating|default('16+') }}</span>
+            <span>{{ data.seasons|default('1 saison') }}</span>
+            <span class="nf-hd">HD</span>
+        </div>
+
+        {% if data.topTen|default(false) %}
+            <div class="nf-top"><span>TOP<br>10</span> N° 1 aujourd'hui</div>
+        {% endif %}
+
+        <div class="nf-btns" aria-hidden="true">
+            <span class="nf-btn nf-btn-play">▶ Lecture</span>
+            <span class="nf-btn nf-btn-list">+ Ma liste</span>
+        </div>
+
+        {% if media.description %}<p class="nf-synopsis">{{ media.description }}</p>{% endif %}
+
+        <div class="nf-lines">
+            <p><span>Avec :</span> {{ data.cast|default('Dodo du passé') }}</p>
+            <p><span>Genres :</span> {{ data.genres|default('Drame · Comédie · Documentaire') }}</p>
+        </div>
+
+        <div class="nf-rate">
+            <span class="nf-rate-icon" aria-hidden="true">{{ media.auraPoints < 0 ? '👎' : '👍👍' }}</span>
+            <div>
+                <b>Ta note : {{ media.auraPoints > 0 ? '+' : '' }}{{ media.auraPoints }} aura</b>
+                <small>{{ media.auraMessage|default(media.auraPoints < 0 ? 'Cette décision était objectivement catastrophique.' : 'Ne la gaspille pas.') }}</small>
+            </div>
+        </div>
+
+        <div class="nf-tabs" aria-hidden="true"><span class="on">Épisodes</span><span>Plus de titres similaires</span></div>
+    </main>
+
+    {% if not preview %}
+        <div class="f-cta"><a href="{{ path('app_feed') }}">Retour aux notifications</a></div>
+    {% endif %}
+{% endblock %}

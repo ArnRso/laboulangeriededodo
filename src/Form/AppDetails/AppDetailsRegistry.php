@@ -3,17 +3,16 @@
 namespace App\Form\AppDetails;
 
 use App\Enum\AppKind;
-use Symfony\Component\Form\AbstractType;
 
 /**
- * Associe chaque application imitée à son formulaire de détails et à ses
- * valeurs de départ. Les applications sont pilotées par le code : ajouter
- * un cas ici, un gabarit d'ouverture, et c'est tout.
+ * Associe chaque application imitée à son formulaire de détails. Les
+ * applications sont pilotées par le code : ajouter un cas dans AppKind, un
+ * type ici, un gabarit d'ouverture et une feuille de style, et c'est tout.
  */
 final class AppDetailsRegistry
 {
     /**
-     * @return class-string<AbstractType<mixed>>
+     * @return class-string<AbstractAppDetailsType>
      */
     public function formTypeFor(AppKind $appKind): string
     {
@@ -22,48 +21,37 @@ final class AppDetailsRegistry
             AppKind::INSTAGRAM => InstagramDetailsType::class,
             AppKind::TINDER => TinderDetailsType::class,
             AppKind::DOCTOLIB => DoctolibDetailsType::class,
+            AppKind::TIKTOK => TikTokDetailsType::class,
+            AppKind::SNAPCHAT => SnapchatDetailsType::class,
+            AppKind::X => XDetailsType::class,
+            AppKind::BEREAL => BeRealDetailsType::class,
+            AppKind::YOUTUBE => YouTubeDetailsType::class,
+            AppKind::NETFLIX => NetflixDetailsType::class,
+            AppKind::SPOTIFY => SpotifyDetailsType::class,
+            AppKind::WHATSAPP => WhatsAppDetailsType::class,
+            AppKind::MESSENGER => MessengerDetailsType::class,
+            AppKind::IMESSAGE => IMessageDetailsType::class,
+            AppKind::DUOLINGO => DuolingoDetailsType::class,
+            AppKind::HINGE => HingeDetailsType::class,
+            AppKind::BUMBLE => BumbleDetailsType::class,
+            AppKind::UBER => UberDetailsType::class,
+            AppKind::DELIVEROO => DeliverooDetailsType::class,
+            AppKind::BURGER_KING => BurgerKingDetailsType::class,
+            AppKind::MCDONALDS => McDonaldsDetailsType::class,
+            AppKind::WAZE => WazeDetailsType::class,
+            AppKind::REVOLUT => RevolutDetailsType::class,
+            AppKind::PAYPAL => PayPalDetailsType::class,
+            AppKind::LYDIA => LydiaDetailsType::class,
+            AppKind::METEO => MeteoDetailsType::class,
+            AppKind::CALENDAR => CalendarDetailsType::class,
         };
     }
 
     /**
-     * Valeurs proposées à la création, pour que le formulaire parle déjà la
-     * langue de l'app et que l'admin n'ait qu'à personnaliser.
-     *
      * @return array<string, mixed>
      */
     public function defaultsFor(AppKind $appKind): array
     {
-        return match ($appKind) {
-            AppKind::UBER_EATS => [
-                'courier' => 'Dodo du passé',
-                'trip' => 'Ton adolescence → Aujourd\'hui · 11 ans de trajet',
-                'stars' => 5,
-            ],
-            AppKind::INSTAGRAM => [
-                'username' => 'dodo.du.passe',
-                'location' => '',
-                'likedBy' => 'ta.mere',
-                'likesCount' => 1240,
-                'hashtags' => '#LoreUnlocked #CanonEvent',
-                'comments' => '',
-                'timeAgo' => 'Il y a 11 ans',
-                'badge' => '',
-            ],
-            AppKind::TINDER => [
-                'matchName' => '',
-                'matchAge' => 19,
-                'matchEmoji' => '💘',
-                'locationLine' => '📍 À 11 ans de toi · Encore en ligne, malheureusement',
-                'dramaLevel' => 87,
-                'chips' => "🚩 Red flag\n🎭 Canon event",
-            ],
-            AppKind::DOCTOLIB => [
-                'practitioner' => 'Dr Passé',
-                'specialty' => 'Spécialiste des décisions catastrophiques',
-                'sector' => 'Conventionné secteur 2015',
-                'address' => "Ton adolescence\n2e étage, porte du fond",
-                'refundLabel' => 'Pris en charge par la mutuelle du passé',
-            ],
-        };
+        return $this->formTypeFor($appKind)::defaults();
     }
 }

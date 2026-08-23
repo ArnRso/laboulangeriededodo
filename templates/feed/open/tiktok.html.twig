@@ -1,0 +1,79 @@
+{% extends 'base_feed.html.twig' %}
+
+{% import _self as tk %}
+
+{% macro short(n) %}
+    {%- set n = n|default(0) -%}
+    {%- if n >= 1000000 -%}
+        {{ (n / 1000000)|number_format(1, ',', ' ')|replace({',0': ''}) }}M
+    {%- elseif n >= 1000 -%}
+        {{ (n / 1000)|number_format(1, ',', ' ')|replace({',0': ''}) }}K
+    {%- else -%}
+        {{ n }}
+    {%- endif -%}
+{% endmacro %}
+
+{% set data = media.appData %}
+{% set username = data.username|default('dodo.du.passe') %}
+{% set avatar = recipient and recipient.avatar ? recipient.avatar.value : '🦤' %}
+
+{% block title %}{{ media.title }} · TikTok{% endblock %}
+{% block body_class %}f-open f-open-tk{% endblock %}
+
+{% block body %}
+    {{ include('feed/_aura_toast.html.twig', {media: media, justOpened: justOpened}, with_context: false) }}
+
+    <main class="f-wrap f-wrap-open">
+        <div class="f-bar tk-bar">
+            <a class="f-back" href="{{ path('app_feed') }}" aria-label="Retour">‹</a>
+            <span class="tk-tabs" aria-hidden="true"><span>Abonnements</span><b>Pour toi</b></span>
+            <span class="f-bar-spacer"></span>
+        </div>
+
+        <div class="tk-frame">
+            {{ include('feed/_media.html.twig', {media: media, class: 'tk-media'}, with_context: false) }}
+
+            <div class="tk-gift {{ media.auraPoints < 0 ? 'tk-gift-neg' : '' }}">
+                <span class="tk-gift-av">{{ avatar }}</span>
+                <span class="tk-gift-txt">
+                    <b>{{ recipient ? recipient.publicName : 'Dodo' }}</b>
+                    {% if media.auraPoints < 0 %}a perdu {{ media.auraPoints|abs }} aura 💀{% else %}a reçu un cadeau ✨{% endif %}
+                </span>
+                <span class="tk-gift-v">{{ media.auraPoints < 0 ? '🥀' : '🌹' }} <b>{{ media.auraPoints > 0 ? '+' : '' }}{{ media.auraPoints }}</b></span>
+            </div>
+
+            <div class="tk-rail" aria-hidden="true">
+                <span class="tk-rail-av"><i>{{ avatar }}</i><em>+</em></span>
+                <span class="tk-rail-i"><i>❤️</i><small>{{ tk.short(data.likes) }}</small></span>
+                <span class="tk-rail-i"><i>💬</i><small>{{ tk.short(data.comments) }}</small></span>
+                <span class="tk-rail-i"><i>🔖</i><small>{{ tk.short((data.likes|default(0)) // 9) }}</small></span>
+                <span class="tk-rail-i"><i>↗️</i><small>{{ tk.short(data.shares) }}</small></span>
+                <span class="tk-disc"><i>{{ avatar }}</i></span>
+            </div>
+
+            <div class="tk-info">
+                <b class="tk-user">@{{ username }}</b>
+                <p class="tk-cap">
+                    {{ media.title }}{% if media.description %} {{ media.description }}{% endif %}
+                    {% if data.hashtags|default('') %}<span class="tk-tags">{{ data.hashtags }}</span>{% endif %}
+                </p>
+                <div class="tk-sound">
+                    <span class="tk-note">♫</span>
+                    <span class="tk-marquee"><span>{{ data.sound|default('son original – ' ~ username) }} &nbsp;·&nbsp; {{ data.sound|default('son original – ' ~ username) }} &nbsp;·&nbsp; </span></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="tk-nav" aria-hidden="true">
+            <span class="on"><i>⌂</i>Accueil</span>
+            <span><i>👥</i>Amis</span>
+            <span class="tk-plus"><i>+</i></span>
+            <span><i>✉</i>Boîte</span>
+            <span><i>{{ avatar }}</i>Profil</span>
+        </div>
+    </main>
+
+    {% if not preview %}
+        <div class="f-cta"><a href="{{ path('app_feed') }}">Retour aux notifications</a></div>
+    {% endif %}
+{% endblock %}

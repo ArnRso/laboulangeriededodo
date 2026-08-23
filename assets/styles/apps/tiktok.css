@@ -1,0 +1,361 @@
+/* --- TikTok --------------------------------------------------------------- */
+.f-open-tk {
+    background: #000;
+    color: #fff;
+}
+
+.f-open-tk .f-back {
+    background: rgba(255, 255, 255, 0.18);
+    color: #fff;
+}
+
+.f-open-tk .f-flash {
+    background: #fff;
+    color: var(--f-ink);
+}
+
+.tk-bar {
+    padding: 10px 2px 8px;
+}
+
+.tk-tabs {
+    display: flex;
+    gap: 18px;
+    font-size: 15px;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.tk-tabs b {
+    color: #fff;
+    font-weight: 800;
+    position: relative;
+}
+
+.tk-tabs b::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: -7px;
+    width: 24px;
+    height: 3px;
+    border-radius: 2px;
+    background: #fff;
+    transform: translateX(-50%);
+}
+
+.tk-frame {
+    position: relative;
+    margin: 0 -14px;
+    height: clamp(460px, 80vh, 740px);
+    overflow: hidden;
+    background: #111;
+}
+
+.tk-media,
+.tk-media img,
+.tk-media video {
+    width: 100%;
+    height: 100%;
+}
+
+.tk-media img,
+.tk-media video {
+    object-fit: cover;
+}
+
+.tk-media.f-media-type-text,
+.tk-media.f-media-type-link,
+.tk-media.f-media-type-audio {
+    display: grid;
+    place-items: center;
+    padding: 80px 84px 190px 24px;
+    background: linear-gradient(160deg, #0b0b0b, #1b1b1b 40%, #ff2c55 170%), #000;
+}
+
+.tk-media .f-media-text {
+    font-size: 22px;
+    font-weight: 800;
+    line-height: 1.35;
+    text-align: center;
+    text-shadow: 0 2px 14px rgba(0, 0, 0, 0.5);
+}
+
+.tk-media .f-media-link {
+    background: #fe2c55;
+    color: #fff;
+    font-size: 15px;
+    padding: 14px 20px;
+    border-radius: 999px;
+}
+
+
+.tk-frame::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 240px;
+    background: linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.85));
+    pointer-events: none;
+}
+
+.tk-gift {
+    position: absolute;
+    left: 12px;
+    top: 64px;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px 6px 6px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #fe2c55, #ff7a59);
+    font-size: 12px;
+    font-weight: 600;
+    box-shadow: 0 6px 18px rgba(254, 44, 85, 0.4);
+    animation: tk-gift-in 0.6s cubic-bezier(0.2, 0.9, 0.3, 1.2) both;
+    pointer-events: none;
+}
+
+.tk-gift-neg {
+    background: linear-gradient(90deg, #3a3a3a, #151515);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5);
+}
+
+@keyframes tk-gift-in {
+    0% {
+        transform: translateX(-120%);
+    }
+
+    100% {
+        transform: translateX(0);
+    }
+}
+
+.tk-gift-av {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #fff;
+    display: grid;
+    place-items: center;
+    font-size: 15px;
+}
+
+.tk-gift-txt b {
+    font-weight: 800;
+    display: block;
+    font-size: 12px;
+}
+
+.tk-gift-v {
+    margin-left: 4px;
+    font-size: 14px;
+}
+
+.tk-gift-v b {
+    font-weight: 800;
+}
+
+.tk-rail {
+    position: absolute;
+    right: 10px;
+    bottom: 88px;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    pointer-events: none;
+}
+
+.tk-rail-av {
+    position: relative;
+    width: 46px;
+    height: 46px;
+    margin-bottom: 6px;
+}
+
+.tk-rail-av i {
+    display: grid;
+    place-items: center;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    background: #ffe3d0;
+    font-size: 22px;
+    font-style: normal;
+}
+
+.tk-rail-av em {
+    position: absolute;
+    left: 50%;
+    bottom: -9px;
+    transform: translateX(-50%);
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #fe2c55;
+    color: #fff;
+    font-style: normal;
+    font-weight: 800;
+    font-size: 15px;
+    line-height: 20px;
+    text-align: center;
+}
+
+.tk-rail-i {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+}
+
+.tk-rail-i i {
+    font-size: 30px;
+    font-style: normal;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+}
+
+.tk-rail-i small {
+    font-size: 12px;
+    font-weight: 700;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+}
+
+.tk-disc {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #444 0 26%, #111 27% 100%);
+    display: grid;
+    place-items: center;
+    animation: tk-spin 4s linear infinite;
+    margin-top: 4px;
+}
+
+.tk-disc i {
+    font-style: normal;
+    font-size: 16px;
+}
+
+@keyframes tk-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.tk-info {
+    position: absolute;
+    left: 14px;
+    right: 76px;
+    bottom: 18px;
+    z-index: 2;
+    text-shadow: 0 1px 6px rgba(0, 0, 0, 0.7);
+    pointer-events: none;
+}
+
+.tk-user {
+    font-size: 16px;
+    font-weight: 800;
+    display: block;
+}
+
+.tk-cap {
+    margin: 6px 0 10px;
+    font-size: 14px;
+    line-height: 1.4;
+    font-weight: 500;
+}
+
+.tk-tags {
+    font-weight: 800;
+    margin-left: 4px;
+}
+
+.tk-sound {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.tk-note {
+    flex: none;
+}
+
+.tk-marquee {
+    flex: 1;
+    overflow: hidden;
+    white-space: nowrap;
+    mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+}
+
+.tk-marquee span {
+    display: inline-block;
+    padding-left: 100%;
+    animation: tk-marquee 12s linear infinite;
+}
+
+@keyframes tk-marquee {
+    to {
+        transform: translateX(-100%);
+    }
+}
+
+.tk-nav {
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-end;
+    margin: 0 -14px;
+    padding: 10px 10px 4px;
+    background: #000;
+    border-top: 1px solid #222;
+    font-size: 10px;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.55);
+}
+
+.tk-nav span {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+}
+
+.tk-nav span.on {
+    color: #fff;
+}
+
+.tk-nav i {
+    font-style: normal;
+    font-size: 20px;
+    line-height: 1;
+}
+
+.tk-plus i {
+    width: 42px;
+    height: 26px;
+    border-radius: 8px;
+    background: #fff;
+    color: #000;
+    font-weight: 800;
+    display: grid;
+    place-items: center;
+    font-size: 22px;
+    box-shadow: -3px 0 0 #25f4ee, 3px 0 0 #fe2c55;
+}
+
+.f-open-tk .f-cta {
+    background: #000;
+    border-top-color: #222;
+}
+
+.f-open-tk .f-cta a {
+    background: #fe2c55;
+}

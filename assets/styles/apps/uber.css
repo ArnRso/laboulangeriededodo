@@ -1,0 +1,313 @@
+/* --- Uber ----------------------------------------------------------------- */
+.f-open-ub {
+    background: #fff;
+    color: #000;
+}
+
+.ub-map {
+    position: relative;
+    height: 190px;
+    margin: 0 -14px;
+    overflow: hidden;
+    background: linear-gradient(160deg, #ececec 0%, #f7f7f7 50%, #e3e3e3 100%);
+}
+
+.ub-road {
+    position: absolute;
+    background: #fff;
+    border-radius: 4px;
+}
+
+.ub-road-1 {
+    left: -10%;
+    right: -10%;
+    top: 62%;
+    height: 12px;
+    transform: rotate(-8deg);
+}
+
+.ub-road-2 {
+    top: -10%;
+    bottom: -10%;
+    left: 36%;
+    width: 10px;
+    transform: rotate(14deg);
+}
+
+.ub-road-3 {
+    left: -10%;
+    right: -10%;
+    top: 24%;
+    height: 8px;
+    transform: rotate(5deg);
+}
+
+.ub-path {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.ub-path path {
+    fill: none;
+    stroke: #000;
+    stroke-width: 3px;
+    stroke-dasharray: 7 6;
+    stroke-linecap: round;
+    vector-effect: non-scaling-stroke;
+}
+
+.ub-pin {
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #000;
+    border: 3px solid #fff;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    transform: translate(-50%, -50%);
+}
+
+.ub-pin-a {
+    left: 14%;
+    top: 73%;
+}
+
+.ub-pin-z {
+    left: 86%;
+    top: 27%;
+    border-radius: 3px;
+}
+
+.ub-car {
+    position: absolute;
+    left: 52%;
+    top: 27%;
+    transform: translate(-50%, -50%);
+    font-size: 22px;
+    filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.3));
+}
+
+.ub-hero {
+    padding: 18px 2px 8px;
+}
+
+.ub-done {
+    display: inline-block;
+    background: #000;
+    color: #fff;
+    border-radius: 999px;
+    padding: 5px 12px;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.ub-hero h1 {
+    font-size: 26px;
+    font-weight: 800;
+    letter-spacing: -0.6px;
+    line-height: 1.1;
+    margin: 10px 0 4px;
+}
+
+.ub-hero p {
+    margin: 0;
+    font-size: 13px;
+    font-weight: 600;
+    color: #6b6b6b;
+}
+
+.ub-trip {
+    position: relative;
+    padding: 10px 2px 4px;
+}
+
+.ub-trip::before {
+    content: '';
+    position: absolute;
+    left: 7px;
+    top: 28px;
+    bottom: 30px;
+    border-left: 2px solid #000;
+}
+
+.ub-stop {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    padding: 8px 0;
+}
+
+.ub-stop-dot {
+    flex: none;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #000;
+    margin-top: 4px;
+}
+
+.ub-stop-sq {
+    border-radius: 2px;
+}
+
+.ub-stop b {
+    display: block;
+    font-size: 15px;
+    font-weight: 800;
+}
+
+.ub-stop small {
+    font-size: 12px;
+    font-weight: 600;
+    color: #6b6b6b;
+}
+
+.ub-driver {
+    display: flex;
+    gap: 14px;
+    align-items: center;
+    background: #f6f6f6;
+    border-radius: 16px;
+    padding: 14px;
+    margin-top: 10px;
+}
+
+.ub-av {
+    flex: none;
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    background: #fff;
+    border: 2px solid #000;
+    display: grid;
+    place-items: center;
+    font-size: 26px;
+}
+
+.ub-driver-body b {
+    display: block;
+    font-size: 16px;
+    font-weight: 800;
+}
+
+.ub-driver-body small {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: #6b6b6b;
+}
+
+.ub-stars {
+    display: flex;
+    align-items: center;
+    gap: 1px;
+    margin-top: 6px;
+    font-size: 18px;
+    color: #d9d9d9;
+    line-height: 1;
+}
+
+.ub-stars .on {
+    color: #000;
+}
+
+.ub-stars small {
+    margin-left: 8px;
+    font-size: 11px;
+}
+
+.ub-lost,
+.ub-receipt {
+    margin-top: 22px;
+    border-top: 1px solid #e8e8e8;
+    padding-top: 16px;
+}
+
+.ub-lost h2,
+.ub-receipt h2 {
+    font-size: 17px;
+    font-weight: 800;
+    margin: 0 0 10px;
+    letter-spacing: -0.2px;
+}
+
+.ub-media {
+    border-radius: 16px;
+    overflow: hidden;
+    background: #f6f6f6;
+    border: 1px solid #e8e8e8;
+}
+
+.ub-media .f-media-text {
+    padding: 14px 16px;
+}
+
+.ub-media .f-media-link {
+    margin: 12px;
+    background: #fff;
+}
+
+.ub-media audio {
+    padding: 12px;
+}
+
+.ub-note {
+    margin-top: 10px;
+    padding: 12px 14px;
+    border-left: 3px solid #000;
+    background: #f6f6f6;
+    border-radius: 0 12px 12px 0;
+}
+
+.ub-note small {
+    display: block;
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #6b6b6b;
+}
+
+.ub-note p {
+    margin: 4px 0 0;
+    font-size: 14px;
+    line-height: 1.45;
+}
+
+.ub-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 5px 0;
+    color: #6b6b6b;
+}
+
+.ub-row span:last-child {
+    text-align: right;
+    white-space: nowrap;
+}
+
+.ub-row-total {
+    border-top: 1px solid #e8e8e8;
+    margin-top: 6px;
+    padding-top: 10px;
+    font-size: 18px;
+    font-weight: 800;
+    color: #000;
+}
+
+.ub-row-total .ub-neg {
+    color: #e0245e;
+}
+
+.ub-pay {
+    display: block;
+    margin-top: 8px;
+    font-size: 11px;
+    font-weight: 600;
+    color: #6b6b6b;
+}

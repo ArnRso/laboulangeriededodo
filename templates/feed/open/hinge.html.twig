@@ -1,0 +1,58 @@
+{% extends 'base_feed.html.twig' %}
+
+{% set data = media.appData %}
+{% set name = data.name|default(media.title) %}
+{% set likedBy = data.likedBy|default(name) %}
+
+{% block title %}{{ media.title }} · Hinge{% endblock %}
+{% block body_class %}f-open f-open-hg{% endblock %}
+
+{% block body %}
+    {{ include('feed/_aura_toast.html.twig', {media: media, justOpened: justOpened}, with_context: false) }}
+
+    <main class="f-wrap f-wrap-open">
+        <div class="f-bar">
+            <a class="f-back" href="{{ path('app_feed') }}" aria-label="Retour">‹</a>
+            <b class="hg-logo">Hinge</b>
+            <span class="f-bar-spacer"></span>
+        </div>
+
+        <div class="hg-banner">
+            <span class="hg-banner-av">{{ recipient and recipient.avatar ? recipient.avatar.value : '🦤' }}</span>
+            <div>
+                <b>{{ likedBy }} a aimé ta réponse</b>
+                <small>{{ media.auraPoints > 0 ? '+' : '' }}{{ media.auraPoints }} aura{% if media.auraMessage %} · {{ media.auraMessage|lower }}{% endif %}</small>
+            </div>
+            <span class="hg-banner-heart" aria-hidden="true">♥</span>
+        </div>
+
+        <h1 class="hg-name">{{ name }}{% if data.age|default('') %}<span>, {{ data.age }}</span>{% endif %}</h1>
+
+        <div class="hg-card hg-photo hg-photo-{{ media.type.value }}">
+            {{ include('feed/_media.html.twig', {media: media, class: 'hg-media'}, with_context: false) }}
+            {% if media.description %}<div class="hg-caption">{{ media.title }}</div>{% endif %}
+            <span class="hg-like" aria-hidden="true">♥</span>
+        </div>
+
+        <div class="hg-card hg-prompt">
+            <small>{{ data.prompt|default('Ce qui me rend heureux') }}</small>
+            <p>{{ media.description|default(media.title) }}</p>
+            {% if data.comment|default('') %}
+                <div class="hg-comment">
+                    <span>{{ likedBy }}</span>
+                    {{ data.comment }}
+                </div>
+            {% endif %}
+            <span class="hg-like" aria-hidden="true">♥</span>
+        </div>
+
+        <div class="hg-acts" aria-hidden="true">
+            <span class="hg-act hg-act-x">✕</span>
+            <span class="hg-act hg-act-heart">♥</span>
+        </div>
+    </main>
+
+    {% if not preview %}
+        <div class="f-cta"><a href="{{ path('app_feed') }}">Retour aux notifications</a></div>
+    {% endif %}
+{% endblock %}

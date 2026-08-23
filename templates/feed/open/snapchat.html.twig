@@ -1,0 +1,79 @@
+{% extends 'base_feed.html.twig' %}
+
+{% set data = media.appData %}
+{% set sender = data.sender|default('Dodo du passé') %}
+
+{% block title %}{{ media.title }} · Snapchat{% endblock %}
+{% block body_class %}f-open f-open-sn{% endblock %}
+
+{% block body %}
+    {{ include('feed/_aura_toast.html.twig', {media: media, justOpened: justOpened}, with_context: false) }}
+
+    <main class="f-wrap f-wrap-open">
+        <div class="f-bar sn-bar">
+            <a class="f-back" href="{{ path('app_feed') }}" aria-label="Retour">‹</a>
+            <span class="sn-who">
+                <span class="sn-ghost" aria-hidden="true">👻</span>
+                <span>
+                    <b>{{ sender }}</b>
+                    <small>🔥 {{ data.streak|default(0) }} · 💛 Meilleur ami</small>
+                </span>
+            </span>
+            <span class="sn-timer" aria-label="Compteur">⏱ {{ data.timer|default(10) }}</span>
+        </div>
+
+        <div class="sn-snap">
+            {{ include('feed/_media.html.twig', {media: media, class: 'sn-media'}, with_context: false) }}
+
+            <div class="sn-ring" aria-hidden="true"><i></i><b>{{ data.timer|default(10) }}</b></div>
+
+            {% if data.caption|default('') %}
+                <div class="sn-cap">{{ data.caption }}</div>
+            {% endif %}
+
+            <div class="sn-foot">
+                <span class="sn-tap">Appuie pour passer</span>
+                <span class="sn-noshot">Capture d'écran interdite 👀</span>
+            </div>
+        </div>
+
+        <div class="sn-chat">
+            <div class="sn-day">AUJOURD'HUI</div>
+
+            <div class="sn-msg">
+                <small>{{ sender|upper }}</small>
+                <div class="sn-bubble">
+                    <b>{{ media.title }}</b>
+                    {% if media.description %}<p>{{ media.description }}</p>{% endif %}
+                </div>
+            </div>
+
+            <div class="sn-msg sn-msg-sys">
+                <small>ÉQUIPE SNAPCHAT</small>
+                <div class="sn-bubble sn-bubble-aura {{ media.auraPoints < 0 ? 'sn-bubble-neg' : '' }}">
+                    <span class="sn-trophy">{{ media.auraPoints < 0 ? '💀' : '🏆' }}</span>
+                    <span>
+                        <b>Score Snap : {{ media.auraPoints > 0 ? '+' : '' }}{{ media.auraPoints }} aura</b>
+                        <em>{{ media.auraMessage|default(media.auraPoints < 0 ? 'Cette décision était objectivement catastrophique.' : 'Ne la gaspille pas.') }}</em>
+                    </span>
+                </div>
+            </div>
+
+            <div class="sn-msg sn-msg-me">
+                <small>MOI</small>
+                <div class="sn-bubble sn-bubble-me">Ouvert · 🔥 {{ data.streak|default(0) }}</div>
+            </div>
+        </div>
+
+        <div class="sn-reply" aria-hidden="true">
+            <span class="sn-cam">📷</span>
+            <span class="sn-field">Envoyer un Chat</span>
+            <span>🎤</span>
+            <span>😊</span>
+        </div>
+    </main>
+
+    {% if not preview %}
+        <div class="f-cta"><a href="{{ path('app_feed') }}">Retour aux notifications</a></div>
+    {% endif %}
+{% endblock %}

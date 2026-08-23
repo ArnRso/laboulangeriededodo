@@ -2,19 +2,14 @@
 
 namespace App\Form\AppDetails;
 
-use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Range;
 
-/**
- * @extends AbstractType<mixed>
- */
-class TinderDetailsType extends AbstractType
+class TinderDetailsType extends AbstractAppDetailsType
 {
     /**
      * @param array<string, mixed> $options
@@ -52,8 +47,16 @@ class TinderDetailsType extends AbstractType
             ]);
     }
 
-    public function configureOptions(OptionsResolver $resolver): void
+    public static function defaults(): array
     {
-        $resolver->setDefaults(['data_class' => null]);
+        return [
+            'matchName' => '',
+            'matchAge' => 19,
+            'matchEmoji' => '💘',
+            'locationLine' => '📍 À 11 ans de toi · Encore en ligne, malheureusement',
+            'dramaLevel' => 87,
+            'chips' => '🚩 Red flag
+🎭 Canon event',
+        ];
     }
 }

@@ -1,0 +1,237 @@
+/* --- Hinge ---------------------------------------------------------------- */
+.f-open-hg {
+    background: #f7f4ef;
+    color: #1b1b1b;
+}
+
+.f-open-hg .f-back {
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.hg-logo {
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -1px;
+    color: #3a2232;
+}
+
+.hg-banner {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #3a2232;
+    color: #fff;
+    border-radius: 16px;
+    padding: 12px 14px;
+    margin-top: 4px;
+}
+
+.hg-banner-av {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #fff;
+    display: grid;
+    place-items: center;
+    font-size: 22px;
+    flex: none;
+}
+
+.hg-banner div {
+    flex: 1;
+    min-width: 0;
+}
+
+.hg-banner b {
+    display: block;
+    font-size: 14px;
+    font-weight: 800;
+}
+
+.hg-banner small {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: #c9a8e8;
+    margin-top: 2px;
+}
+
+.hg-banner-heart {
+    color: #b57ee8;
+    font-size: 26px;
+    line-height: 1;
+}
+
+.hg-name {
+    margin: 22px 0 10px;
+    font-size: 30px;
+    font-weight: 800;
+    letter-spacing: -0.8px;
+    line-height: 1;
+}
+
+.hg-name span {
+    font-weight: 600;
+    color: #6a6a6a;
+}
+
+.hg-card {
+    position: relative;
+    background: #fff;
+    border-radius: 22px;
+    overflow: hidden;
+    box-shadow: 0 6px 24px rgba(58, 34, 50, 0.08);
+    margin-bottom: 14px;
+}
+
+.hg-photo {
+    background: linear-gradient(160deg, #efe2ff, #ffe3d0 50%, #ffd6ec);
+}
+
+.hg-media {
+    min-height: 120px;
+}
+
+.hg-media.f-media-type-link {
+    display: block;
+    padding: 0;
+    background: transparent;
+}
+
+.hg-media img,
+.hg-media video {
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+}
+
+.hg-media .f-media-text {
+    padding: 30px 22px 16px;
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 22px;
+    line-height: 1.35;
+}
+
+.hg-media .f-media-link {
+    margin: 26px 20px 16px;
+    background: #fff;
+}
+
+.hg-media audio {
+    padding: 26px 16px 16px;
+}
+
+.hg-photo-text,
+.hg-photo-link,
+.hg-photo-audio {
+    padding-bottom: 64px;
+}
+
+.hg-caption {
+    margin: 0 80px 0 14px;
+    background: #fff;
+    border-radius: 14px 14px 14px 4px;
+    padding: 9px 12px;
+    font-size: 14px;
+    font-weight: 700;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+}
+
+.hg-photo-image .hg-caption,
+.hg-photo-video .hg-caption {
+    position: absolute;
+    left: 14px;
+    bottom: 14px;
+    margin: 0;
+    max-width: calc(100% - 80px);
+}
+
+.hg-like {
+    position: absolute;
+    right: 12px;
+    bottom: 12px;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: #fff;
+    color: #3a2232;
+    display: grid;
+    place-items: center;
+    font-size: 22px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.14);
+}
+
+.hg-prompt {
+    padding: 20px 18px 64px;
+}
+
+.hg-prompt small {
+    display: block;
+    font-size: 12px;
+    font-weight: 700;
+    color: #6a6a6a;
+}
+
+.hg-prompt p {
+    margin: 8px 0 0;
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 26px;
+    line-height: 1.25;
+    letter-spacing: -0.3px;
+}
+
+.hg-comment {
+    display: inline-block;
+    margin-top: 16px;
+    background: #7a3fd1;
+    color: #fff;
+    border-radius: 18px 18px 18px 4px;
+    padding: 10px 14px;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.35;
+    max-width: 88%;
+}
+
+.hg-comment span {
+    display: block;
+    font-size: 11px;
+    font-weight: 800;
+    opacity: 0.8;
+    margin-bottom: 2px;
+}
+
+.hg-acts {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 18px 0;
+}
+
+.hg-act {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: #fff;
+    display: grid;
+    place-items: center;
+    font-size: 26px;
+    font-weight: 800;
+    box-shadow: 0 6px 20px rgba(58, 34, 50, 0.12);
+}
+
+.hg-act-x {
+    color: #1b1b1b;
+}
+
+.hg-act-heart {
+    color: #b57ee8;
+}
+
+.f-open-hg .f-cta {
+    background: #f7f4ef;
+    border-top-color: #e8e2d8;
+}
+
+.f-open-hg .f-cta a {
+    background: #3a2232;
+}

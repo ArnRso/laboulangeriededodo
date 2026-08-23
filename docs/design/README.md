@@ -13,12 +13,11 @@ docs/design/
 ## Où en est-on
 
 - **Direction validée** : écran verrouillé iPhone, fausses notifications habillées
-  aux couleurs d'apps réelles (Uber Eats, Instagram, Tinder, Doctolib), palette
-  pastel rose → pêche → lilas, police Plus Jakarta Sans. Voir `maquettes/g5.html`
-  et les `maquettes/open-*.html`.
-- **Implémenté** dans `templates/feed/` et `assets/styles/feed.css`.
-- **À venir** : les apps TikTok, Hinge et BeReal (maquettées dans
-  `maquettes/g3-feed.html`, pas encore codées).
+  aux couleurs d'apps réelles, palette pastel rose → pêche → lilas, police
+  Plus Jakarta Sans. Voir `maquettes/g5.html` et les `maquettes/open-*.html`.
+- **Implémenté** dans `templates/feed/`, `assets/styles/feed.css` (socle et
+  quatre premières apps) et `assets/styles/apps/` (une feuille par app).
+  La liste des 27 apps imitées est dans `inspirations/README.md`.
 
 ## Ajouter une inspiration
 

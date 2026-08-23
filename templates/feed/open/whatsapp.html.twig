@@ -1,0 +1,37 @@
+{% extends 'base_feed.html.twig' %}
+
+{% set data = media.appData %}
+{% set contact = data.contact|default('Dodo du passé') %}
+
+{% block title %}{{ media.title }} · WhatsApp{% endblock %}
+{% block body_class %}f-open f-open-wa{% endblock %}
+
+{% block body %}
+    {{ include('feed/_aura_toast.html.twig', {media: media, justOpened: justOpened}, with_context: false) }}
+
+    <main class="f-wrap f-wrap-open">
+        <div class="f-bar wa-bar">
+            <a class="f-back" href="{{ path('app_feed') }}" aria-label="Retour">‹</a>
+            <span class="wa-av">{{ data.contactEmoji|default('👶') }}</span>
+            <div class="wa-who">
+                <b>{{ contact }}</b>
+                <small>{{ data.statusLine|default('vu il y a 11 ans') }}</small>
+            </div>
+            <span class="wa-acts" aria-hidden="true"><span>📹</span><span>📞</span><span>⋮</span></span>
+        </div>
+
+        <div class="wa-day">Aujourd'hui</div>
+        <div class="wa-lock">🔒 Les messages sont chiffrés de bout en bout. Personne, pas même WhatsApp, ne peut les lire. Ta mère, si.</div>
+
+        {{ include('feed/_chat.html.twig', {media: media, data: data, prefix: 'wa', ticks: '✓✓'}, with_context: false) }}
+
+        <div class="wa-input" aria-hidden="true">
+            <div class="wa-field"><span>😊</span><span class="wa-ph">Message</span><span>📎</span><span>📷</span></div>
+            <span class="wa-mic">🎤</span>
+        </div>
+    </main>
+
+    {% if not preview %}
+        <div class="f-cta"><a href="{{ path('app_feed') }}">Retour aux notifications</a></div>
+    {% endif %}
+{% endblock %}

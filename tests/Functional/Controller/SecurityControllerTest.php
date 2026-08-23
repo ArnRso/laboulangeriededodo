@@ -138,4 +138,16 @@ class SecurityControllerTest extends WebTestCase
 
         self::assertResponseRedirects('/');
     }
+
+    public function testLoginCsrfFieldIsDoubleSubmittedByTheBrowser(): void
+    {
+        $crawler = $this->client->request('GET', '/connexion');
+
+        self::assertResponseIsSuccessful();
+        self::assertSame(
+            'csrf-protection',
+            $crawler->filter('input[name="_csrf_token"]')->attr('data-controller'),
+            'Sans le contrôleur, le jeton sans état n\'est pas doublé par cookie et la connexion échoue dès que la session a connu un formulaire.',
+        );
+    }
 }

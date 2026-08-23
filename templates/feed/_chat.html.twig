@@ -1,0 +1,67 @@
+{#
+    Une conversation en bulles, partagée par les messageries (WhatsApp,
+    Messenger, iMessage). Le contact envoie d'abord le souvenir, puis viennent
+    les lignes de `conversation` (« moi: » pour une bulle envoyée), et la
+    description en dernière bulle du contact. L'aura arrive en réaction sur le
+    souvenir et en message système à la fin.
+
+    Paramètres :
+      - media   : Media
+      - data    : appData
+      - prefix  : préfixe CSS de l'app (wa, ms, im)
+      - ticks   : marque après l'heure des bulles envoyées (optionnel)
+      - receipt : mention sous la dernière bulle envoyée (optionnel)
+#}
+{% set p = prefix %}
+{% set contactEmoji = data.contactEmoji|default('👶') %}
+
+{% set bubbles = [{side: 'in', kind: 'media', text: ''}] %}
+{% for line in data.conversation|default('')|split('\n') %}
+    {% set line = line|trim %}
+    {% if line|lower starts with 'moi:' %}
+        {% set text = line|slice(4)|trim %}
+        {% if text %}{% set bubbles = bubbles|merge([{side: 'out', kind: 'text', text: text}]) %}{% endif %}
+    {% elseif line %}
+        {% set bubbles = bubbles|merge([{side: 'in', kind: 'text', text: line}]) %}
+    {% endif %}
+{% endfor %}
+{% if media.description %}
+    {% set bubbles = bubbles|merge([{side: 'in', kind: 'text', text: media.description}]) %}
+{% endif %}
+
+{% set lastOut = -1 %}
+{% for b in bubbles %}
+    {% if b.side == 'out' %}{% set lastOut = loop.index0 %}{% endif %}
+{% endfor %}
+
+<div class="{{ p }}-chat">
+    {% for b in bubbles %}
+        {% set first = loop.first ? true : bubbles[loop.index0 - 1].side != b.side %}
+        {% set last = loop.last ? true : bubbles[loop.index0 + 1].side != b.side %}
+        {% set minutes = 1421 + loop.index0 * 2 %}
+        <div class="{{ p }}-row {{ p }}-row-{{ b.side }}{{ first ? ' ' ~ p ~ '-row-first' }}{{ last ? ' ' ~ p ~ '-row-last' }}">
+            {% if b.side == 'in' %}<span class="{{ p }}-av" aria-hidden="true">{{ contactEmoji }}</span>{% endif %}
+            <div class="{{ p }}-b {{ p }}-b-{{ b.side }}{{ b.kind == 'media' ? ' ' ~ p ~ '-b-media' }}">
+                {% if b.kind == 'media' %}
+                    {{ include('feed/_media.html.twig', {media: media, class: p ~ '-media'}, with_context: false) }}
+                    <p class="{{ p }}-cap">{{ media.title }}</p>
+                {% else %}
+                    <p>{{ b.text }}</p>
+                {% endif %}
+                <span class="{{ p }}-t">{{ '%02d:%02d'|format((minutes // 60) % 24, minutes % 60) }}{% if b.side == 'out' and ticks|default('') %} <i>{{ ticks }}</i>{% endif %}</span>
+                {% if b.kind == 'media' %}
+                    <span class="{{ p }}-react {{ media.auraPoints < 0 ? p ~ '-react-neg' : '' }}">{{ media.auraPoints < 0 ? '💀' : '✨' }}<b>{{ media.auraPoints > 0 ? '+' : '' }}{{ media.auraPoints }}</b></span>
+                {% endif %}
+            </div>
+        </div>
+        {% if loop.index0 == lastOut and receipt|default('') %}
+            <div class="{{ p }}-receipt">{{ receipt }}</div>
+        {% endif %}
+    {% endfor %}
+
+    <div class="{{ p }}-sys {{ media.auraPoints < 0 ? p ~ '-sys-neg' : '' }}">
+        {{ media.auraPoints < 0 ? '💀' : '✨' }}
+        <b>{{ media.auraPoints > 0 ? '+' : '' }}{{ media.auraPoints }} aura</b>
+        · {{ media.auraMessage|default(media.auraPoints < 0 ? 'Cette décision était objectivement catastrophique.' : 'Ne la gaspille pas.') }}
+    </div>
+</div>

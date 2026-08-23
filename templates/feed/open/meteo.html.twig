@@ -1,0 +1,98 @@
+{% extends 'base_feed.html.twig' %}
+
+{% set data = media.appData %}
+{% set condition = data.condition|default('Nuageux avec risque de drama') %}
+{% set cond = condition|lower %}
+{% if 'orage' in cond %}
+    {% set icon = '⛈️' %}
+{% elseif 'neig' in cond %}
+    {% set icon = '❄️' %}
+{% elseif 'pluie' in cond or 'pluv' in cond %}
+    {% set icon = '🌧️' %}
+{% elseif 'soleil' in cond %}
+    {% set icon = '☀️' %}
+{% elseif 'nuag' in cond %}
+    {% set icon = '☁️' %}
+{% else %}
+    {% set icon = '⛅' %}
+{% endif %}
+{% set dramaIndex = data.dramaIndex|default(87) %}
+
+{% block title %}{{ media.title }} · Météo{% endblock %}
+{% block body_class %}f-open f-open-mt{% endblock %}
+
+{% block body %}
+    {{ include('feed/_aura_toast.html.twig', {media: media, justOpened: justOpened}, with_context: false) }}
+
+    <main class="f-wrap f-wrap-open">
+        <div class="f-bar f-bar-inverse">
+            <a class="f-back" href="{{ path('app_feed') }}" aria-label="Retour">‹</a>
+            <b>Météo</b>
+            <span class="f-bar-spacer"></span>
+        </div>
+
+        <header class="mt-hero">
+            <h1>{{ data.city|default('Ton adolescence') }}</h1>
+            <span class="mt-icon" aria-hidden="true">{{ icon }}</span>
+            <div class="mt-temp">{{ data.temperature|default(23) }}°</div>
+            <p class="mt-cond">{{ condition }}</p>
+            <p class="mt-hl">Max. {{ data.high|default(31) }}° · Min. {{ data.low|default(12) }}°</p>
+        </header>
+
+        {% set hours = [] %}
+        {% for line in data.hourly|default('')|split('\n') %}
+            {% if line|trim %}{% set hours = hours|merge([line|trim]) %}{% endif %}
+        {% endfor %}
+
+        {% if hours is not empty %}
+            <section class="mt-card mt-hourly">
+                <small class="mt-h2">🕐 Prévisions heure par heure</small>
+                <div class="mt-strip">
+                    {% for hour in hours %}
+                        {% set parts = hour|split(' ') %}
+                        {% set n = parts|length %}
+                        <div class="mt-slot">
+                            <span>{{ parts[0] }}</span>
+                            <i>{{ n >= 3 ? parts|slice(1, n - 2)|join(' ') : (n == 2 ? parts[1] : '') }}</i>
+                            <b>{{ n >= 3 ? parts[n - 1] : '' }}</b>
+                        </div>
+                    {% endfor %}
+                </div>
+            </section>
+        {% endif %}
+
+        <section class="mt-card">
+            <small class="mt-h2">🎭 Indice drama</small>
+            <div class="mt-drama">
+                <b>{{ dramaIndex }}</b>
+                <div class="mt-gauge" aria-hidden="true"><i style="width: {{ dramaIndex }}%"></i></div>
+                <span>{{ dramaIndex >= 70 ? 'Extrême · rester à l\'intérieur' : (dramaIndex >= 40 ? 'Élevé · éviter les soirées' : 'Faible · trop calme, suspect') }}</span>
+            </div>
+        </section>
+
+        <section class="mt-card">
+            <small class="mt-h2">📸 Photo du jour</small>
+            <h2 class="mt-title">{{ media.title }}</h2>
+            {{ include('feed/_media.html.twig', {media: media, class: 'mt-media'}, with_context: false) }}
+        </section>
+
+        {% if media.description %}
+            <section class="mt-card">
+                <small class="mt-h2">📝 Bulletin</small>
+                <p class="mt-text">{{ media.description }}</p>
+            </section>
+        {% endif %}
+
+        <section class="mt-card">
+            <small class="mt-h2">🌡️ Pression d'aura</small>
+            <div class="mt-aura {{ media.auraPoints < 0 ? 'mt-aura-neg' : '' }}">
+                <b>{{ media.auraPoints > 0 ? '+' : '' }}{{ media.auraPoints }} aura</b>
+                <span>{{ media.auraMessage|default(media.auraPoints < 0 ? 'Dépression en approche. Cette décision était objectivement catastrophique.' : 'Anticyclone. Ne la gaspille pas.') }}</span>
+            </div>
+        </section>
+    </main>
+
+    {% if not preview %}
+        <div class="f-cta"><a href="{{ path('app_feed') }}">Retour aux notifications</a></div>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,71 @@
+{% extends 'base_feed.html.twig' %}
+
+{% set data = media.appData %}
+{% set counterparty = data.counterparty|default('Dodo du passé') %}
+{% set negative = media.auraPoints < 0 %}
+{% set amount = (negative ? '−' : '+') ~ media.auraPoints|abs|number_format(0, ',', ' ') ~ ' aura' %}
+{% set email = counterparty|lower|replace({' ': '.', '\'': '', é: 'e', è: 'e', ê: 'e', à: 'a', ç: 'c', ô: 'o', î: 'i', ï: 'i', ù: 'u', û: 'u'}) ~ '@passe.fr' %}
+
+{% block title %}{{ media.title }} · PayPal{% endblock %}
+{% block body_class %}f-open f-open-pp{% endblock %}
+
+{% block body %}
+    {{ include('feed/_aura_toast.html.twig', {media: media, justOpened: justOpened}, with_context: false) }}
+
+    <main class="f-wrap f-wrap-open">
+        <div class="f-bar f-bar-line">
+            <a class="f-back" href="{{ path('app_feed') }}" aria-label="Retour">‹</a>
+            <b class="pp-logo" aria-label="PayPal"><span>Pay</span><span>Pal</span></b>
+            <span class="f-bar-spacer"></span>
+        </div>
+
+        <header class="pp-hero">
+            <span class="pp-check {{ negative ? 'pp-check-neg' : '' }}">{{ negative ? '↑' : '✓' }}</span>
+            <p class="pp-kicker">{{ negative ? 'Tu as envoyé un paiement' : 'Tu as reçu un paiement' }}</p>
+            <div class="pp-amount {{ negative ? 'pp-amount-neg' : '' }}">{{ amount }}</div>
+            <h1 class="pp-title">{{ media.title }}</h1>
+            <small class="pp-date">{{ 'now'|date('d/m/Y') }} · {{ 'now'|date('H:i') }}</small>
+        </header>
+
+        <section class="pp-card pp-sender">
+            <span class="pp-av">{{ counterparty|first|upper }}</span>
+            <div>
+                <small>{{ negative ? 'Envoyé à' : 'Envoyé par' }}</small>
+                <b>{{ counterparty }}</b>
+                <span class="pp-mail">{{ email }}</span>
+            </div>
+        </section>
+
+        {% if data.note|default('') %}
+            <section class="pp-card pp-note">
+                <small>Note</small>
+                <p>« {{ data.note }} »</p>
+            </section>
+        {% endif %}
+
+        <h2 class="pp-h2">Pièce jointe</h2>
+        <section class="pp-card pp-card-media">
+            {{ include('feed/_media.html.twig', {media: media, class: 'pp-media'}, with_context: false) }}
+        </section>
+
+        {% if media.description %}
+            <h2 class="pp-h2">Détails</h2>
+            <section class="pp-card"><p class="pp-details">{{ media.description }}</p></section>
+        {% endif %}
+
+        <section class="pp-card pp-lines">
+            <div class="pp-line"><span>ID de transaction</span><b class="pp-id">{{ data.transactionId|default('2015-CANON-EVENT-4H12') }}</b></div>
+            <div class="pp-line"><span>Frais</span><b>{{ data.fee|default('Aucuns frais') }}</b></div>
+            <div class="pp-line pp-line-total"><span>Total</span><b class="{{ negative ? 'pp-neg' : '' }}">{{ amount }}</b></div>
+        </section>
+
+        <div class="pp-btns" aria-hidden="true">
+            <span class="pp-btn">{{ negative ? 'Voir l\'activité' : 'Transférer vers mon compte' }}</span>
+            <span class="pp-btn pp-btn-s">{{ negative ? 'Signaler un problème' : 'Envoyer un remerciement' }}</span>
+        </div>
+    </main>
+
+    {% if not preview %}
+        <div class="f-cta"><a href="{{ path('app_feed') }}">Retour aux notifications</a></div>
+    {% endif %}
+{% endblock %}

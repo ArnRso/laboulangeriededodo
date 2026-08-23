@@ -1,0 +1,78 @@
+{% extends 'base_feed.html.twig' %}
+
+{% set data = media.appData %}
+{% set restaurant = data.restaurant|default('Chez Dodo') %}
+{% set items = [] %}
+{% for line in data.items|default('')|split('\n') %}
+    {% if line|trim %}{% set items = items|merge([line|trim]) %}{% endif %}
+{% endfor %}
+
+{% block title %}{{ media.title }} · Deliveroo{% endblock %}
+{% block body_class %}f-open f-open-dv{% endblock %}
+
+{% block body %}
+    {{ include('feed/_aura_toast.html.twig', {media: media, justOpened: justOpened}, with_context: false) }}
+
+    <main class="f-wrap f-wrap-open">
+        <header class="dv-top">
+            <div class="f-bar f-bar-inverse">
+                <a class="f-back" href="{{ path('app_feed') }}" aria-label="Retour">‹</a>
+                <b>Suivi de commande</b>
+                <span class="f-bar-spacer"></span>
+            </div>
+            <div class="dv-eta">
+                <small>Livrée en</small>
+                <b>{{ data.eta|default('11 ans') }}</b>
+                <span>{{ restaurant }}</span>
+            </div>
+            <ol class="dv-steps">
+                <li class="done"><i></i><span>Commande acceptée</span></li>
+                <li class="done"><i></i><span>En préparation</span></li>
+                <li class="done"><i></i><span>En route</span></li>
+                <li class="done dv-step-now"><i></i><span>Livrée ✓</span></li>
+            </ol>
+        </header>
+
+        <section class="dv-card dv-rider">
+            <span class="dv-bike">🚴</span>
+            <div>
+                <b>{{ data.rider|default('Dodo du passé') }}</b>
+                <small>Ton livreur · à vélo · a sonné une seule fois</small>
+            </div>
+            <span class="dv-chat" aria-hidden="true">💬</span>
+        </section>
+
+        <section class="dv-card">
+            <h2>Ta commande</h2>
+            {{ include('feed/_media.html.twig', {media: media, class: 'dv-media'}, with_context: false) }}
+            <div class="dv-dish">
+                <b>{{ media.title }}</b>
+                <small>{{ restaurant }}</small>
+            </div>
+            {% if items is not empty %}
+                <ul class="dv-items">
+                    {% for item in items %}<li>{{ item }}</li>{% endfor %}
+                </ul>
+            {% endif %}
+        </section>
+
+        {% if media.description %}
+            <section class="dv-card">
+                <h2>Instructions de livraison</h2>
+                <p class="dv-instr">{{ media.description }}</p>
+            </section>
+        {% endif %}
+
+        <section class="dv-card dv-receipt">
+            <h2>Reçu</h2>
+            <div class="dv-row"><span>Sous-total</span><span>{{ media.auraPoints > 0 ? '+' : '' }}{{ media.auraPoints }} aura</span></div>
+            <div class="dv-row"><span>Frais de livraison</span><span>0 aura</span></div>
+            <div class="dv-row"><span>Frais de service</span><span>0 aura</span></div>
+            <div class="dv-row dv-row-total"><span>Total</span><span class="{{ media.auraPoints < 0 ? 'dv-neg' : '' }}">{{ media.auraPoints > 0 ? '+' : '' }}{{ media.auraPoints }} aura</span></div>
+        </section>
+    </main>
+
+    {% if not preview %}
+        <div class="f-cta"><a href="{{ path('app_feed') }}">Retour aux notifications</a></div>
+    {% endif %}
+{% endblock %}
