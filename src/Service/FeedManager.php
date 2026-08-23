@@ -3,6 +3,8 @@
 namespace App\Service;
 
 use App\Entity\Media;
+use App\Repository\FeedSkipRepository;
+use App\Repository\MediaAccessRepository;
 use App\Repository\MediaRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -16,6 +18,8 @@ class FeedManager
 {
     public function __construct(
         private readonly MediaRepository $mediaRepository,
+        private readonly MediaAccessRepository $mediaAccessRepository,
+        private readonly FeedSkipRepository $feedSkipRepository,
         private readonly EntityManagerInterface $entityManager,
     ) {
     }
@@ -35,8 +39,21 @@ class FeedManager
 
     public function delete(Media $media): void
     {
+        // La base efface consultations et coups de pouce en cascade, mais
+        // Doctrine garde en mémoire ceux qu'il avait chargés : sans cet oubli,
+        // il tenterait de les réinsérer au flush de la renumérotation. On les
+        // relève avant la suppression, tant qu'ils existent encore.
+        $orphans = [
+            ...$this->mediaAccessRepository->findByMedia($media),
+            ...$this->feedSkipRepository->findByMedia($media),
+        ];
+
         $this->entityManager->remove($media);
         $this->entityManager->flush();
+
+        foreach ($orphans as $orphan) {
+            $this->entityManager->detach($orphan);
+        }
 
         $this->normalizePositions();
     }

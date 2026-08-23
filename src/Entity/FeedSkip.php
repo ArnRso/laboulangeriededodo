@@ -2,12 +2,16 @@
 
 namespace App\Entity;
 
-use App\Repository\MediaAccessRepository;
+use App\Repository\FeedSkipRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: MediaAccessRepository::class)]
-#[ORM\UniqueConstraint(name: 'uniq_user_media', columns: ['user_id', 'media_id'])]
-class MediaAccess
+/**
+ * Un coup de pouce : le destinataire a sauté l'attente d'une notification.
+ * Sert aux démonstrations, pour ne pas patienter des heures devant le chrono.
+ */
+#[ORM\Entity(repositoryClass: FeedSkipRepository::class)]
+#[ORM\UniqueConstraint(name: 'uniq_skip_user_media', columns: ['user_id', 'media_id'])]
+class FeedSkip
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -23,11 +27,11 @@ class MediaAccess
     private Media $media;
 
     #[ORM\Column]
-    private \DateTimeImmutable $openedAt;
+    private \DateTimeImmutable $skippedAt;
 
     public function __construct()
     {
-        $this->openedAt = new \DateTimeImmutable();
+        $this->skippedAt = new \DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -59,14 +63,14 @@ class MediaAccess
         return $this;
     }
 
-    public function getOpenedAt(): \DateTimeImmutable
+    public function getSkippedAt(): \DateTimeImmutable
     {
-        return $this->openedAt;
+        return $this->skippedAt;
     }
 
-    public function setOpenedAt(\DateTimeImmutable $openedAt): static
+    public function setSkippedAt(\DateTimeImmutable $skippedAt): static
     {
-        $this->openedAt = $openedAt;
+        $this->skippedAt = $skippedAt;
 
         return $this;
     }

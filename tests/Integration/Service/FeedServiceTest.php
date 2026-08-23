@@ -5,6 +5,7 @@ namespace App\Tests\Integration\Service;
 use App\Entity\MediaAccess;
 use App\Repository\MediaAccessRepository;
 use App\Service\FeedService;
+use App\Service\FeedUnlockService;
 use App\Tests\Factory\MediaFactory;
 use App\Tests\Factory\UserFactory;
 use Doctrine\ORM\EntityManagerInterface;
@@ -17,6 +18,7 @@ class FeedServiceTest extends KernelTestCase
     private MediaFactory $mediaFactory;
     private UserFactory $userFactory;
     private MediaAccessRepository $accessRepository;
+    private FeedUnlockService $unlockService;
     private EntityManagerInterface $entityManager;
 
     protected function setUp(): void
@@ -27,6 +29,7 @@ class FeedServiceTest extends KernelTestCase
         $this->entityManager = $container->get(EntityManagerInterface::class);
         $this->feedService = $container->get(FeedService::class);
         $this->accessRepository = $container->get(MediaAccessRepository::class);
+        $this->unlockService = $container->get(FeedUnlockService::class);
         $this->mediaFactory = new MediaFactory($this->entityManager);
         $this->userFactory = new UserFactory($this->entityManager, $container->get(UserPasswordHasherInterface::class));
     }
@@ -148,5 +151,71 @@ class FeedServiceTest extends KernelTestCase
         self::assertNotNull($overview->fresh);
         self::assertSame($medias[0], $overview->fresh->media, 'Pour Dorian, la première n\'est pas ouverte.');
         self::assertSame([], $overview->seen);
+    }
+
+    public function testSkippingTheWaitMakesTheNextNotificationAvailable(): void
+    {
+        $user = $this->userFactory->createRecipient();
+        $medias = $this->mediaFactory->createFeed(2, delayMinutes: 1440);
+        $this->feedService->open($user, $medias[0]);
+
+        self::assertFalse($this->unlockService->canOpen($user, $medias[1]), 'Elle attend encore son délai.');
+
+        $skipped = $this->feedService->skipWait($user);
+
+        self::assertSame($medias[1], $skipped);
+        self::assertTrue($this->unlockService->canOpen($user, $medias[1]));
+    }
+
+    public function testSkippingDoesNotUnlockTheWholeFeed(): void
+    {
+        $user = $this->userFactory->createRecipient();
+        $medias = $this->mediaFactory->createFeed(3, delayMinutes: 1440);
+        $this->feedService->open($user, $medias[0]);
+        $this->feedService->skipWait($user);
+
+        self::assertFalse(
+            $this->unlockService->canOpen($user, $medias[2]),
+            'Le coup de pouce ne vaut que pour la notification suivante.',
+        );
+    }
+
+    public function testSkippingTwiceWalksDownTheFeed(): void
+    {
+        $user = $this->userFactory->createRecipient();
+        $medias = $this->mediaFactory->createFeed(3, delayMinutes: 1440);
+        $this->feedService->open($user, $medias[0]);
+
+        $this->feedService->skipWait($user);
+        $this->feedService->open($user, $medias[1]);
+        $second = $this->feedService->skipWait($user);
+
+        self::assertSame($medias[2], $second);
+        self::assertTrue($this->unlockService->canOpen($user, $medias[2]));
+    }
+
+    public function testSkippingWithNothingWaitingIsRefused(): void
+    {
+        $user = $this->userFactory->createRecipient();
+        $medias = $this->mediaFactory->createFeed(1, delayMinutes: 1440);
+        $this->feedService->open($user, $medias[0]);
+
+        $this->expectException(\LogicException::class);
+
+        $this->feedService->skipWait($user);
+    }
+
+    public function testSkippingTheSameNotificationTwiceIsHarmless(): void
+    {
+        $user = $this->userFactory->createRecipient();
+        $medias = $this->mediaFactory->createFeed(2, delayMinutes: 1440);
+        $this->feedService->open($user, $medias[0]);
+        $this->feedService->skipWait($user);
+
+        // Deux appuis rapprochés visent la même notification : le second ne
+        // doit pas buter sur la contrainte d'unicité.
+        $again = $this->feedService->skipWaitFor($user, $medias[1]);
+
+        self::assertSame($medias[1], $again);
     }
 }

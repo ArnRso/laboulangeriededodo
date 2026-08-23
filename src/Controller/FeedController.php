@@ -10,6 +10,7 @@ use Psr\Clock\ClockInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 /**
@@ -66,6 +67,33 @@ class FeedController extends AbstractController
             'auraTotal' => $auraService->total($user),
             'recipient' => $user,
         ]);
+    }
+
+    /**
+     * Le coup de pouce de démonstration : la prochaine notification arrive
+     * tout de suite, sans attendre son délai.
+     */
+    #[Route('/coup-de-pouce', name: 'app_feed_skip', methods: ['POST'])]
+    #[IsCsrfTokenValid('feed_skip')]
+    public function skip(FeedService $feedService): Response
+    {
+        $user = $this->getRecipient();
+
+        if ($user->isAdmin()) {
+            return $this->redirectToRoute('app_admin_notification_index');
+        }
+
+        try {
+            $media = $feedService->skipWait($user);
+        } catch (\LogicException) {
+            $this->addFlash('error', 'Rien n\'attend son tour : le fil est à jour.');
+
+            return $this->redirectToRoute('app_feed');
+        }
+
+        $this->addFlash('success', sprintf('Le temps a sauté. « %s » vient d\'arriver.', $media->getTitle()));
+
+        return $this->redirectToRoute('app_feed');
     }
 
     private function getRecipient(): User

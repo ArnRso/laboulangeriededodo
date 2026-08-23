@@ -2,9 +2,11 @@
 
 namespace App\Service;
 
+use App\Entity\FeedSkip;
 use App\Entity\Media;
 use App\Entity\MediaAccess;
 use App\Entity\User;
+use App\Repository\FeedSkipRepository;
 use App\Repository\MediaAccessRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Clock\ClockInterface;
@@ -18,6 +20,7 @@ class FeedService
     public function __construct(
         private readonly FeedUnlockService $unlockService,
         private readonly MediaAccessRepository $mediaAccessRepository,
+        private readonly FeedSkipRepository $feedSkipRepository,
         private readonly EntityManagerInterface $entityManager,
         private readonly ClockInterface $clock,
     ) {
@@ -50,6 +53,48 @@ class FeedService
         $this->entityManager->flush();
 
         return $access;
+    }
+
+    /**
+     * Saute l'attente de la prochaine notification : elle devient disponible
+     * immédiatement. Sert aux démonstrations.
+     *
+     * @return Media la notification débloquée
+     *
+     * @throws \LogicException si aucune notification n'est en attente
+     */
+    public function skipWait(User $user): Media
+    {
+        $next = $this->getOverview($user)->next;
+
+        if (null === $next) {
+            throw new \LogicException('Aucune notification n\'attend son tour.');
+        }
+
+        return $this->skipWaitFor($user, $next->media);
+    }
+
+    /**
+     * Débloque une notification précise. Deux appuis rapprochés visent la même
+     * notification : le second ne doit pas buter sur la contrainte d'unicité.
+     */
+    public function skipWaitFor(User $user, Media $media): Media
+    {
+        $existing = $this->feedSkipRepository->findOneBy(['user' => $user, 'media' => $media]);
+
+        if (null !== $existing) {
+            return $media;
+        }
+
+        $skip = new FeedSkip();
+        $skip->setUser($user)
+            ->setMedia($media)
+            ->setSkippedAt($this->clock->now());
+
+        $this->entityManager->persist($skip);
+        $this->entityManager->flush();
+
+        return $media;
     }
 
     public function hasOpened(User $user, Media $media): bool
