@@ -28,3 +28,5 @@
 
 /node_modules/
 /.twig-cs-fixer.cache
+
+.DS_Store
