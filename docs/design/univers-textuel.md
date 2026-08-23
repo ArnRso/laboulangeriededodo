@@ -18,8 +18,9 @@ Dorian doit tenir dans ce ton. Jamais « XP », jamais de ton corporate.
 
 | Terme | Usage dans l'appli |
 |---|---|
-| **Canon event** 🔒 | Le compte à rebours : « Cette journée était inévitable. [ACCEPTER MON DESTIN] » |
+| **Canon event** 🔒 | Le compte à rebours : « Cette journée était inévitable. [ACCEPTER MON DESTIN] » ou « ceci devait arriver, désolé » |
 | **Side quest** 🎯 | Une petite mission du jour (« envoyer "tu me manques" à quelqu'un sans aucune explication ») |
+| **Daily challenge** | Prendre une photo, envoyer un message, faire quelque chose d'absurde |
 | **Lore unlocked** 🧩 | Un souvenir révélé : « Tu pensais connaître toute l'histoire. Tu avais tort. » |
 | **Achievement unlocked** 🏆 | Badge débloqué après une action |
 | **Character development** | « tu viens de prendre +1 en maturité » |
@@ -29,6 +30,7 @@ Dorian doit tenir dans ce ton. Jamais « XP », jamais de ton corporate.
 | **Gay panic meter** 🌈 | Niveau du jour |
 | **Red flag / green flag** 🚩🟢 | Il doit trancher une situation |
 | **POV du jour** | « POV : tu as dit "je reste 1h" et il est 4h12. » |
+| **POV : ton ex revient** | Plusieurs choix de réaction |
 | **Hot take du jour** | Une opinion volontairement polémique sur lui |
 | **Lore drop** | Une anecdote inconnue sur lui ou le groupe |
 | **Lost media / Leaked footage** | Une vieille photo ou vidéo « qui n'aurait jamais dû sortir » |
@@ -37,7 +39,12 @@ Dorian doit tenir dans ce ton. Jamais « XP », jamais de ton corporate.
 | **Tier list** | Ses expressions, ses outfits, ses habitudes |
 | **Choose your fighter** | 4 versions de lui-même |
 | **NPC dialogue** | Une conversation absurde où il choisit ses réponses |
-| **Would you rather / Smash or pass / Hear me out / Rate me** | Formats de choix absurdes |
+| **Rate me** | « note cette photo de toi de 1 à 10 » |
+| **Smash or pass** | Version célébrités / personnages / objets absurdes |
+| **Would you rather** | Deux choix impossibles |
+| **Hear me out** | Un personnage improbable, il doit donner son avis |
+
+Source : quatre captures ChatGPT, voir `inspirations/`.
 
 ## Formats de contenu imitant de vraies apps
 
