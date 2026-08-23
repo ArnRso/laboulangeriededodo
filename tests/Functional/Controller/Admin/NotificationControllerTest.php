@@ -9,6 +9,7 @@ use App\Repository\MediaRepository;
 use App\Tests\Factory\MediaFactory;
 use App\Tests\Factory\UserFactory;
 use Doctrine\ORM\EntityManagerInterface;
+use League\Flysystem\FilesystemOperator;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -220,6 +221,7 @@ class NotificationControllerTest extends WebTestCase
 
         $publicPath = self::getContainer()->getParameter('kernel.project_dir').'/public/'.$media->getFilePath();
         self::assertFileDoesNotExist($publicPath, 'Un fichier dans public/ contournerait le délai.');
+        self::assertTrue($this->mediaStorage()->fileExists($media->getFilePath()), 'Le fichier est rangé dans le stockage Flysystem.');
 
         $this->removeUploadedFile($media);
     }
@@ -397,11 +399,12 @@ class NotificationControllerTest extends WebTestCase
 
     private function removeUploadedFile(Media $media): void
     {
-        $path = self::getContainer()->getParameter('app.upload.media_directory').'/'.$media->getFilePath();
+        $this->mediaStorage()->delete((string) $media->getFilePath());
+    }
 
-        if (is_file($path)) {
-            unlink($path);
-        }
+    private function mediaStorage(): FilesystemOperator
+    {
+        return self::getContainer()->get('media.storage');
     }
 
     /**

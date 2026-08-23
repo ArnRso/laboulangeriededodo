@@ -7,7 +7,6 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
-    app.upload.media_directory: '%kernel.project_dir%/var/uploads/media'
     app.mail.sender_address: '%env(MAIL_SENDER_ADDRESS)%'
     app.mail.sender_name: '%env(MAIL_SENDER_NAME)%'
     app.mail.reply_to: '%env(MAIL_REPLY_TO)%'
@@ -22,10 +21,6 @@ services:
     # this creates a service per class whose id is the fully-qualified class name
     App\:
         resource: '../src/'
-
-    App\Controller\MediaFileController:
-        arguments:
-            $uploadDirectory: '%app.upload.media_directory%'
 
     App\Service\InvitationMailer:
         arguments:

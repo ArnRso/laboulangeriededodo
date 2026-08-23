@@ -7,6 +7,7 @@ use App\Enum\MediaType;
 use App\Tests\Factory\MediaFactory;
 use App\Tests\Factory\UserFactory;
 use Doctrine\ORM\EntityManagerInterface;
+use League\Flysystem\FilesystemOperator;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
@@ -100,30 +101,20 @@ class MediaFileControllerTest extends WebTestCase
         $media = $this->mediaFactory->createNotification($position, 'Une photo');
         $media->setType(MediaType::IMAGE)->setFilePath('test-fixture.png');
 
-        $directory = $this->uploadDirectory();
-
-        if (!is_dir($directory)) {
-            mkdir($directory, 0o777, true);
-        }
-
-        file_put_contents($directory.'/test-fixture.png', 'contenu');
+        $this->mediaStorage()->write('test-fixture.png', 'contenu');
         $this->entityManager->flush();
 
         return $media;
     }
 
-    private function uploadDirectory(): string
+    private function mediaStorage(): FilesystemOperator
     {
-        return self::getContainer()->getParameter('app.upload.media_directory');
+        return self::getContainer()->get('media.storage');
     }
 
     protected function tearDown(): void
     {
-        $path = $this->uploadDirectory().'/test-fixture.png';
-
-        if (is_file($path)) {
-            unlink($path);
-        }
+        $this->mediaStorage()->delete('test-fixture.png');
 
         parent::tearDown();
     }
