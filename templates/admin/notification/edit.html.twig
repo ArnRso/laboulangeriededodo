@@ -8,10 +8,13 @@
             <h1 class="h3 mb-1">{{ media.appKind.icon }} Modifier la notification</h1>
             <p class="text-body-secondary mb-0">{{ media.appKind.label }} · l'application ne se change pas, supprime et recrée si besoin.</p>
         </div>
-        <a class="btn btn-outline-primary" href="{{ path('app_admin_notification_preview', {id: media.id}) }}">Aperçu</a>
+        <a class="btn btn-outline-primary" href="{{ path('app_admin_notification_preview', {id: media.id}) }}">Aperçu plein écran</a>
     </div>
 
-    <div class="row">
+    <div class="row g-4"
+         data-controller="live-preview"
+         data-live-preview-url-value="{{ path('app_admin_notification_preview', {id: media.id}) }}"
+         data-action="input->live-preview#refresh change->live-preview#refresh media-type:changed->live-preview#refresh">
         <div class="col-12 col-lg-7">
             {% if media.filePath %}
                 <div class="alert alert-secondary">
@@ -25,6 +28,9 @@
                 submitLabel: 'Enregistrer',
                 cancelPath: path('app_admin_notification_index'),
             }, with_context: false) }}
+        </div>
+        <div class="col-12 col-lg-5">
+            {{ include('admin/notification/_live_preview.html.twig') }}
         </div>
     </div>
 {% endblock %}

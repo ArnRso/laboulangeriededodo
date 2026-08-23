@@ -6,7 +6,10 @@
     <h1 class="h3 mb-1">{{ appKind.icon }} Nouvelle notification {{ appKind.label }}</h1>
     <p class="text-body-secondary mb-4">Étape 2 sur 2 — {{ appKind.pitch }}</p>
 
-    <div class="row">
+    <div class="row g-4"
+         data-controller="live-preview"
+         data-live-preview-url-value="{{ path('app_admin_notification_draft_preview', {app: appKind.value}) }}"
+         data-action="input->live-preview#refresh change->live-preview#refresh media-type:changed->live-preview#refresh">
         <div class="col-12 col-lg-7">
             {{ include('admin/notification/_form.html.twig', {
                 form: form,
@@ -14,6 +17,9 @@
                 submitLabel: 'Ajouter au fil',
                 cancelPath: path('app_admin_notification_choose'),
             }, with_context: false) }}
+        </div>
+        <div class="col-12 col-lg-5">
+            {{ include('admin/notification/_live_preview.html.twig') }}
         </div>
     </div>
 {% endblock %}

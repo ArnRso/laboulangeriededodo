@@ -5,15 +5,17 @@
       - media : Media
       - class : classes CSS du conteneur (optionnel)
 #}
+{# Un brouillon n'a pas encore d'identifiant : l'aperçu en direct remplace la source côté navigateur. #}
+{% set fileUrl = media.id ? path('app_media_file', {id: media.id}) : '' %}
 <div class="f-media {{ class|default('') }} f-media-{{ media.type.value }}">
     {% if media.type.value == 'image' %}
-        <img src="{{ path('app_media_file', {id: media.id}) }}" alt="{{ media.title }}">
+        <img src="{{ fileUrl }}" alt="{{ media.title }}">
     {% elseif media.type.value == 'video' %}
-        <video controls playsinline preload="metadata" src="{{ path('app_media_file', {id: media.id}) }}">
+        <video controls playsinline preload="metadata" src="{{ fileUrl }}">
             Votre navigateur ne peut pas lire cette vidéo.
         </video>
     {% elseif media.type.value == 'audio' %}
-        <audio controls preload="metadata" src="{{ path('app_media_file', {id: media.id}) }}">
+        <audio controls preload="metadata" src="{{ fileUrl }}">
             Votre navigateur ne peut pas lire cet audio.
         </audio>
     {% elseif media.type.value == 'text' %}

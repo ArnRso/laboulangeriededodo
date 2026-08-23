@@ -1,4 +1,4 @@
-{{ form_start(form) }}
+{{ form_start(form, {attr: {'data-live-preview-target': 'form'}}) }}
     {{ form_row(form.title) }}
     {{ form_row(form.description) }}
 
@@ -27,7 +27,7 @@
         {# Photo, vidéo et audio partagent le même champ : seul l'attribut
            accept change, ajusté par le contrôleur selon l'onglet actif. #}
         <div class="d-none" data-media-type-target="panel" data-media-type-panel="file">
-            {{ form_row(form.file) }}
+            {{ form_row(form.file, {attr: {'data-action': 'change->live-preview#pickFile'}}) }}
         </div>
 
         <div class="d-none" data-media-type-target="panel" data-media-type-panel="text">

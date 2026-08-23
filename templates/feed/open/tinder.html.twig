@@ -41,7 +41,7 @@
         <div class="td-card">
             <div class="td-photo">
                 {% if media.type.value == 'image' %}
-                    <img src="{{ path('app_media_file', {id: media.id}) }}" alt="{{ media.title }}">
+                    <img src="{{ media.id ? path('app_media_file', {id: media.id}) : '' }}" alt="{{ media.title }}">
                 {% else %}
                     <span class="td-photo-emoji">{{ data.matchEmoji|default('💘') }}</span>
                 {% endif %}
