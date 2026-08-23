@@ -5,6 +5,7 @@ namespace App\Tests\Unit\Service;
 use App\Entity\Media;
 use App\Entity\MediaAccess;
 use App\Entity\User;
+use App\Repository\FeedSkipRepository;
 use App\Repository\MediaAccessRepository;
 use App\Repository\MediaRepository;
 use App\Service\FeedUnlockService;
@@ -166,7 +167,12 @@ class FeedUnlockServiceTest extends TestCase
         $accessRepository = self::createStub(MediaAccessRepository::class);
         $accessRepository->method('findForUser')->willReturn($accesses);
 
-        return new FeedUnlockService($mediaRepository, $accessRepository, new MockClock(self::NOW));
+        // Aucun coup de pouce ici : ces cas décrivent les règles d'arrivée
+        // normales, le saut de délai a ses propres tests.
+        $skipRepository = self::createStub(FeedSkipRepository::class);
+        $skipRepository->method('findForUser')->willReturn([]);
+
+        return new FeedUnlockService($mediaRepository, $accessRepository, $skipRepository, new MockClock(self::NOW));
     }
 
     /**

@@ -3,15 +3,28 @@
 {% block title %}Notifications{% endblock %}
 
 {% block body %}
-    <main class="f-wrap" data-controller="clock">
+    <main class="f-wrap" data-controller="clock cheat-code">
         <header class="f-clock">
-            <div class="f-clock-time" data-clock-target="time">{{ now|date('H:i') }}</div>
+            {# Coup de pouce de démonstration : « dodo » au clavier, ou l'horloge
+               gardée appuyée deux secondes sur mobile. #}
+            <div class="f-clock-time"
+                 data-clock-target="time"
+                 data-action="pointerdown->cheat-code#holdStart pointerup->cheat-code#holdEnd pointerleave->cheat-code#holdEnd pointercancel->cheat-code#holdEnd contextmenu->cheat-code#holdEnd">{{ now|date('H:i') }}</div>
             <div class="f-clock-date" data-clock-target="date">{{ dateLabel }}</div>
             <div class="f-aura">
                 ✨ <b>{{ auraTotal|number_format(0, ',', ' ') }} aura</b>
                 · {{ auraToday >= 0 ? '+' : '' }}{{ auraToday|number_format(0, ',', ' ') }} aujourd'hui
             </div>
         </header>
+
+        {% if overview.next %}
+            {# Hors de Turbo : il retire le cookie du double envoi après la
+               soumission, ce qui ferait rejeter le jeton au coup suivant. #}
+            <form class="f-cheat" method="post" action="{{ path('app_feed_skip') }}" data-turbo="false" data-cheat-code-target="form">
+                <input type="hidden" name="_token" value="{{ csrf_token('feed_skip') }}">
+            </form>
+            <div class="f-cheat-hint" data-cheat-code-target="hint" aria-hidden="true">⏩ le temps saute…</div>
+        {% endif %}
 
         {% if overview.isEmpty %}
             <div class="f-grp">Rien pour l'instant</div>

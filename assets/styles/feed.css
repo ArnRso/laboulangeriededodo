@@ -1666,3 +1666,37 @@ body {
 .dl-refund-neg b {
     color: #e0245e;
 }
+
+/* Coup de pouce de démonstration : le formulaire ne s'affiche jamais, seul le
+   clin d'œil apparaît le temps que la page se recharge. */
+.f-cheat {
+    display: none;
+}
+
+.f-cheat-hint {
+    position: fixed;
+    left: 50%;
+    bottom: 28px;
+    transform: translate(-50%, 12px);
+    background: var(--f-ink);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 800;
+    padding: 10px 16px;
+    border-radius: 999px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    z-index: 40;
+}
+
+.f-cheat-hint.is-visible {
+    opacity: 1;
+    transform: translate(-50%, 0);
+}
+
+.f-clock-time {
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+}

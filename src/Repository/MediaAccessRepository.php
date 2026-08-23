@@ -58,4 +58,16 @@ class MediaAccessRepository extends ServiceEntityRepository
 
         return (int) $builder->getQuery()->getSingleScalarResult();
     }
+
+    /**
+     * @return list<MediaAccess>
+     */
+    public function findByMedia(Media $media): array
+    {
+        return $this->createQueryBuilder('ma')
+            ->andWhere('ma.media = :media')
+            ->setParameter('media', $media)
+            ->getQuery()
+            ->getResult();
+    }
 }

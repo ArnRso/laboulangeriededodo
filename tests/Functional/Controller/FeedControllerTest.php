@@ -85,7 +85,7 @@ class FeedControllerTest extends WebTestCase
         // Le module stimulus_bootstrap.js porte ce nom : seule la feuille de style compte.
         self::assertCount(0, $crawler->filter('link[rel="stylesheet"][href*="bootstrap"]'));
         self::assertCount(1, $crawler->filter('link[rel="stylesheet"][href*="feed"]'));
-        self::assertSelectorExists('[data-controller="clock"]');
+        self::assertSelectorExists('[data-controller*="clock"]');
         self::assertSelectorNotExists('nav.navbar');
     }
 
@@ -255,5 +255,61 @@ class FeedControllerTest extends WebTestCase
 
         $links = $crawler->filter('a.f-n')->each(static fn ($node): string => (string) $node->attr('href'));
         self::assertSame([sprintf('/mon-espace/notifications/%d', (int) $medias[0]->getId())], $links, 'Seule la consultée est un lien ; la suivante verrouillée n\'expose pas d\'URL.');
+    }
+
+    public function testTheCheatCodeBringsTheNextNotificationForward(): void
+    {
+        $medias = $this->mediaFactory->createFeed(2, delayMinutes: 1440);
+        $this->client->request('GET', sprintf('/mon-espace/notifications/%d', (int) $medias[0]->getId()));
+
+        $crawler = $this->client->request('GET', '/mon-espace');
+        self::assertSelectorExists('form.f-cheat[data-cheat-code-target="form"]', 'Le formulaire du coup de pouce accompagne la notification en attente.');
+
+        $this->client->submit($crawler->filter('form.f-cheat')->form());
+
+        self::assertResponseRedirects('/mon-espace');
+        $this->client->followRedirect();
+        self::assertSelectorTextContains('.f-flash-ok', 'Le temps a sauté');
+
+        $this->client->request('GET', sprintf('/mon-espace/notifications/%d', (int) $medias[1]->getId()));
+        self::assertResponseIsSuccessful('La suivante s\'ouvre sans attendre son délai.');
+    }
+
+    public function testTheCheatCodeIsAbsentWhenNothingIsWaiting(): void
+    {
+        $medias = $this->mediaFactory->createFeed(1, delayMinutes: 1440);
+        $this->client->request('GET', sprintf('/mon-espace/notifications/%d', (int) $medias[0]->getId()));
+
+        $this->client->request('GET', '/mon-espace');
+
+        self::assertSelectorNotExists('form.f-cheat');
+    }
+
+    public function testTheCheatCodeRefusesAForgedToken(): void
+    {
+        $medias = $this->mediaFactory->createFeed(2, delayMinutes: 1440);
+        $this->client->request('GET', sprintf('/mon-espace/notifications/%d', (int) $medias[0]->getId()));
+
+        $this->client->request('POST', '/mon-espace/coup-de-pouce', ['_token' => 'ce-jeton-est-faux']);
+
+        // Un jeton invalide invalide la session : le firewall renvoie vers la
+        // connexion plutôt que de servir un 403.
+        self::assertResponseRedirects();
+
+        $this->client->request('GET', sprintf('/mon-espace/notifications/%d', (int) $medias[1]->getId()));
+        self::assertResponseRedirects('/mon-espace', null, 'Sans jeton valable, la suivante reste verrouillée.');
+    }
+
+    public function testTheCheatCodeOnlyMovesOneNotification(): void
+    {
+        $medias = $this->mediaFactory->createFeed(3, delayMinutes: 1440);
+        $this->client->request('GET', sprintf('/mon-espace/notifications/%d', (int) $medias[0]->getId()));
+
+        $crawler = $this->client->request('GET', '/mon-espace');
+        $this->client->submit($crawler->filter('form.f-cheat')->form());
+
+        $this->client->request('GET', sprintf('/mon-espace/notifications/%d', (int) $medias[2]->getId()));
+
+        self::assertResponseRedirects('/mon-espace', null, 'La troisième reste verrouillée.');
     }
 }

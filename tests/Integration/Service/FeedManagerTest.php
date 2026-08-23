@@ -6,15 +6,19 @@ use App\Entity\Media;
 use App\Enum\MediaType;
 use App\Repository\MediaRepository;
 use App\Service\FeedManager;
+use App\Service\FeedService;
 use App\Tests\Factory\MediaFactory;
+use App\Tests\Factory\UserFactory;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class FeedManagerTest extends KernelTestCase
 {
     private FeedManager $feedManager;
     private MediaFactory $mediaFactory;
     private MediaRepository $mediaRepository;
+    private UserFactory $userFactory;
 
     protected function setUp(): void
     {
@@ -24,6 +28,7 @@ class FeedManagerTest extends KernelTestCase
         $this->feedManager = $container->get(FeedManager::class);
         $this->mediaRepository = $container->get(MediaRepository::class);
         $this->mediaFactory = new MediaFactory($container->get(EntityManagerInterface::class));
+        $this->userFactory = new UserFactory($container->get(EntityManagerInterface::class), $container->get(UserPasswordHasherInterface::class));
     }
 
     public function testNewNotificationIsAppendedAtTheEnd(): void
@@ -110,5 +115,32 @@ class FeedManagerTest extends KernelTestCase
     private function titles(): array
     {
         return array_map(static fn (Media $m): string => $m->getTitle(), $this->mediaRepository->findAllOrdered());
+    }
+
+    public function testDeletingANotificationAlreadyOpenedRemovesItsTraces(): void
+    {
+        $user = $this->userFactory->createRecipient();
+        $medias = $this->mediaFactory->createFeed(2, delayMinutes: 1440);
+        self::getContainer()->get(FeedService::class)->open($user, $medias[0]);
+        $deletedId = (int) $medias[0]->getId();
+
+        $this->feedManager->delete($medias[0]);
+
+        self::assertNull($this->mediaRepository->find($deletedId), 'La notification consultée s\'efface avec sa consultation.');
+        self::assertCount(1, $this->mediaRepository->findAllOrdered());
+    }
+
+    public function testDeletingANotificationDroppedItsSkip(): void
+    {
+        $user = $this->userFactory->createRecipient();
+        $medias = $this->mediaFactory->createFeed(2, delayMinutes: 1440);
+        $feedService = self::getContainer()->get(FeedService::class);
+        $feedService->open($user, $medias[0]);
+        $feedService->skipWait($user);
+        $skippedId = (int) $medias[1]->getId();
+
+        $this->feedManager->delete($medias[1]);
+
+        self::assertNull($this->mediaRepository->find($skippedId), 'Le coup de pouce ne retient pas la notification.');
     }
 }

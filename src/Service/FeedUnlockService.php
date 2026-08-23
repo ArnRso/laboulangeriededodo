@@ -4,6 +4,7 @@ namespace App\Service;
 
 use App\Entity\Media;
 use App\Entity\User;
+use App\Repository\FeedSkipRepository;
 use App\Repository\MediaAccessRepository;
 use App\Repository\MediaRepository;
 use Psr\Clock\ClockInterface;
@@ -16,13 +17,16 @@ use Psr\Clock\ClockInterface;
  *  - la première est disponible immédiatement ;
  *  - chaque suivante arrive `delayMinutes` après l'ouverture de la précédente ;
  *  - une notification ouverte le reste définitivement ;
- *  - les brouillons non publiés n'existent pas pour le destinataire.
+ *  - les brouillons non publiés n'existent pas pour le destinataire ;
+ *  - un coup de pouce (FeedSkip) rend la notification disponible tout de
+ *    suite, sans changer l'ordre ni le reste des règles.
  */
 class FeedUnlockService
 {
     public function __construct(
         private readonly MediaRepository $mediaRepository,
         private readonly MediaAccessRepository $mediaAccessRepository,
+        private readonly FeedSkipRepository $feedSkipRepository,
         private readonly ClockInterface $clock,
     ) {
     }
@@ -36,6 +40,12 @@ class FeedUnlockService
 
         foreach ($this->mediaAccessRepository->findForUser($user) as $access) {
             $openedAt[spl_object_id($access->getMedia())] = $access->getOpenedAt();
+        }
+
+        $skipped = [];
+
+        foreach ($this->feedSkipRepository->findForUser($user) as $skip) {
+            $skipped[spl_object_id($skip->getMedia())] = true;
         }
 
         $states = [];
@@ -61,6 +71,12 @@ class FeedUnlockService
             }
 
             $currentFound = true;
+
+            if (isset($skipped[$id])) {
+                $states[] = NotificationState::unlockable($media);
+
+                continue;
+            }
 
             if (null === $previousOpenedAt) {
                 $states[] = NotificationState::unlockable($media);
