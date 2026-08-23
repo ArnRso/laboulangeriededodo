@@ -1,0 +1,38 @@
+{% extends 'base_feed.html.twig' %}
+
+{% set data = media.appData %}
+{% set contact = data.contact|default('Dodo du passé') %}
+
+{% block title %}{{ media.title }} · Messenger{% endblock %}
+{% block body_class %}f-open f-open-ms{% endblock %}
+
+{% block body %}
+    {{ include('feed/_aura_toast.html.twig', {media: media, justOpened: justOpened}, with_context: false) }}
+
+    <main class="f-wrap f-wrap-open">
+        <div class="f-bar ms-bar">
+            <a class="f-back" href="{{ path('app_feed') }}" aria-label="Retour">‹</a>
+            <span class="ms-av"><span>{{ data.contactEmoji|default('👶') }}</span><i></i></span>
+            <div class="ms-who">
+                <b>{{ contact }}</b>
+                <small>{{ data.statusLine|default('Actif(ve) maintenant') }}</small>
+            </div>
+            <span class="ms-acts" aria-hidden="true"><span>📞</span><span>📹</span></span>
+        </div>
+
+        <div class="ms-stamp">Il y a 11 ans · 23:41</div>
+
+        {{ include('feed/_chat.html.twig', {media: media, data: data, prefix: 'ms', receipt: data.contactEmoji|default('👶')}, with_context: false) }}
+
+        <div class="ms-input" aria-hidden="true">
+            <span class="ms-plus">＋</span>
+            <span class="ms-ico">📷</span><span class="ms-ico">🖼️</span><span class="ms-ico">🎤</span>
+            <div class="ms-field"><span>Aa</span><span>😊</span></div>
+            <span class="ms-like">👍</span>
+        </div>
+    </main>
+
+    {% if not preview %}
+        <div class="f-cta"><a href="{{ path('app_feed') }}">Retour aux notifications</a></div>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,104 @@
+{% extends 'base_feed.html.twig' %}
+
+{% import _self as x %}
+
+{% macro short(n) %}
+    {%- set n = n|default(0) -%}
+    {%- if n >= 1000000 -%}
+        {{ (n / 1000000)|number_format(1, ',', ' ')|replace({',0': ''}) }} M
+    {%- elseif n >= 1000 -%}
+        {{ (n / 1000)|number_format(1, ',', ' ')|replace({',0': ''}) }} k
+    {%- else -%}
+        {{ n }}
+    {%- endif -%}
+{% endmacro %}
+
+{% set data = media.appData %}
+{% set displayName = data.displayName|default('Dodo du passé') %}
+{% set handle = data.handle|default('dodo.du.passe') %}
+{% set avatar = recipient and recipient.avatar ? recipient.avatar.value : '🦤' %}
+
+{% block title %}{{ media.title }} · X{% endblock %}
+{% block body_class %}f-open f-open-x{% endblock %}
+
+{% block body %}
+    {{ include('feed/_aura_toast.html.twig', {media: media, justOpened: justOpened}, with_context: false) }}
+
+    <main class="f-wrap f-wrap-open">
+        <div class="f-bar f-bar-line">
+            <a class="f-back" href="{{ path('app_feed') }}" aria-label="Retour">‹</a>
+            <b>Post</b>
+            <span class="f-bar-spacer"></span>
+        </div>
+
+        {% if media.auraPoints >= 0 %}
+            <div class="x-repost">🔁 <b>ta.mere</b> a reposté</div>
+        {% endif %}
+
+        <article class="x-post">
+            <div class="x-head">
+                <span class="x-av">{{ avatar }}</span>
+                <div class="x-names">
+                    <b>{{ displayName }}{% if data.verified|default(false) %} <i class="x-badge" aria-label="Compte certifié">✓</i>{% endif %}</b>
+                    <small>@{{ handle }} · {{ data.postedAgo|default('11 ans') }}</small>
+                </div>
+                <span class="x-dots" aria-hidden="true">···</span>
+            </div>
+
+            <div class="x-text">
+                <p>{{ media.title }}</p>
+                {% if media.description %}<p>{{ media.description }}</p>{% endif %}
+            </div>
+
+            {{ include('feed/_media.html.twig', {media: media, class: 'x-media'}, with_context: false) }}
+
+            <div class="x-views"><b>{{ data.views|default(0)|number_format(0, ',', ' ') }}</b> vues</div>
+
+            <div class="x-acts" aria-hidden="true">
+                <span>💬 <small>{{ x.short(data.replies) }}</small></span>
+                <span>🔁 <small>{{ x.short(data.reposts) }}</small></span>
+                <span>♡ <small>{{ x.short(data.likes) }}</small></span>
+                <span>📊 <small>{{ x.short(data.views) }}</small></span>
+                <span>🔖</span>
+                <span>↗</span>
+            </div>
+
+            {% if media.auraPoints < 0 %}
+                <div class="x-note">
+                    <b>👥 Les lecteurs ont ajouté du contexte qu'ils ont jugé utile</b>
+                    <p>
+                        Ce post vaut <strong>{{ media.auraPoints }} aura</strong>.
+                        {{ media.auraMessage|default('Cette décision était objectivement catastrophique.') }}
+                    </p>
+                    <small>Est-ce utile ? <u>Oui</u> · <u>Non</u></small>
+                </div>
+            {% endif %}
+        </article>
+
+        <div class="x-reply-box" aria-hidden="true">
+            <span class="x-av x-av-s">{{ avatar }}</span>
+            <span>Poste ta réponse</span>
+            <b>Répondre</b>
+        </div>
+
+        {% if media.auraPoints >= 0 %}
+            <article class="x-post x-reply">
+                <div class="x-head">
+                    <span class="x-av x-av-s">👵</span>
+                    <div class="x-names">
+                        <b>ta.mere <i class="x-badge" aria-hidden="true">✓</i></b>
+                        <small>@ta.mere · maintenant</small>
+                    </div>
+                </div>
+                <div class="x-text x-text-s">
+                    <p><span class="x-mention">@{{ handle }}</span> <strong class="x-aura">+{{ media.auraPoints }} aura</strong>. {{ media.auraMessage|default('Ne la gaspille pas.') }}</p>
+                </div>
+                <div class="x-acts x-acts-s" aria-hidden="true"><span>💬 <small>1</small></span><span>🔁 <small>{{ x.short(data.reposts) }}</small></span><span>♡ <small>{{ x.short(data.likes) }}</small></span><span>📊</span></div>
+            </article>
+        {% endif %}
+    </main>
+
+    {% if not preview %}
+        <div class="f-cta"><a href="{{ path('app_feed') }}">Retour aux notifications</a></div>
+    {% endif %}
+{% endblock %}

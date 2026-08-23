@@ -2,17 +2,12 @@
 
 namespace App\Form\AppDetails;
 
-use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
-/**
- * @extends AbstractType<mixed>
- */
-class UberEatsDetailsType extends AbstractType
+class UberEatsDetailsType extends AbstractAppDetailsType
 {
     /**
      * @param array<string, mixed> $options
@@ -42,8 +37,12 @@ class UberEatsDetailsType extends AbstractType
             ]);
     }
 
-    public function configureOptions(OptionsResolver $resolver): void
+    public static function defaults(): array
     {
-        $resolver->setDefaults(['data_class' => null]);
+        return [
+            'courier' => 'Dodo du passé',
+            'trip' => 'Ton adolescence → Aujourd\'hui · 11 ans de trajet',
+            'stars' => 5,
+        ];
     }
 }

@@ -1,0 +1,65 @@
+{% extends 'base_feed.html.twig' %}
+
+{% set data = media.appData %}
+{% set items = [] %}
+{% for line in data.items|default('')|split('\n') %}
+    {% if line|trim %}{% set items = items|merge([line|trim]) %}{% endif %}
+{% endfor %}
+
+{% block title %}{{ media.title }} · McDonald's{% endblock %}
+{% block body_class %}f-open f-open-mc{% endblock %}
+
+{% block body %}
+    {{ include('feed/_aura_toast.html.twig', {media: media, justOpened: justOpened}, with_context: false) }}
+
+    <main class="f-wrap f-wrap-open">
+        <header class="mc-top">
+            <div class="f-bar f-bar-inverse">
+                <a class="f-back" href="{{ path('app_feed') }}" aria-label="Retour">‹</a>
+                <b>Ma commande</b>
+                <span class="f-bar-spacer"></span>
+            </div>
+            <div class="mc-code-wrap">
+                <div class="mc-code">{{ data.orderCode|default('D42') }}</div>
+            </div>
+            <div class="mc-ready">Votre commande est prête</div>
+            <p class="mc-place">{{ data.restaurant|default('McDonald\'s · Ton adolescence') }}</p>
+        </header>
+
+        <section class="mc-card">
+            <h2>{{ media.title }}</h2>
+            {{ include('feed/_media.html.twig', {media: media, class: 'mc-media'}, with_context: false) }}
+            {% if items is not empty %}
+                <ul class="mc-items">
+                    {% for item in items %}<li><i>🍟</i>{{ item }}</li>{% endfor %}
+                </ul>
+            {% endif %}
+        </section>
+
+        {% if media.description %}
+            <section class="mc-toy">
+                <span>🎁</span>
+                <div>
+                    <small>Jouet du Happy Meal</small>
+                    <p>{{ media.description }}</p>
+                </div>
+            </section>
+        {% endif %}
+
+        <section class="mc-card mc-receipt">
+            <h2>Reçu</h2>
+            <div class="mc-row"><span>Menu</span><span>{{ media.auraPoints > 0 ? '+' : '' }}{{ media.auraPoints }} aura</span></div>
+            <div class="mc-row"><span>Sauce supplémentaire</span><span>0 aura</span></div>
+            <div class="mc-row mc-row-total"><span>Total</span><span class="{{ media.auraPoints < 0 ? 'mc-neg' : '' }}">{{ media.auraPoints > 0 ? '+' : '' }}{{ media.auraPoints }} aura</span></div>
+        </section>
+
+        <div class="mc-slogan">
+            <span class="mc-arches" aria-hidden="true">M</span>
+            <b>{{ data.slogan|default('C\'est tout ce que j\'aime') }}</b>
+        </div>
+    </main>
+
+    {% if not preview %}
+        <div class="f-cta"><a href="{{ path('app_feed') }}">Retour aux notifications</a></div>
+    {% endif %}
+{% endblock %}

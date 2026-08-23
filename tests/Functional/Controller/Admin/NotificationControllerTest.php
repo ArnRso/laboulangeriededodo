@@ -60,7 +60,7 @@ class NotificationControllerTest extends WebTestCase
 
     public function testUnknownAppIsNotFound(): void
     {
-        $this->client->request('GET', '/admin/notifications/nouveau/snapchat');
+        $this->client->request('GET', '/admin/notifications/nouveau/myspace');
 
         self::assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
     }

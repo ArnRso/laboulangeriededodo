@@ -33,16 +33,19 @@ de mécaniques Gen Z. Le contenu est retranscrit dans
 
 ## Apps imitées
 
-Les écrans d'ouverture reproduisent l'interface de vraies apps. Pour en
-ajouter une, capturer l'écran de référence (notification système + écran
-principal) et le déposer ici avant de dessiner.
+Les écrans d'ouverture reproduisent l'interface de vraies apps. Chaque app
+est pilotée par le code : un cas dans `AppKind`, un formulaire de détails,
+un gabarit `templates/feed/open/<app>.html.twig`, une feuille
+`assets/styles/apps/<app>.css`. Pour en ajouter une, capturer l'écran de
+référence (notification système + écran principal) et le déposer ici avant
+de dessiner.
 
-| App | Écran copié | Statut |
+| Rubrique | Apps | Écran copié |
 |---|---|---|
-| Uber Eats | Détail de commande livrée, reçu | Implémentée |
-| Instagram | Publication, likes, commentaires | Implémentée |
-| Tinder | « C'est un match ! », fiche profil | Implémentée |
-| Doctolib | Rendez-vous confirmé, documents partagés | Implémentée |
-| TikTok | Notification « ta vidéo cartonne » | Maquettée (`../maquettes/g3-feed.html`) |
-| Hinge | Prompt à compléter | Maquettée |
-| BeReal | « ⚠️ Time to BeReal ⚠️ », photo + selfie | Maquettée |
+| Réseaux sociaux | Instagram, TikTok, Snapchat, X, BeReal, YouTube | publication, vidéo verticale, snap avec légende, post et stats, photo + selfie, lecteur et description |
+| Messageries | WhatsApp, Messenger, iMessage | conversation en bulles, média envoyé par le contact |
+| Rencontres | Tinder, Hinge, Bumble | « C'est un match ! », prompt aimé, compte à rebours de 24 h |
+| Streaming | Spotify, Netflix | lecture en cours, fiche avec % de correspondance et Top 10 |
+| Livraison et transport | Uber Eats, Deliveroo, Burger King, McDonald's, Uber, Waze | commande livrée, suivi par étapes, commande prête, course terminée, itinéraire et alertes |
+| Argent | Revolut, PayPal, Lydia | transaction avec le montant en aura |
+| Quotidien | Doctolib, Duolingo, Météo, Calendrier | rendez-vous honoré, rappel du hibou, bulletin, événement |

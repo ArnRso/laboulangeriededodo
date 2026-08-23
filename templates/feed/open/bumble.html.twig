@@ -1,0 +1,71 @@
+{% extends 'base_feed.html.twig' %}
+
+{% set data = media.appData %}
+{% set matchName = data.matchName|default(media.title) %}
+{% set hoursLeft = data.hoursLeft|default(24) %}
+
+{% block title %}{{ media.title }} · Bumble{% endblock %}
+{% block body_class %}f-open f-open-bb{% endblock %}
+
+{% block body %}
+    {{ include('feed/_aura_toast.html.twig', {media: media, justOpened: justOpened}, with_context: false) }}
+
+    <main class="f-wrap f-wrap-open">
+        <div class="f-bar">
+            <a class="f-back" href="{{ path('app_feed') }}" aria-label="Retour">‹</a>
+            <b class="bb-logo">bumble</b>
+            <span class="f-bar-spacer"></span>
+        </div>
+
+        <div class="bb-match">
+            <div class="bb-match-title">C'est un match ! 🐝</div>
+            <p>Toi et <b>{{ matchName }}</b>, vous vous êtes plu. Ici, c'est toi qui fais le premier pas.</p>
+        </div>
+
+        <div class="bb-pair" aria-hidden="true">
+            <span class="bb-c">{{ recipient and recipient.avatar ? recipient.avatar.value : '🦤' }}</span>
+            <span class="bb-c bb-c-match">🐝</span>
+        </div>
+
+        <div class="bb-timer">
+            <div class="bb-timer-line">⏳ Il te reste <b>{{ hoursLeft }} h</b> pour faire le premier pas</div>
+            <div class="bb-timer-bar"><i style="width:{{ (hoursLeft * 100 / 24)|round }}%"></i></div>
+        </div>
+
+        <div class="bb-card">
+            <div class="bb-photo">
+                {{ include('feed/_media.html.twig', {media: media, class: 'bb-media'}, with_context: false) }}
+                <span class="bb-verified" aria-hidden="true">✓</span>
+            </div>
+            <div class="bb-body">
+                <h1>{{ matchName }}{% if data.age|default('') %}<span>, {{ data.age }}</span>{% endif %}</h1>
+                {% if data.tagline|default('') %}<small class="bb-tagline">{{ data.tagline }}</small>{% endif %}
+
+                {% set chips = [] %}
+                {% for line in data.chips|default('')|split('\n') %}
+                    {% if line|trim %}{% set chips = chips|merge([line|trim]) %}{% endif %}
+                {% endfor %}
+                {% if chips is not empty %}
+                    <div class="bb-chips">
+                        {% for chip in chips %}<span class="bb-chip">{{ chip }}</span>{% endfor %}
+                    </div>
+                {% endif %}
+
+                <div class="bb-about">
+                    <small>À propos de moi</small>
+                    <b>{{ media.title }}</b>
+                    {% if media.description %}<p>{{ media.description }}</p>{% endif %}
+                </div>
+
+                <div class="bb-compat">
+                    <span>Niveau de compatibilité</span>
+                    <b class="{{ media.auraPoints < 0 ? 'bb-neg' : '' }}">{{ media.auraPoints > 0 ? '+' : '' }}{{ media.auraPoints }} aura</b>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    {% if not preview %}
+        <div class="f-cta"><a href="{{ path('app_feed') }}">Retour aux notifications</a></div>
+    {% endif %}
+{% endblock %}

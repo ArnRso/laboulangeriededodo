@@ -2,17 +2,12 @@
 
 namespace App\Form\AppDetails;
 
-use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
-/**
- * @extends AbstractType<mixed>
- */
-class DoctolibDetailsType extends AbstractType
+class DoctolibDetailsType extends AbstractAppDetailsType
 {
     /**
      * @param array<string, mixed> $options
@@ -44,8 +39,15 @@ class DoctolibDetailsType extends AbstractType
             ]);
     }
 
-    public function configureOptions(OptionsResolver $resolver): void
+    public static function defaults(): array
     {
-        $resolver->setDefaults(['data_class' => null]);
+        return [
+            'practitioner' => 'Dr Passé',
+            'specialty' => 'Spécialiste des décisions catastrophiques',
+            'sector' => 'Conventionné secteur 2015',
+            'address' => 'Ton adolescence
+2e étage, porte du fond',
+            'refundLabel' => 'Pris en charge par la mutuelle du passé',
+        ];
     }
 }

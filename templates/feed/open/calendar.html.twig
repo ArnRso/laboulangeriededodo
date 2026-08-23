@@ -1,0 +1,87 @@
+{% extends 'base_feed.html.twig' %}
+
+{% set data = media.appData %}
+
+{% block title %}{{ media.title }} · Calendrier{% endblock %}
+{% block body_class %}f-open f-open-ca{% endblock %}
+
+{% block body %}
+    {{ include('feed/_aura_toast.html.twig', {media: media, justOpened: justOpened}, with_context: false) }}
+
+    <main class="f-wrap f-wrap-open">
+        <div class="f-bar f-bar-inverse ca-bar">
+            <a class="f-back" href="{{ path('app_feed') }}" aria-label="Retour">‹</a>
+            <b>Détails de l'événement</b>
+            <span class="f-bar-spacer"></span>
+        </div>
+
+        <header class="ca-head">
+            <div class="ca-cal"><i aria-hidden="true"></i>{{ data.calendarName|default('Canon events') }}</div>
+            <h1>{{ media.title }}</h1>
+            <b class="ca-date">{{ data.date|default('Samedi 23 août 2015') }}</b>
+            {% if data.timeRange|default('') %}<span class="ca-time">{{ data.timeRange }}</span>{% endif %}
+        </header>
+
+        <section class="ca-group">
+            {% if data.location|default('') %}
+                <div class="ca-row"><span class="ca-ic" aria-hidden="true">📍</span><div><small>Lieu</small><b>{{ data.location }}</b></div></div>
+            {% endif %}
+            <div class="ca-row"><span class="ca-ic" aria-hidden="true">🔔</span><div><small>Alerte</small><b>{{ data.alert|default('Il y a 11 ans') }}</b></div></div>
+            <div class="ca-row"><span class="ca-ic" aria-hidden="true">🔁</span><div><small>Répéter</small><b>Jamais, heureusement</b></div></div>
+        </section>
+
+        {% set attendees = [] %}
+        {% for line in data.attendees|default('')|split('\n') %}
+            {% if line|trim %}{% set attendees = attendees|merge([line|trim]) %}{% endif %}
+        {% endfor %}
+
+        {% if attendees is not empty %}
+            <h2 class="ca-h2">Participants ({{ attendees|length + 1 }})</h2>
+            <section class="ca-group">
+                <div class="ca-row ca-person">
+                    <span class="ca-av ca-av-me">{{ recipient and recipient.avatar ? recipient.avatar.value : '🦤' }}</span>
+                    <div><b>{{ recipient ? recipient.publicName : 'Dodo' }}</b><small>Organisateur · toi</small></div>
+                </div>
+                {% for attendee in attendees %}
+                    {% set words = attendee|split(' ') %}
+                    <div class="ca-row ca-person">
+                        <span class="ca-av">{{ words[0]|slice(0, 1)|upper }}{{ words|length > 1 ? words[1]|slice(0, 1)|upper : '' }}</span>
+                        <div><b>{{ attendee }}</b></div>
+                    </div>
+                {% endfor %}
+            </section>
+        {% endif %}
+
+        <h2 class="ca-h2">Pièce jointe</h2>
+        <section class="ca-group ca-attach">
+            {{ include('feed/_media.html.twig', {media: media, class: 'ca-media'}, with_context: false) }}
+        </section>
+
+        {% if media.description %}
+            <h2 class="ca-h2">Notes</h2>
+            <section class="ca-group"><p class="ca-notes">{{ media.description }}</p></section>
+        {% endif %}
+
+        <h2 class="ca-h2">Répondre</h2>
+        <div class="ca-reply" aria-hidden="true">
+            <span class="ca-reply-on">Accepter</span>
+            <span>Peut-être</span>
+            <span>Refuser</span>
+        </div>
+
+        <h2 class="ca-h2">Récompense d'assiduité</h2>
+        <section class="ca-group">
+            <div class="ca-row ca-aura {{ media.auraPoints < 0 ? 'ca-aura-neg' : '' }}">
+                <span class="ca-ic" aria-hidden="true">{{ media.auraPoints < 0 ? '💀' : '✨' }}</span>
+                <div>
+                    <b>{{ media.auraPoints > 0 ? '+' : '' }}{{ media.auraPoints }} aura</b>
+                    <small>{{ media.auraMessage|default(media.auraPoints < 0 ? 'Présence notée. Cette décision était objectivement catastrophique.' : 'Présence validée. Ne la gaspille pas.') }}</small>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    {% if not preview %}
+        <div class="f-cta"><a href="{{ path('app_feed') }}">Retour aux notifications</a></div>
+    {% endif %}
+{% endblock %}

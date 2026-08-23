@@ -1,0 +1,76 @@
+{% extends 'base_feed.html.twig' %}
+
+{% set data = media.appData %}
+{% set alerts = [] %}
+{% for line in data.alerts|default('')|split('\n') %}
+    {% if line|trim %}{% set alerts = alerts|merge([line|trim]) %}{% endif %}
+{% endfor %}
+
+{% block title %}{{ media.title }} · Waze{% endblock %}
+{% block body_class %}f-open f-open-wz{% endblock %}
+
+{% block body %}
+    {{ include('feed/_aura_toast.html.twig', {media: media, justOpened: justOpened}, with_context: false) }}
+
+    <main class="f-wrap f-wrap-open">
+        <div class="f-bar f-bar-inverse">
+            <a class="f-back" href="{{ path('app_feed') }}" aria-label="Retour">‹</a>
+            <b>Itinéraire</b>
+            <span class="f-bar-spacer"></span>
+        </div>
+
+        <div class="wz-map" aria-hidden="true">
+            <i class="wz-road wz-road-1"></i>
+            <i class="wz-road wz-road-2"></i>
+            <i class="wz-road wz-road-3"></i>
+            <i class="wz-route"></i>
+            <span class="wz-bubble">
+                <span class="wz-ghost"><i></i><i></i></span>
+            </span>
+            <span class="wz-flag">🏁</span>
+        </div>
+
+        <div class="wz-banner">
+            <span class="wz-turn">⬆</span>
+            <div>
+                <b>Vers {{ data.destination|default('ton adolescence') }}</b>
+                <small>{{ data.eta|default('4 min') }} · {{ data.distance|default('11 ans') }}</small>
+            </div>
+        </div>
+
+        {% if alerts is not empty %}
+            <div class="wz-alerts">
+                {% for alert in alerts %}<span class="wz-alert">{{ alert }}</span>{% endfor %}
+            </div>
+        {% endif %}
+
+        <section class="wz-card">
+            <h2>Sur ta route</h2>
+            <p class="wz-title">{{ media.title }}</p>
+            {{ include('feed/_media.html.twig', {media: media, class: 'wz-media'}, with_context: false) }}
+        </section>
+
+        {% if media.description %}
+            <section class="wz-card wz-report">
+                <span class="wz-report-av">{{ recipient and recipient.avatar ? recipient.avatar.value : '🦤' }}</span>
+                <div>
+                    <small>Rapport d'un Wazer</small>
+                    <p>{{ media.description }}</p>
+                    <em>Signalé il y a longtemps · 👍 merci</em>
+                </div>
+            </section>
+        {% endif %}
+
+        <section class="wz-arrival {{ media.auraPoints < 0 ? 'wz-arrival-neg' : '' }}">
+            <div>
+                <small>Arrivée</small>
+                <b>{{ recipient ? recipient.publicName : 'Dodo' }} est arrivé·e</b>
+            </div>
+            <span class="wz-points">{{ media.auraPoints > 0 ? '+' : '' }}{{ media.auraPoints }} <small>Points Waze</small></span>
+        </section>
+    </main>
+
+    {% if not preview %}
+        <div class="f-cta"><a href="{{ path('app_feed') }}">Retour aux notifications</a></div>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,317 @@
+/* --- Spotify -------------------------------------------------------------- */
+.f-open-sp {
+    background: linear-gradient(180deg, #1e4a3a 0%, #121212 45%, #000 100%);
+    background-attachment: fixed;
+    color: #fff;
+}
+
+.f-open-sp .f-back {
+    background: transparent;
+    color: #fff;
+    font-size: 26px;
+}
+
+.f-open-sp .f-flash {
+    background: #1db954;
+    color: #000;
+}
+
+.sp-from {
+    text-align: center;
+    flex: 1;
+    min-width: 0;
+}
+
+.sp-from small {
+    display: block;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.sp-from b {
+    display: block;
+    font-size: 13px;
+    font-weight: 800;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.sp-dots {
+    text-align: right;
+    font-weight: 800;
+    letter-spacing: 1px;
+}
+
+.sp-cover {
+    margin: 18px 6px 0;
+    aspect-ratio: 1;
+    border-radius: 10px;
+    overflow: hidden;
+    background: linear-gradient(160deg, #1db954, #0d2e22 60%, #121212);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+}
+
+.sp-cover img,
+.sp-cover video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.sp-cover-blank {
+    display: grid;
+    place-items: center;
+}
+
+.sp-cover-blank span {
+    font-size: 120px;
+    filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.4));
+}
+
+.sp-track {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin: 22px 6px 0;
+}
+
+.sp-track div {
+    min-width: 0;
+}
+
+.sp-track h1 {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.4px;
+    line-height: 1.15;
+}
+
+.sp-track small {
+    display: block;
+    margin-top: 3px;
+    font-size: 14px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.sp-heart {
+    color: #1db954;
+    font-size: 26px;
+    flex: none;
+}
+
+.sp-progress {
+    margin: 18px 6px 0;
+}
+
+.sp-progress-bar {
+    position: relative;
+    height: 4px;
+    border-radius: 99px;
+    background: rgba(255, 255, 255, 0.25);
+}
+
+.sp-progress-bar i {
+    display: block;
+    height: 100%;
+    border-radius: 99px;
+    background: #fff;
+}
+
+.sp-progress-bar b {
+    position: absolute;
+    top: 50%;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #fff;
+    transform: translate(-50%, -50%);
+}
+
+.sp-progress-time {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.7);
+    font-variant-numeric: tabular-nums;
+}
+
+.sp-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 14px 14px 0;
+    font-size: 20px;
+}
+
+.sp-skip {
+    font-size: 30px;
+}
+
+.sp-play {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: #fff;
+    color: #000;
+    display: grid;
+    place-items: center;
+    font-size: 26px;
+    padding-left: 4px;
+}
+
+.sp-devices {
+    display: flex;
+    justify-content: space-between;
+    margin: 18px 6px 0;
+    font-size: 12px;
+    font-weight: 700;
+    color: #1db954;
+}
+
+.sp-lyrics {
+    margin: 22px 0 0;
+    background: #1db954;
+    color: #000;
+    border-radius: 12px;
+    padding: 16px;
+}
+
+.sp-lyrics small,
+.sp-artist small {
+    display: block;
+    font-size: 13px;
+    font-weight: 800;
+    margin-bottom: 10px;
+}
+
+.sp-lyrics p {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 800;
+    line-height: 1.3;
+    letter-spacing: -0.3px;
+}
+
+.sp-media {
+    margin-top: 12px;
+    background: rgba(0, 0, 0, 0.18);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.sp-media.f-media-type-link {
+    display: block;
+    padding: 0;
+}
+
+.sp-media .f-media-text {
+    padding: 12px 14px;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.sp-media .f-media-link {
+    margin: 12px;
+    background: #000;
+    color: #fff;
+}
+
+.sp-media audio {
+    padding: 12px;
+}
+
+.sp-lyrics-source {
+    display: block;
+    margin-top: 14px;
+    font-size: 11px;
+    font-weight: 700;
+    opacity: 0.75;
+}
+
+.sp-artist {
+    margin-top: 14px;
+    background: #282828;
+    border-radius: 12px;
+    padding: 16px;
+}
+
+.sp-artist-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.sp-artist-head div {
+    flex: 1;
+    min-width: 0;
+}
+
+.sp-artist-head b {
+    display: block;
+    font-size: 16px;
+    font-weight: 800;
+}
+
+.sp-artist-head small {
+    margin: 2px 0 0;
+    font-size: 12px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.sp-artist-av {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: linear-gradient(160deg, #1db954, #0d2e22);
+    display: grid;
+    place-items: center;
+    font-size: 24px;
+    flex: none;
+}
+
+.sp-follow {
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    border-radius: 999px;
+    padding: 6px 12px;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.sp-artist-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    font-size: 12px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.sp-artist-row span:first-child {
+    color: #fff;
+    font-weight: 800;
+    white-space: nowrap;
+}
+
+.f-open-sp .f-cta {
+    background: #121212;
+    border-top-color: #282828;
+}
+
+.f-open-sp .f-cta a {
+    background: #1db954;
+    color: #000;
+    border-radius: 999px;
+}

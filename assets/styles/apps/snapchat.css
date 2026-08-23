@@ -1,0 +1,308 @@
+/* --- Snapchat ------------------------------------------------------------- */
+.f-open-sn {
+    background: #fff;
+}
+
+.sn-bar {
+    background: #fffc00;
+    margin: 0 -14px;
+    padding: 10px 14px 12px;
+    border-radius: 0 0 18px 18px;
+}
+
+.f-open-sn .f-back {
+    background: rgba(0, 0, 0, 0.1);
+    color: #000;
+}
+
+.sn-who {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+    margin-left: 10px;
+}
+
+.sn-who b {
+    display: block;
+    font-size: 15px;
+    font-weight: 800;
+    line-height: 1.1;
+}
+
+.sn-who small {
+    font-size: 12px;
+    font-weight: 700;
+    color: rgba(0, 0, 0, 0.6);
+}
+
+.sn-ghost {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: #fff;
+    display: grid;
+    place-items: center;
+    font-size: 22px;
+    flex: none;
+    border: 2px solid #000;
+}
+
+.sn-timer {
+    font-size: 13px;
+    font-weight: 800;
+    background: #000;
+    color: #fffc00;
+    border-radius: 999px;
+    padding: 5px 10px;
+    white-space: nowrap;
+}
+
+.sn-snap {
+    position: relative;
+    margin: 12px -14px 0;
+    height: clamp(420px, 64vh, 640px);
+    background: #111;
+    overflow: hidden;
+    color: #fff;
+}
+
+.sn-media,
+.sn-media img,
+.sn-media video {
+    width: 100%;
+    height: 100%;
+}
+
+.sn-media img,
+.sn-media video {
+    object-fit: cover;
+}
+
+.sn-media.f-media-type-text,
+.sn-media.f-media-type-link,
+.sn-media.f-media-type-audio {
+    display: grid;
+    place-items: center;
+    padding: 50px 24px 160px;
+    background: linear-gradient(160deg, #fffc00 -40%, #1c1c1c 35%, #000);
+}
+
+/* Sans visuel, la légende descend pour ne pas couvrir le texte. */
+.sn-snap:has(.f-media-text) .sn-cap,
+.sn-snap:has(.f-media-link) .sn-cap,
+.sn-snap:has(.f-media-type-audio) .sn-cap {
+    top: auto;
+    bottom: 96px;
+}
+
+.sn-media .f-media-text {
+    font-size: 24px;
+    font-weight: 800;
+    line-height: 1.3;
+    text-align: center;
+    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.6);
+}
+
+.sn-media .f-media-link {
+    background: #fffc00;
+    color: #000;
+    border-radius: 999px;
+    padding: 14px 20px;
+    font-size: 15px;
+}
+
+.sn-ring {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    font-size: 13px;
+    font-weight: 800;
+    color: #fff;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+    pointer-events: none;
+}
+
+.sn-ring i {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 3px solid rgba(255, 255, 255, 0.35);
+    border-top-color: #fff;
+    border-right-color: #fff;
+    animation: sn-tick 10s linear infinite;
+}
+
+@keyframes sn-tick {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.sn-cap {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 52%;
+    padding: 10px 16px;
+    background: rgba(0, 0, 0, 0.62);
+    text-align: center;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.35;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+    pointer-events: none;
+}
+
+.sn-foot {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 40px 16px 14px;
+    background: linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.7));
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    pointer-events: none;
+}
+
+.sn-tap {
+    font-size: 12px;
+    font-weight: 700;
+    opacity: 0.8;
+}
+
+.sn-noshot {
+    font-size: 11px;
+    font-weight: 800;
+    background: rgba(255, 255, 255, 0.16);
+    border-radius: 999px;
+    padding: 4px 10px;
+}
+
+.sn-chat {
+    padding: 12px 0 0;
+}
+
+.sn-day {
+    text-align: center;
+    font-size: 11px;
+    font-weight: 800;
+    color: #8f8f8f;
+    letter-spacing: 0.5px;
+    margin-bottom: 10px;
+}
+
+.sn-msg {
+    margin-bottom: 12px;
+}
+
+.sn-msg small {
+    display: block;
+    font-size: 11px;
+    font-weight: 800;
+    color: #f23c57;
+    letter-spacing: 0.4px;
+    margin-bottom: 3px;
+}
+
+.sn-msg-sys small {
+    color: #7b4eff;
+}
+
+.sn-msg-me small {
+    color: #0eadff;
+}
+
+.sn-bubble {
+    border-left: 3px solid #f23c57;
+    padding: 4px 0 4px 10px;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.sn-bubble b {
+    font-weight: 800;
+    display: block;
+}
+
+.sn-bubble p {
+    margin: 2px 0 0;
+}
+
+.sn-bubble-me {
+    border-left-color: #0eadff;
+    color: #6b6b6b;
+    font-weight: 700;
+}
+
+.sn-bubble-aura {
+    border-left-color: #7b4eff;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #f5f1ff;
+    border-radius: 0 12px 12px 0;
+    padding: 10px 12px 10px 10px;
+}
+
+.sn-bubble-aura b {
+    font-size: 14px;
+}
+
+.sn-bubble-aura em {
+    display: block;
+    font-style: normal;
+    font-size: 12px;
+    color: #6b6b6b;
+    font-weight: 600;
+}
+
+.sn-bubble-neg {
+    background: #fff1f3;
+    border-left-color: #e0245e;
+}
+
+.sn-trophy {
+    font-size: 26px;
+}
+
+.sn-reply {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 6px;
+    font-size: 20px;
+}
+
+.sn-cam {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #f0f0f0;
+    display: grid;
+    place-items: center;
+    font-size: 18px;
+}
+
+.sn-field {
+    flex: 1;
+    background: #f0f0f0;
+    border-radius: 999px;
+    padding: 10px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #8f8f8f;
+}
+
+.f-open-sn .f-cta a {
+    background: #fffc00;
+    color: #000;
+}

@@ -1,0 +1,70 @@
+{% extends 'base_feed.html.twig' %}
+
+{% set data = media.appData %}
+{% set counterparty = data.counterparty|default('Dodo du passé') %}
+{% set negative = media.auraPoints < 0 %}
+{% set amount = (negative ? '−' : '+') ~ media.auraPoints|abs|number_format(0, ',', ' ') ~ ' aura' %}
+{% set avatar = recipient and recipient.avatar ? recipient.avatar.value : '🦤' %}
+
+{% block title %}{{ media.title }} · Lydia{% endblock %}
+{% block body_class %}f-open f-open-ly{% endblock %}
+
+{% block body %}
+    {{ include('feed/_aura_toast.html.twig', {media: media, justOpened: justOpened}, with_context: false) }}
+
+    <main class="f-wrap f-wrap-open">
+        <div class="f-bar">
+            <a class="f-back" href="{{ path('app_feed') }}" aria-label="Retour">‹</a>
+            <b>{{ negative ? 'Virement envoyé' : 'Virement reçu' }}</b>
+            <span class="f-bar-spacer"></span>
+        </div>
+
+        <section class="ly-card">
+            <div class="ly-pair" aria-hidden="true">
+                <span class="ly-c">{{ negative ? avatar : counterparty|first|upper }}</span>
+                <span class="ly-arrow">→</span>
+                <span class="ly-c">{{ negative ? counterparty|first|upper : avatar }}</span>
+            </div>
+
+            <span class="ly-emoji">{{ data.emoji|default('💸') }}</span>
+            <div class="ly-amount {{ negative ? 'ly-amount-neg' : '' }}">{{ amount }}</div>
+            <p class="ly-who">
+                {% if negative %}Tu as envoyé à <b>{{ counterparty }}</b>{% else %}<b>{{ counterparty }}</b> t'a envoyé{% endif %}
+            </p>
+            <h1 class="ly-title">{{ media.title }}</h1>
+
+            {% if data.message|default('') %}
+                <div class="ly-bubble">{{ data.message }}</div>
+            {% endif %}
+
+            <small class="ly-meta">{{ 'now'|date('d/m/Y') }} à {{ 'now'|date('H:i') }} · Instantané · Sans frais</small>
+        </section>
+
+        <section class="ly-card ly-card-media">
+            <h2 class="ly-h2">Photo jointe</h2>
+            {{ include('feed/_media.html.twig', {media: media, class: 'ly-media'}, with_context: false) }}
+        </section>
+
+        {% if media.description %}
+            <section class="ly-card ly-comment">
+                <span class="ly-comment-av">{{ negative ? avatar : counterparty|first|upper }}</span>
+                <div>
+                    <b>{{ negative ? (recipient ? recipient.publicName : 'Dodo') : counterparty }}</b>
+                    <p>{{ media.description }}</p>
+                </div>
+            </section>
+        {% endif %}
+
+        <div class="ly-btns" aria-hidden="true">
+            {% if negative %}
+                <span class="ly-btn">Demander un remboursement</span>
+            {% else %}
+                <span class="ly-btn">Remercier 🙏</span>
+            {% endif %}
+        </div>
+    </main>
+
+    {% if not preview %}
+        <div class="f-cta"><a href="{{ path('app_feed') }}">Retour aux notifications</a></div>
+    {% endif %}
+{% endblock %}

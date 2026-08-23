@@ -7,7 +7,7 @@
 #}
 {# Un brouillon n'a pas encore d'identifiant : l'aperçu en direct remplace la source côté navigateur. #}
 {% set fileUrl = media.id ? path('app_media_file', {id: media.id}) : '' %}
-<div class="f-media {{ class|default('') }} f-media-{{ media.type.value }}">
+<div class="f-media {{ class|default('') }} f-media-type-{{ media.type.value }}">
     {% if media.type.value == 'image' %}
         <img src="{{ fileUrl }}" alt="{{ media.title }}">
     {% elseif media.type.value == 'video' %}

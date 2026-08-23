@@ -1,0 +1,79 @@
+{% extends 'base_feed.html.twig' %}
+
+{% set data = media.appData %}
+{% set username = data.username|default('dodo.du.passe') %}
+{% set avatar = recipient and recipient.avatar ? recipient.avatar.value : '🦤' %}
+
+{% block title %}{{ media.title }} · BeReal{% endblock %}
+{% block body_class %}f-open f-open-br{% endblock %}
+
+{% block body %}
+    {{ include('feed/_aura_toast.html.twig', {media: media, justOpened: justOpened}, with_context: false) }}
+
+    <main class="f-wrap f-wrap-open">
+        <div class="f-bar">
+            <a class="f-back" href="{{ path('app_feed') }}" aria-label="Retour">‹</a>
+            <b class="br-logo">BeReal.</b>
+            <span class="f-bar-spacer"></span>
+        </div>
+
+        <div class="br-alert">⚠️ Time to BeReal ⚠️</div>
+
+        <div class="br-head">
+            <span class="br-av">{{ avatar }}</span>
+            <div>
+                <b>{{ username }}</b>
+                <small>
+                    {% if data.location|default('') %}{{ data.location }} · {% endif %}
+                    en retard de {{ data.lateBy|default('longtemps') }}
+                    {% if data.retakes|default(0) > 0 %} · {{ data.retakes }} retake{{ data.retakes > 1 ? 's' : '' }}{% endif %}
+                </small>
+            </div>
+            <span class="br-dots" aria-hidden="true">···</span>
+        </div>
+
+        <div class="br-shot">
+            {{ include('feed/_media.html.twig', {media: media, class: 'br-media'}, with_context: false) }}
+            <span class="br-selfie" aria-hidden="true">{{ avatar }}</span>
+        </div>
+
+        <div class="br-cap">
+            <b>{{ media.title }}</b>
+            {% if media.description %}<p>{{ media.description }}</p>{% endif %}
+        </div>
+
+        {% set realmojis = [] %}
+        {% for line in data.realmojis|default('')|split('\n') %}
+            {% if line|trim %}{% set realmojis = realmojis|merge([line|trim]) %}{% endif %}
+        {% endfor %}
+
+        <div class="br-mojis">
+            {% for realmoji in realmojis %}
+                {% set parts = realmoji|split(' ', 2) %}
+                <span class="br-moji">
+                    <i>{{ parts[0] }}</i>
+                    {% if parts|length == 2 %}<small>{{ parts[1]|trim }}</small>{% endif %}
+                </span>
+            {% endfor %}
+            <span class="br-moji br-moji-aura {{ media.auraPoints < 0 ? 'br-moji-neg' : '' }}">
+                <i>{{ media.auraPoints < 0 ? '💀' : '⚡️' }}</i>
+                <small>{{ media.auraPoints > 0 ? '+' : '' }}{{ media.auraPoints }} aura</small>
+            </span>
+            <span class="br-moji br-moji-add" aria-hidden="true"><i>{{ avatar }}</i><small>Toi</small></span>
+        </div>
+
+        <div class="br-aura {{ media.auraPoints < 0 ? 'br-aura-neg' : '' }}">
+            <b>{{ media.auraPoints > 0 ? '+' : '' }}{{ media.auraPoints }} aura</b>
+            <span>{{ media.auraMessage|default(media.auraPoints < 0 ? 'Cette décision était objectivement catastrophique.' : 'Ne la gaspille pas.') }}</span>
+        </div>
+
+        <div class="br-comment" aria-hidden="true">
+            <span class="br-av br-av-s">{{ avatar }}</span>
+            <span>Ajouter un commentaire…</span>
+        </div>
+    </main>
+
+    {% if not preview %}
+        <div class="f-cta"><a href="{{ path('app_feed') }}">Retour aux notifications</a></div>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,225 @@
+/* --- Burger King ---------------------------------------------------------- */
+.f-open-bk {
+    background: #f5ebdc;
+    color: #502314;
+}
+
+.bk-top {
+    background: #502314;
+    color: #f5ebdc;
+    margin: 0 -14px;
+    padding: 0 16px 22px;
+    border-radius: 0 0 28px 28px;
+    text-align: center;
+}
+
+.bk-top .f-bar b {
+    color: #f5ebdc;
+}
+
+.bk-label {
+    display: block;
+    margin-top: 8px;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #ff8732;
+}
+
+.bk-num {
+    font-size: 72px;
+    font-weight: 800;
+    letter-spacing: -3px;
+    line-height: 1;
+    color: #fff;
+    font-variant-numeric: tabular-nums;
+    margin: 4px 0 12px;
+}
+
+.bk-ready {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #d62300;
+    color: #fff;
+    border-radius: 999px;
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: 800;
+}
+
+.bk-ready i {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #fff;
+    color: #d62300;
+    display: grid;
+    place-items: center;
+    font-style: normal;
+    font-size: 12px;
+}
+
+.bk-place {
+    margin: 12px 0 0;
+    font-size: 13px;
+    font-weight: 700;
+    opacity: 0.85;
+}
+
+.bk-ticket {
+    position: relative;
+    margin-top: 18px;
+    background: #fff;
+    border-radius: 6px;
+    padding: 16px;
+    box-shadow: 0 6px 18px rgba(80, 35, 20, 0.12);
+}
+
+.bk-ticket::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -8px;
+    height: 8px;
+    background: radial-gradient(circle at 8px -2px, transparent 7px, #fff 8px) 0 0 / 16px 8px repeat-x;
+}
+
+.bk-ticket h2 {
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: -0.4px;
+    margin: 0 0 12px;
+}
+
+.bk-media {
+    border-radius: 10px;
+    overflow: hidden;
+    background: #f5ebdc;
+}
+
+.bk-media .f-media-text {
+    padding: 12px 14px;
+}
+
+.bk-media .f-media-link {
+    margin: 12px;
+    background: #fff;
+    color: #d62300;
+}
+
+.bk-media audio {
+    padding: 10px;
+}
+
+.bk-items {
+    list-style: none;
+    margin: 14px 0 0;
+    padding: 12px 0 0;
+    border-top: 2px dashed #f5ebdc;
+}
+
+.bk-items li {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    font-size: 14px;
+    font-weight: 700;
+    padding: 5px 0;
+}
+
+.bk-items li b {
+    white-space: nowrap;
+    color: #d62300;
+}
+
+.bk-total {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 8px;
+    padding-top: 10px;
+    border-top: 2px solid #502314;
+    font-size: 18px;
+    font-weight: 800;
+}
+
+.bk-total b {
+    color: #d62300;
+}
+
+.bk-total .bk-neg {
+    color: #502314;
+}
+
+.bk-thanks {
+    display: block;
+    margin-top: 10px;
+    text-align: center;
+    font-size: 11px;
+    font-weight: 700;
+    color: #9a6b52;
+}
+
+.bk-crown {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-top: 22px;
+    background: linear-gradient(120deg, #ff8732, #ffb11b);
+    color: #502314;
+    border-radius: 16px;
+    padding: 14px 16px;
+}
+
+.bk-crown > span {
+    font-size: 36px;
+    filter: drop-shadow(0 2px 2px rgba(80, 35, 20, 0.3));
+}
+
+.bk-crown small {
+    display: block;
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+}
+
+.bk-crown b {
+    font-size: 17px;
+    font-weight: 800;
+    line-height: 1.2;
+}
+
+.bk-note {
+    margin-top: 12px;
+    background: #fff;
+    border-left: 4px solid #ff8732;
+    border-radius: 0 14px 14px 0;
+    padding: 12px 14px;
+}
+
+.bk-note small {
+    display: block;
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #d62300;
+}
+
+.bk-note p {
+    margin: 4px 0 0;
+    font-size: 14px;
+    line-height: 1.45;
+}
+
+.f-open-bk .f-cta {
+    background: #f5ebdc;
+    border-top-color: #e8d7c2;
+}
+
+.f-open-bk .f-cta a {
+    background: #d62300;
+}

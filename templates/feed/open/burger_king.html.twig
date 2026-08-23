@@ -1,0 +1,63 @@
+{% extends 'base_feed.html.twig' %}
+
+{% set data = media.appData %}
+{% set items = [] %}
+{% for line in data.items|default('')|split('\n') %}
+    {% if line|trim %}{% set items = items|merge([line|trim]) %}{% endif %}
+{% endfor %}
+{% if items is empty %}{% set items = [media.title] %}{% endif %}
+{% set share = (media.auraPoints / items|length)|round(0, 'floor') %}
+
+{% block title %}{{ media.title }} · Burger King{% endblock %}
+{% block body_class %}f-open f-open-bk{% endblock %}
+
+{% block body %}
+    {{ include('feed/_aura_toast.html.twig', {media: media, justOpened: justOpened}, with_context: false) }}
+
+    <main class="f-wrap f-wrap-open">
+        <header class="bk-top">
+            <div class="f-bar f-bar-inverse">
+                <a class="f-back" href="{{ path('app_feed') }}" aria-label="Retour">‹</a>
+                <b>Ma commande</b>
+                <span class="f-bar-spacer"></span>
+            </div>
+            <small class="bk-label">Commande n°</small>
+            <div class="bk-num">{{ data.orderNumber|default('2015') }}</div>
+            <div class="bk-ready"><i>✓</i>Prête à récupérer au comptoir</div>
+            <p class="bk-place">{{ data.restaurant|default('Burger King · Ton adolescence') }}</p>
+        </header>
+
+        <section class="bk-ticket">
+            <h2>{{ media.title }}</h2>
+            {{ include('feed/_media.html.twig', {media: media, class: 'bk-media'}, with_context: false) }}
+
+            <ul class="bk-items">
+                {% for item in items %}
+                    {% set price = loop.last ? media.auraPoints - share * (loop.index - 1) : share %}
+                    <li><span>{{ item }}</span><b>{{ price > 0 ? '+' : '' }}{{ price }} aura</b></li>
+                {% endfor %}
+            </ul>
+            <div class="bk-total"><span>Total</span><b class="{{ media.auraPoints < 0 ? 'bk-neg' : '' }}">{{ media.auraPoints > 0 ? '+' : '' }}{{ media.auraPoints }} aura</b></div>
+            <small class="bk-thanks">Merci, à bientôt. Sauce au choix : regrets ou nostalgie.</small>
+        </section>
+
+        <section class="bk-crown">
+            <span>👑</span>
+            <div>
+                <small>Couronne du jour</small>
+                <b>{{ data.crownLine|default('Roi du drama du jour') }}</b>
+            </div>
+        </section>
+
+        {% if media.description %}
+            <section class="bk-note">
+                <small>Note du cuisinier</small>
+                <p>{{ media.description }}</p>
+            </section>
+        {% endif %}
+    </main>
+
+    {% if not preview %}
+        <div class="f-cta"><a href="{{ path('app_feed') }}">Retour aux notifications</a></div>
+    {% endif %}
+{% endblock %}

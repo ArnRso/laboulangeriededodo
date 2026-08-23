@@ -1,0 +1,82 @@
+{% extends 'base_feed.html.twig' %}
+
+{% set data = media.appData %}
+{% set lost = media.auraPoints < 0 %}
+{% set streakDays = data.streakDays|default(11) %}
+
+{% block title %}{{ media.title }} · Duolingo{% endblock %}
+{% block body_class %}f-open f-open-du{% endblock %}
+
+{% block body %}
+    {{ include('feed/_aura_toast.html.twig', {media: media, justOpened: justOpened}, with_context: false) }}
+
+    <main class="f-wrap f-wrap-open">
+        <div class="f-bar f-bar-inverse">
+            <a class="f-back" href="{{ path('app_feed') }}" aria-label="Retour">‹</a>
+            <b>Leçon</b>
+            <span class="f-bar-spacer"></span>
+        </div>
+
+        <div class="du-owl">
+            <span class="du-owl-bubble" aria-hidden="true">🦉</span>
+            <p class="du-say">{{ data.owlLine|default('Tu as ignoré mes rappels. Je n\'ai pas oublié. Je n\'oublie jamais.') }}</p>
+        </div>
+
+        <div class="du-streak {{ lost ? 'du-streak-lost' : '' }}">
+            <span class="du-flame" aria-hidden="true">🔥</span>
+            <div>
+                <b>{{ streakDays }} jour{{ streakDays > 1 ? 's' : '' }}</b>
+                <small>{{ lost ? 'Série perdue. Le hibou a pris des notes.' : 'de série sans pratiquer. Record personnel.' }}</small>
+            </div>
+        </div>
+
+        <section class="du-sheet">
+            <div class="du-course">
+                <span class="du-course-flag">{{ recipient and recipient.avatar ? recipient.avatar.value : '🦤' }}</span>
+                <div>
+                    <small>Cours</small>
+                    <b>{{ data.course|default('Dodo → Adulte') }}</b>
+                </div>
+                <span class="du-gem" aria-hidden="true">💎 0</span>
+            </div>
+
+            <div class="du-lesson">
+                <span class="du-lesson-ic" aria-hidden="true">⭐</span>
+                <div>
+                    <small>Unité 1</small>
+                    <b>{{ data.lesson|default('Leçon 4 : les excuses de dernière minute') }}</b>
+                </div>
+            </div>
+
+            <div class="du-progress" aria-hidden="true"><i></i></div>
+
+            <div class="du-ex">
+                <small>Exercice</small>
+                <h1>{{ media.title }}</h1>
+
+                {{ include('feed/_media.html.twig', {media: media, class: 'du-media'}, with_context: false) }}
+
+                {% if media.description %}
+                    <div class="du-answer">
+                        <span class="du-answer-tag">✓ Bonne réponse</span>
+                        <p>{{ media.description }}</p>
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="du-check" aria-hidden="true">Vérifier</div>
+
+            <div class="du-reward {{ lost ? 'du-reward-neg' : '' }}">
+                <span class="du-reward-ic">{{ lost ? '💀' : '🏆' }}</span>
+                <div>
+                    <b><s>{{ media.auraPoints > 0 ? '+' : '' }}{{ media.auraPoints }} XP</s> → converti en <em>{{ media.auraPoints > 0 ? '+' : '' }}{{ media.auraPoints }} aura</em></b>
+                    <small>{{ media.auraMessage|default(lost ? 'Cette décision était objectivement catastrophique.' : 'Ne la gaspille pas.') }}</small>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    {% if not preview %}
+        <div class="f-cta"><a href="{{ path('app_feed') }}">Retour aux notifications</a></div>
+    {% endif %}
+{% endblock %}

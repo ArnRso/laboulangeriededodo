@@ -1,0 +1,84 @@
+{% extends 'base_feed.html.twig' %}
+
+{% set data = media.appData %}
+{% set artist = data.artist|default('Dodo du passé') %}
+{% set duration = data.duration|default('3:47') %}
+{% set progress = data.progress|default(42) %}
+{% set parts = duration matches '/^\\d+:\\d{1,2}$/' ? duration|split(':') : [0, 0] %}
+{% set totalSeconds = (parts[0] * 60) + parts[1] %}
+{% set elapsedSeconds = (totalSeconds * progress / 100)|round %}
+{% set elapsed = '%d:%02d'|format(elapsedSeconds // 60, elapsedSeconds % 60) %}
+{% set inCover = media.type.value in ['image', 'video'] %}
+
+{% block title %}{{ media.title }} · Spotify{% endblock %}
+{% block body_class %}f-open f-open-sp{% endblock %}
+
+{% block body %}
+    {{ include('feed/_aura_toast.html.twig', {media: media, justOpened: justOpened}, with_context: false) }}
+
+    <main class="f-wrap f-wrap-open">
+        <div class="f-bar">
+            <a class="f-back" href="{{ path('app_feed') }}" aria-label="Retour">⌄</a>
+            <div class="sp-from">
+                <small>Lecture depuis la playlist</small>
+                <b>{{ data.playlist|default('Tes années lycée') }}</b>
+            </div>
+            <span class="f-bar-spacer sp-dots" aria-hidden="true">···</span>
+        </div>
+
+        {% if inCover %}
+            {{ include('feed/_media.html.twig', {media: media, class: 'sp-cover'}, with_context: false) }}
+        {% else %}
+            <div class="sp-cover sp-cover-blank" aria-hidden="true"><span>🎵</span></div>
+        {% endif %}
+
+        <div class="sp-track">
+            <div>
+                <h1>{{ media.title }}</h1>
+                <small>{{ artist }}{% if data.album|default('') %} · {{ data.album }}{% endif %}</small>
+            </div>
+            <span class="sp-heart" aria-hidden="true">♥</span>
+        </div>
+
+        <div class="sp-progress">
+            <div class="sp-progress-bar"><i style="width:{{ progress }}%"></i><b style="left:{{ progress }}%"></b></div>
+            <div class="sp-progress-time"><span>{{ elapsed }}</span><span>{{ duration }}</span></div>
+        </div>
+
+        <div class="sp-controls" aria-hidden="true">
+            <span>🔀</span>
+            <span class="sp-skip">⏮</span>
+            <span class="sp-play">▶</span>
+            <span class="sp-skip">⏭</span>
+            <span>🔁</span>
+        </div>
+
+        <div class="sp-devices" aria-hidden="true"><span>📱 Ton téléphone</span><span>⇪</span></div>
+
+        <div class="sp-lyrics">
+            <small>Paroles</small>
+            {% if media.description %}<p>{{ media.description }}</p>{% endif %}
+            {% if not inCover %}
+                {{ include('feed/_media.html.twig', {media: media, class: 'sp-media'}, with_context: false) }}
+            {% endif %}
+            <span class="sp-lyrics-source">Paroles fournies par Dodo du passé</span>
+        </div>
+
+        <div class="sp-artist">
+            <small>À propos de l'artiste</small>
+            <div class="sp-artist-head">
+                <span class="sp-artist-av">{{ recipient and recipient.avatar ? recipient.avatar.value : '🦤' }}</span>
+                <div>
+                    <b>{{ artist }}</b>
+                    <small>{{ media.auraPoints > 0 ? '+' : '' }}{{ media.auraPoints }} aura · auditeurs mensuels</small>
+                </div>
+                <span class="sp-follow">Suivre</span>
+            </div>
+            <div class="sp-artist-row"><span>{{ data.plays|default('1 240 écoutes') }}</span><span>{{ media.auraMessage|default(media.auraPoints < 0 ? 'Cette décision était objectivement catastrophique.' : 'Ne la gaspille pas.') }}</span></div>
+        </div>
+    </main>
+
+    {% if not preview %}
+        <div class="f-cta"><a href="{{ path('app_feed') }}">Retour aux notifications</a></div>
+    {% endif %}
+{% endblock %}

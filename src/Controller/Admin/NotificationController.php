@@ -39,7 +39,7 @@ class NotificationController extends AbstractController
     public function choose(): Response
     {
         return $this->render('admin/notification/choose.html.twig', [
-            'appKinds' => AppKind::cases(),
+            'appKinds' => AppKind::byCategory(),
         ]);
     }
 

@@ -1,0 +1,281 @@
+/* --- iMessage ------------------------------------------------------------- */
+.f-open-im {
+    background: #fff;
+    font-family: -apple-system, BlinkMacSystemFont, 'Plus Jakarta Sans', sans-serif;
+}
+
+.f-open-im .f-back {
+    background: transparent;
+    color: #0a84ff;
+    font-size: 32px;
+    font-weight: 600;
+}
+
+.f-open-im .f-cta a {
+    background: #0a84ff;
+}
+
+.im-bar {
+    margin: 0 -14px;
+    padding: 4px 14px 8px;
+    background: rgba(249, 249, 249, 0.94);
+    border-bottom: 1px solid #d1d1d6;
+    align-items: flex-start;
+}
+
+.im-who {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    min-width: 0;
+}
+
+.im-av {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: linear-gradient(180deg, #a6a9b0, #7d8088);
+    display: grid;
+    place-items: center;
+    font-size: 24px;
+}
+
+.im-who b {
+    font-size: 11px;
+    font-weight: 500;
+    color: #000;
+    max-width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.im-who i {
+    font-style: normal;
+    color: #8e8e93;
+}
+
+.im-cam {
+    width: 36px;
+    text-align: center;
+    font-size: 20px;
+    padding-top: 8px;
+}
+
+.im-stamp,
+.im-sys,
+.im-receipt {
+    font-size: 11px;
+    font-weight: 600;
+    color: #8e8e93;
+    text-align: center;
+}
+
+.im-stamp {
+    margin: 14px 0 6px;
+}
+
+.im-stamp b {
+    display: block;
+    font-weight: 700;
+}
+
+.im-sys {
+    margin: 16px 20px 0;
+    line-height: 1.4;
+}
+
+.im-sys b {
+    color: #0a84ff;
+}
+
+.im-sys-neg b {
+    color: #ff3b30;
+}
+
+.im-chat {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin-top: 6px;
+}
+
+.im-row {
+    display: flex;
+    justify-content: flex-start;
+}
+
+.im-row-first {
+    margin-top: 10px;
+}
+
+.im-row-out {
+    justify-content: flex-end;
+}
+
+.im-row .im-av {
+    display: none;
+}
+
+.im-b {
+    position: relative;
+    max-width: 75%;
+    padding: 7px 12px;
+    border-radius: 18px;
+    font-size: 16px;
+    line-height: 1.25;
+    font-weight: 500;
+}
+
+.im-b-in {
+    background: #e9e9eb;
+    color: #000;
+}
+
+.im-b-out {
+    background: #0a84ff;
+    color: #fff;
+}
+
+.im-row-last .im-b::before,
+.im-row-last .im-b::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    height: 18px;
+}
+
+.im-row-last .im-b::before {
+    width: 16px;
+}
+
+.im-row-last .im-b::after {
+    width: 8px;
+    background: #fff;
+}
+
+.im-row-last .im-b-in::before {
+    left: -6px;
+    background: #e9e9eb;
+    border-bottom-right-radius: 14px 12px;
+}
+
+.im-row-last .im-b-in::after {
+    left: -8px;
+    border-bottom-right-radius: 8px;
+}
+
+.im-row-last .im-b-out::before {
+    right: -6px;
+    background: #0a84ff;
+    border-bottom-left-radius: 14px 12px;
+}
+
+.im-row-last .im-b-out::after {
+    right: -8px;
+    border-bottom-left-radius: 8px;
+}
+
+.im-b p {
+    margin: 0;
+    white-space: pre-line;
+}
+
+.im-t {
+    display: none;
+}
+
+.im-b-media {
+    padding: 0;
+    width: 280px;
+    max-width: 78%;
+    margin-top: 14px;
+}
+
+.im-media {
+    border-radius: 18px 18px 0 0;
+    overflow: hidden;
+    background: linear-gradient(160deg, #ffd6ec, #ffe3d0 50%, #d9d0ff);
+}
+
+.im-media .f-media-text {
+    padding: 14px 12px;
+    font-size: 16px;
+}
+
+.im-media .f-media-link {
+    margin: 12px;
+}
+
+.im-media audio {
+    padding: 12px 8px;
+}
+
+.im-cap {
+    padding: 7px 12px 8px;
+}
+
+.im-react {
+    position: absolute;
+    top: -14px;
+    right: -8px;
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    padding: 4px 9px;
+    border-radius: 999px;
+    background: #0a84ff;
+    color: #fff;
+    border: 2px solid #fff;
+    font-size: 12px;
+    font-weight: 700;
+    z-index: 1;
+}
+
+.im-react-neg {
+    background: #ff3b30;
+}
+
+.im-receipt {
+    text-align: right;
+    margin: 1px 4px 4px;
+}
+
+.im-input {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 18px;
+}
+
+.im-plus {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #e9e9eb;
+    color: #8e8e93;
+    display: grid;
+    place-items: center;
+    font-size: 20px;
+    font-weight: 600;
+    flex: none;
+}
+
+.im-field {
+    flex: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid #d1d1d6;
+    border-radius: 999px;
+    padding: 7px 6px 7px 12px;
+    font-size: 16px;
+    color: #8e8e93;
+}
+
+.im-field i {
+    font-style: normal;
+    font-size: 16px;
+}

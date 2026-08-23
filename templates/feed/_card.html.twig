@@ -24,13 +24,7 @@
         </span>
 
         {% if variant == 'fresh' %}
-            <span class="f-t">
-                {% if app.value == 'uber_eats' %}Ta commande est arrivée 🎁
-                {% elseif app.value == 'instagram' %}{{ data.username|default('dodo.du.passe') }} a publié une photo
-                {% elseif app.value == 'tinder' %}C'est un match ! 💘
-                {% else %}Rappel de rendez-vous · {{ data.practitioner|default('Dr Passé') }}
-                {% endif %}
-            </span>
+            <span class="f-t">{{ app.headline(data) }}</span>
             <span class="f-m">
                 1 × <b>{{ media.title }}</b>
                 {% if app.value == 'uber_eats' %} · livrée par {{ data.courier|default('Dodo du passé') }}{% endif %}
@@ -40,13 +34,7 @@
             {% if app.value == 'uber_eats' %}
                 <span class="f-track" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
             {% endif %}
-            <span class="f-btn">
-                {% if app.value == 'uber_eats' %}Ouvrir la commande
-                {% elseif app.value == 'instagram' %}Voir la publication
-                {% elseif app.value == 'tinder' %}Voir le match
-                {% else %}Voir le rendez-vous
-                {% endif %}
-            </span>
+            <span class="f-btn">{{ app.openLabel }}</span>
         {% else %}
             <span class="f-t">{{ media.title }}</span>
             {% if media.description %}
