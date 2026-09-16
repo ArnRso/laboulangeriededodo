@@ -10,6 +10,10 @@ services:
         exclude:
             - '../src/Service/NotificationState.php'
             - '../src/Service/FeedOverview.php'
+            - '../src/Service/Dressing/AppField.php'
+            - '../src/Service/Dressing/Source.php'
+            - '../src/Service/Dressing/FieldMapping.php'
+            - '../src/Service/Dressing/DressMapping.php'
         public: true
 
     App\Service\InvitationMailer:

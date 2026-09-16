@@ -2,9 +2,11 @@
 
 namespace App\Tests\Functional;
 
+use App\Enum\AppFieldKind;
 use App\Enum\AppKind;
 use App\Enum\MediaType;
 use App\Form\AppDetails\AppDetailsRegistry;
+use App\Service\Dressing\AppFieldCatalog;
 use App\Tests\Factory\MediaFactory;
 use App\Tests\Factory\UserFactory;
 use Doctrine\ORM\EntityManagerInterface;
@@ -365,5 +367,32 @@ class AppKindCoverageTest extends WebTestCase
         }
 
         self::assertNotSame($rendered[1], $rendered[4], sprintf('Changer « %s » ne change rien à ce qui est dessiné.', $field));
+    }
+
+    /**
+     * Le catalogue lit le formulaire de chaque app : il doit y trouver
+     * exactement les champs que ses défauts déclarent, avec une nature
+     * cohérente avec la valeur par défaut.
+     */
+    #[DataProvider('appKinds')]
+    public function testTheFieldCatalogMatchesTheDefaults(AppKind $appKind): void
+    {
+        $registry = self::getContainer()->get(AppDetailsRegistry::class);
+        $catalog = self::getContainer()->get(AppFieldCatalog::class);
+
+        $defaults = $registry->defaultsFor($appKind);
+        $fields = $catalog->fieldsFor($appKind);
+
+        self::assertSame(array_keys($defaults), array_map(static fn ($field): string => $field->name, $fields));
+
+        foreach ($fields as $field) {
+            self::assertNotSame('', $field->label, sprintf('Le champ « %s » de %s n\'a pas de libellé.', $field->name, $appKind->label()));
+
+            if (\is_bool($defaults[$field->name])) {
+                self::assertSame(AppFieldKind::CHECKBOX, $field->kind, $field->name);
+            } elseif (\is_int($defaults[$field->name])) {
+                self::assertContains($field->kind, [AppFieldKind::INTEGER, AppFieldKind::CHOICE], $field->name);
+            }
+        }
     }
 }
