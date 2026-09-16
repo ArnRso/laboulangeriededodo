@@ -77,27 +77,12 @@
     font-size: 18px;
 }
 
-.ms-stamp,
-.ms-sys {
+.ms-stamp {
     text-align: center;
     font-size: 11px;
     font-weight: 700;
     color: #65676b;
     margin: 14px 0 6px;
-}
-
-.ms-sys {
-    font-size: 12px;
-    margin: 16px 20px 0;
-    line-height: 1.4;
-}
-
-.ms-sys b {
-    color: #0084ff;
-}
-
-.ms-sys-neg b {
-    color: #ff5280;
 }
 
 .ms-chat {
@@ -210,27 +195,6 @@
 .ms-cap {
     padding: 8px 12px 9px;
     font-weight: 600;
-}
-
-.ms-react {
-    position: absolute;
-    right: 8px;
-    bottom: -12px;
-    display: inline-flex;
-    align-items: center;
-    gap: 3px;
-    padding: 2px 7px;
-    border-radius: 999px;
-    background: #fff;
-    border: 1px solid #e4e6eb;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
-    font-size: 12px;
-    font-weight: 800;
-    color: #65676b;
-}
-
-.ms-react-neg b {
-    color: #ff5280;
 }
 
 .ms-receipt {

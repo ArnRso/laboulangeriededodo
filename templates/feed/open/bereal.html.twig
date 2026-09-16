@@ -8,8 +8,6 @@
 {% block body_class %}f-open f-open-br{% endblock %}
 
 {% block body %}
-    {{ include('feed/_aura_toast.html.twig', {media: media, justOpened: justOpened}, with_context: false) }}
-
     <main class="f-wrap f-wrap-open">
         <div class="f-bar">
             <a class="f-back" href="{{ path('app_feed') }}" aria-label="Retour">‹</a>
@@ -55,16 +53,7 @@
                     {% if parts|length == 2 %}<small>{{ parts[1]|trim }}</small>{% endif %}
                 </span>
             {% endfor %}
-            <span class="br-moji br-moji-aura {{ media.auraPoints < 0 ? 'br-moji-neg' : '' }}">
-                <i>{{ media.auraPoints < 0 ? '💀' : '⚡️' }}</i>
-                <small>{{ media.auraPoints > 0 ? '+' : '' }}{{ media.auraPoints }} aura</small>
-            </span>
             <span class="br-moji br-moji-add" aria-hidden="true"><i>{{ avatar }}</i><small>Toi</small></span>
-        </div>
-
-        <div class="br-aura {{ media.auraPoints < 0 ? 'br-aura-neg' : '' }}">
-            <b>{{ media.auraPoints > 0 ? '+' : '' }}{{ media.auraPoints }} aura</b>
-            <span>{{ media.auraMessage|default(media.auraPoints < 0 ? 'Cette décision était objectivement catastrophique.' : 'Ne la gaspille pas.') }}</span>
         </div>
 
         <div class="br-comment" aria-hidden="true">

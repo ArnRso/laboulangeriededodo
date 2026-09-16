@@ -152,7 +152,6 @@ class NotificationController extends AbstractController
             'preview' => true,
             'embedded' => $embedded,
             'justOpened' => true,
-            'auraTotal' => 1240 + $media->getAuraPoints(),
             'recipient' => null,
         ]);
     }

@@ -50,7 +50,7 @@ class InstagramDetailsType extends AbstractAppDetailsType
             ])
             ->add('badge', TextType::class, [
                 'label' => 'Badge débloqué',
-                'help' => 'Affiché sous le post avec l\'aura. Laisse vide pour ne rien afficher.',
+                'help' => 'Affiché sous le post. Laisse vide pour ne rien afficher.',
                 'required' => false,
             ]);
     }

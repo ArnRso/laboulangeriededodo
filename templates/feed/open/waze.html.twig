@@ -10,8 +10,6 @@
 {% block body_class %}f-open f-open-wz{% endblock %}
 
 {% block body %}
-    {{ include('feed/_aura_toast.html.twig', {media: media, justOpened: justOpened}, with_context: false) }}
-
     <main class="f-wrap f-wrap-open">
         <div class="f-bar f-bar-inverse">
             <a class="f-back" href="{{ path('app_feed') }}" aria-label="Retour">‹</a>
@@ -61,12 +59,12 @@
             </section>
         {% endif %}
 
-        <section class="wz-arrival {{ media.auraPoints < 0 ? 'wz-arrival-neg' : '' }}">
+        <section class="wz-arrival">
             <div>
                 <small>Arrivée</small>
                 <b>{{ recipient ? recipient.publicName : 'Dodo' }} est arrivé·e</b>
             </div>
-            <span class="wz-points">{{ media.auraPoints > 0 ? '+' : '' }}{{ media.auraPoints }} <small>Points Waze</small></span>
+            <span class="wz-flag-end" aria-hidden="true">🏁</span>
         </section>
     </main>
 

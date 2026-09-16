@@ -194,35 +194,6 @@
     color: #7a7a7a;
 }
 
-.nf-rate {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-top: 16px;
-    background: #141414;
-    border-radius: 8px;
-    padding: 12px 14px;
-}
-
-.nf-rate-icon {
-    font-size: 24px;
-    flex: none;
-    letter-spacing: -8px;
-}
-
-.nf-rate b {
-    display: block;
-    font-size: 14px;
-    font-weight: 800;
-}
-
-.nf-rate small {
-    display: block;
-    margin-top: 2px;
-    font-size: 12px;
-    color: #bcbcbc;
-}
-
 .nf-tabs {
     display: flex;
     gap: 22px;

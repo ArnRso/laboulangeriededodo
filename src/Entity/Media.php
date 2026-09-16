@@ -62,16 +62,6 @@ class Media
     private int $delayMinutes = 1440;
 
     /**
-     * Aura gagnée — ou perdue — à l'ouverture. Négatif volontairement possible :
-     * certaines décisions étaient objectivement catastrophiques.
-     */
-    #[ORM\Column]
-    private int $auraPoints = 100;
-
-    #[ORM\Column(type: 'text', nullable: true)]
-    private ?string $auraMessage = null;
-
-    /**
      * Détails propres à l'application imitée (pseudo Instagram, praticien
      * Doctolib…), dont la forme est dictée par le formulaire de chaque app.
      *
@@ -246,30 +236,6 @@ class Media
         }
 
         return sprintf('%d h %02d', $hours, $minutes);
-    }
-
-    public function getAuraPoints(): int
-    {
-        return $this->auraPoints;
-    }
-
-    public function setAuraPoints(int $auraPoints): static
-    {
-        $this->auraPoints = $auraPoints;
-
-        return $this;
-    }
-
-    public function getAuraMessage(): ?string
-    {
-        return $this->auraMessage;
-    }
-
-    public function setAuraMessage(?string $auraMessage): static
-    {
-        $this->auraMessage = $auraMessage;
-
-        return $this;
     }
 
     /**

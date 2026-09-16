@@ -75,7 +75,6 @@ class NotificationControllerTest extends WebTestCase
             'media[textContent]' => 'Tu te souviens ?',
             'media[delayMinutes][hours]' => 24,
             'media[delayMinutes][minutes]' => 0,
-            'media[auraPoints]' => 100,
             'media[appData][courier]' => 'Dodo du passé',
             'media[appData][trip]' => 'Hier → Aujourd\'hui',
             'media[appData][stars]' => 4,
@@ -155,25 +154,6 @@ class NotificationControllerTest extends WebTestCase
         ]);
 
         self::assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
-    }
-
-    public function testNegativeAuraIsAllowed(): void
-    {
-        $this->client->request('GET', '/admin/notifications/nouveau/tinder');
-        $this->client->submitForm('Ajouter au fil', [
-            'media[title]' => 'La coupe de 2015',
-            'media[type]' => MediaType::TEXT->value,
-            'media[textContent]' => 'Preuve photo à venir.',
-            'media[auraPoints]' => -500,
-            'media[auraMessage]' => 'Désolé.',
-            'media[appData][matchName]' => 'La coupe de 2015',
-        ]);
-
-        self::assertResponseRedirects();
-
-        $media = $this->mediaRepository->findOneBy(['title' => 'La coupe de 2015']);
-        self::assertNotNull($media);
-        self::assertSame(-500, $media->getAuraPoints());
     }
 
     public function testLinkWithoutUrlIsRejected(): void
@@ -318,7 +298,6 @@ class NotificationControllerTest extends WebTestCase
                 'title' => 'Brouillon jamais enregistré',
                 'description' => 'Une bio écrite à la volée',
                 'type' => MediaType::IMAGE->value,
-                'auraPoints' => -500,
                 'appData' => ['matchName' => 'La coupe de 2015', 'dramaLevel' => 87],
             ],
         ]);
@@ -342,7 +321,6 @@ class NotificationControllerTest extends WebTestCase
                 'title' => 'Titre en cours de frappe',
                 'type' => MediaType::TEXT->value,
                 'textContent' => 'Pas encore validé',
-                'auraPoints' => 250,
                 'appData' => ['courier' => 'Dodo du futur', 'stars' => 2],
             ],
         ]);
@@ -350,32 +328,29 @@ class NotificationControllerTest extends WebTestCase
         self::assertResponseIsSuccessful();
         self::assertSelectorTextContains('.ue-hero h1', 'Titre en cours de frappe');
         self::assertSelectorTextContains('.ue-hero p', 'Dodo du futur');
-        self::assertSelectorTextContains('.ue-row-total', '+250 aura');
 
         $reloaded = $this->mediaRepository->find($media->getId());
         self::assertNotNull($reloaded);
         self::assertSame('Titre enregistré', $reloaded->getTitle());
-        self::assertSame(100, $reloaded->getAuraPoints());
     }
 
     public function testLivePreviewToleratesAnIncompleteForm(): void
     {
         $this->client->request('POST', '/admin/notifications/nouveau/doctolib/apercu', [
-            'media' => ['title' => '', 'type' => MediaType::TEXT->value, 'auraPoints' => ''],
+            'media' => ['title' => '', 'type' => MediaType::TEXT->value],
         ]);
 
         self::assertResponseIsSuccessful();
         self::assertSelectorTextContains('body', 'Rendez-vous honoré');
     }
 
-    public function testEmptiedTitleAndAuraAreRejectedRatherThanCrashing(): void
+    public function testAnEmptiedTitleIsRejectedRatherThanCrashing(): void
     {
         $this->client->request('GET', '/admin/notifications/nouveau/uber_eats');
         $this->client->submitForm('Ajouter au fil', [
             'media[title]' => '',
             'media[type]' => MediaType::TEXT->value,
             'media[textContent]' => 'Sans titre',
-            'media[auraPoints]' => '',
         ]);
 
         self::assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);

@@ -213,10 +213,6 @@
     margin-bottom: 3px;
 }
 
-.sn-msg-sys small {
-    color: #7b4eff;
-}
-
 .sn-msg-me small {
     color: #0eadff;
 }
@@ -241,37 +237,6 @@
     border-left-color: #0eadff;
     color: #6b6b6b;
     font-weight: 700;
-}
-
-.sn-bubble-aura {
-    border-left-color: #7b4eff;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    background: #f5f1ff;
-    border-radius: 0 12px 12px 0;
-    padding: 10px 12px 10px 10px;
-}
-
-.sn-bubble-aura b {
-    font-size: 14px;
-}
-
-.sn-bubble-aura em {
-    display: block;
-    font-style: normal;
-    font-size: 12px;
-    color: #6b6b6b;
-    font-weight: 600;
-}
-
-.sn-bubble-neg {
-    background: #fff1f3;
-    border-left-color: #e0245e;
-}
-
-.sn-trophy {
-    font-size: 26px;
 }
 
 .sn-reply {

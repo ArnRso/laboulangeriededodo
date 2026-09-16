@@ -6,8 +6,6 @@
 {% block body_class %}f-open f-open-dl{% endblock %}
 
 {% block body %}
-    {{ include('feed/_aura_toast.html.twig', {media: media, justOpened: justOpened}, with_context: false) }}
-
     <main class="f-wrap f-wrap-open">
         <header class="dl-top">
             <div class="f-bar f-bar-inverse">
@@ -44,17 +42,6 @@
             <h2 class="dl-h2">Compte-rendu</h2>
             <section class="dl-card"><p class="dl-cr">{{ media.description }}</p></section>
         {% endif %}
-
-        <h2 class="dl-h2">Remboursement</h2>
-        <section class="dl-card">
-            <div class="dl-refund {{ media.auraPoints < 0 ? 'dl-refund-neg' : '' }}">
-                <div>
-                    <b>{{ data.refundLabel|default(media.auraPoints < 0 ? 'Dépassement d\'honoraires non remboursé' : 'Pris en charge par la mutuelle du passé') }}</b>
-                    <span>{{ media.auraPoints < 0 ? 'Reste à charge, désolé.' : 'Aucun reste à charge' }}</span>
-                </div>
-                <span class="dl-refund-v">{{ media.auraPoints > 0 ? '+' : '' }}{{ media.auraPoints }} aura</span>
-            </div>
-        </section>
     </main>
 
     {% if not preview %}

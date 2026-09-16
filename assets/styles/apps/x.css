@@ -4,24 +4,8 @@
     color: #0f1419;
 }
 
-.x-repost {
-    font-size: 13px;
-    font-weight: 700;
-    color: #536471;
-    padding: 10px 0 0 26px;
-}
-
-.x-repost b {
-    font-weight: 800;
-}
-
 .x-post {
     padding: 12px 0 4px;
-}
-
-.x-reply {
-    border-top: 1px solid #eff3f4;
-    margin-top: 8px;
 }
 
 .x-head {
@@ -93,20 +77,6 @@
     margin: 0 0 10px;
 }
 
-.x-text-s {
-    font-size: 15px;
-    margin-top: 6px;
-}
-
-.x-mention {
-    color: #1d9bf0;
-}
-
-.x-aura {
-    color: #1d9bf0;
-    font-weight: 800;
-}
-
 .x-media {
     border: 1px solid #cfd9de;
     border-radius: 16px;
@@ -161,51 +131,6 @@
 .x-acts small {
     font-size: 13px;
     font-weight: 600;
-}
-
-.x-acts-s {
-    justify-content: flex-start;
-    gap: 34px;
-    font-size: 15px;
-}
-
-.x-note {
-    margin-top: 8px;
-    border: 1px solid #cfd9de;
-    border-radius: 12px;
-    padding: 12px;
-    background: #f7f9f9;
-}
-
-.x-note b {
-    display: block;
-    font-size: 14px;
-    font-weight: 800;
-    margin-bottom: 6px;
-}
-
-.x-note p {
-    margin: 0 0 8px;
-    font-size: 14px;
-    line-height: 1.4;
-    font-weight: 500;
-}
-
-.x-note strong {
-    font-weight: 800;
-    color: #e0245e;
-}
-
-.x-note small {
-    font-size: 13px;
-    color: #536471;
-    font-weight: 600;
-}
-
-.x-note u {
-    color: #1d9bf0;
-    text-decoration: none;
-    font-weight: 800;
 }
 
 .x-reply-box {

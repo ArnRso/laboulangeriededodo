@@ -22,7 +22,6 @@ final readonly class MediaFactory
         string $title = 'Notification de test',
         AppKind $appKind = AppKind::UBER_EATS,
         int $delayMinutes = 1440,
-        int $auraPoints = 100,
         bool $published = true,
         MediaType $type = MediaType::TEXT,
     ): Media {
@@ -31,7 +30,6 @@ final readonly class MediaFactory
             ->setTitle($title)
             ->setAppKind($appKind)
             ->setDelayMinutes($delayMinutes)
-            ->setAuraPoints($auraPoints)
             ->setPublished($published)
             ->setType($type);
 

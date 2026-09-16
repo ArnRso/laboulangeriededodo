@@ -28,8 +28,6 @@
             <span class="f-m">
                 1 × <b>{{ media.title }}</b>
                 {% if app.value == 'uber_eats' %} · livrée par {{ data.courier|default('Dodo du passé') }}{% endif %}
-                · {{ media.auraPoints > 0 ? '+' : '' }}{{ media.auraPoints }} aura
-                {% if app.value == 'uber_eats' %}inclus, pas de pourboire{% endif %}
             </span>
             {% if app.value == 'uber_eats' %}
                 <span class="f-track" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
@@ -43,7 +41,4 @@
         {% endif %}
     </span>
 
-    {% if variant == 'seen' %}
-        <span class="f-aurachip{{ media.auraPoints < 0 ? ' f-aurachip-neg' : '' }}">{{ media.auraPoints > 0 ? '+' : '' }}{{ media.auraPoints }}</span>
-    {% endif %}
 </a>

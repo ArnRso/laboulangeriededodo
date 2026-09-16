@@ -210,32 +210,6 @@
     border-radius: 10px;
 }
 
-.dv-row {
-    display: flex;
-    justify-content: space-between;
-    font-size: 13px;
-    font-weight: 600;
-    padding: 5px 0;
-    color: #6f7879;
-}
-
-.dv-row-total {
-    border-top: 1px solid #e4e8e9;
-    margin-top: 6px;
-    padding-top: 10px;
-    font-size: 16px;
-    font-weight: 800;
-    color: #2e3333;
-}
-
-.dv-row-total span:last-child {
-    color: #00857a;
-}
-
-.dv-row-total .dv-neg {
-    color: #e0245e;
-}
-
 .f-open-dv .f-cta a {
     background: #00ccbc;
 }

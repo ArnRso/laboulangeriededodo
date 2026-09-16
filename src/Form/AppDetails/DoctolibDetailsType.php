@@ -34,7 +34,7 @@ class DoctolibDetailsType extends AbstractAppDetailsType
             ])
             ->add('refundLabel', TextType::class, [
                 'label' => 'Libellé du remboursement',
-                'help' => 'Affiché avec l\'aura, par exemple « Pris en charge par la mutuelle du passé ».',
+                'help' => 'Par exemple « Pris en charge par la mutuelle du passé ».',
                 'required' => false,
             ]);
     }

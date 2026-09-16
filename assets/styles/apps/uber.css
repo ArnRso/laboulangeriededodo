@@ -218,15 +218,13 @@
     font-size: 11px;
 }
 
-.ub-lost,
-.ub-receipt {
+.ub-lost {
     margin-top: 22px;
     border-top: 1px solid #e8e8e8;
     padding-top: 16px;
 }
 
-.ub-lost h2,
-.ub-receipt h2 {
+.ub-lost h2 {
     font-size: 17px;
     font-weight: 800;
     margin: 0 0 10px;
@@ -274,40 +272,4 @@
     margin: 4px 0 0;
     font-size: 14px;
     line-height: 1.45;
-}
-
-.ub-row {
-    display: flex;
-    justify-content: space-between;
-    gap: 12px;
-    font-size: 13px;
-    font-weight: 600;
-    padding: 5px 0;
-    color: #6b6b6b;
-}
-
-.ub-row span:last-child {
-    text-align: right;
-    white-space: nowrap;
-}
-
-.ub-row-total {
-    border-top: 1px solid #e8e8e8;
-    margin-top: 6px;
-    padding-top: 10px;
-    font-size: 18px;
-    font-weight: 800;
-    color: #000;
-}
-
-.ub-row-total .ub-neg {
-    color: #e0245e;
-}
-
-.ub-pay {
-    display: block;
-    margin-top: 8px;
-    font-size: 11px;
-    font-weight: 600;
-    color: #6b6b6b;
 }

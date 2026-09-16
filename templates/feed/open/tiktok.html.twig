@@ -21,8 +21,6 @@
 {% block body_class %}f-open f-open-tk{% endblock %}
 
 {% block body %}
-    {{ include('feed/_aura_toast.html.twig', {media: media, justOpened: justOpened}, with_context: false) }}
-
     <main class="f-wrap f-wrap-open">
         <div class="f-bar tk-bar">
             <a class="f-back" href="{{ path('app_feed') }}" aria-label="Retour">‹</a>
@@ -32,15 +30,6 @@
 
         <div class="tk-frame">
             {{ include('feed/_media.html.twig', {media: media, class: 'tk-media'}, with_context: false) }}
-
-            <div class="tk-gift {{ media.auraPoints < 0 ? 'tk-gift-neg' : '' }}">
-                <span class="tk-gift-av">{{ avatar }}</span>
-                <span class="tk-gift-txt">
-                    <b>{{ recipient ? recipient.publicName : 'Dodo' }}</b>
-                    {% if media.auraPoints < 0 %}a perdu {{ media.auraPoints|abs }} aura 💀{% else %}a reçu un cadeau ✨{% endif %}
-                </span>
-                <span class="tk-gift-v">{{ media.auraPoints < 0 ? '🥀' : '🌹' }} <b>{{ media.auraPoints > 0 ? '+' : '' }}{{ media.auraPoints }}</b></span>
-            </div>
 
             <div class="tk-rail" aria-hidden="true">
                 <span class="tk-rail-av"><i>{{ avatar }}</i><em>+</em></span>

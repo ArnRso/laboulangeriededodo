@@ -16,7 +16,7 @@ class LydiaDetailsType extends AbstractAppDetailsType
         $builder
             ->add('counterparty', TextType::class, [
                 'label' => 'Ami qui envoie / reçoit',
-                'help' => 'Qui envoie l\'aura (ou qui la réclame, si elle est négative).',
+                'help' => 'Qui envoie le virement.',
                 'constraints' => [new NotBlank()],
             ])
             ->add('message', TextType::class, [

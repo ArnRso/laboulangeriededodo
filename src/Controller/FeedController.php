@@ -4,7 +4,6 @@ namespace App\Controller;
 
 use App\Entity\Media;
 use App\Entity\User;
-use App\Service\AuraService;
 use App\Service\FeedService;
 use Psr\Clock\ClockInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -21,7 +20,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class FeedController extends AbstractController
 {
     #[Route('', name: 'app_feed', methods: ['GET'])]
-    public function index(FeedService $feedService, AuraService $auraService, ClockInterface $clock): Response
+    public function index(FeedService $feedService, ClockInterface $clock): Response
     {
         $user = $this->getRecipient();
 
@@ -33,8 +32,6 @@ class FeedController extends AbstractController
 
         return $this->render('feed/index.html.twig', [
             'overview' => $feedService->getOverview($user),
-            'auraTotal' => $auraService->total($user),
-            'auraToday' => $auraService->today($user),
             'now' => $now,
             'dateLabel' => $this->frenchDate($now),
             'recipient' => $user,
@@ -42,7 +39,7 @@ class FeedController extends AbstractController
     }
 
     #[Route('/notifications/{id}', name: 'app_feed_open', requirements: ['id' => '\d+'], methods: ['GET'])]
-    public function open(Media $media, FeedService $feedService, AuraService $auraService): Response
+    public function open(Media $media, FeedService $feedService): Response
     {
         $user = $this->getRecipient();
 
@@ -64,7 +61,6 @@ class FeedController extends AbstractController
             'media' => $media,
             'preview' => false,
             'justOpened' => $justOpened,
-            'auraTotal' => $auraService->total($user),
             'recipient' => $user,
         ]);
     }

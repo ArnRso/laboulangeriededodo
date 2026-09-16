@@ -26,7 +26,7 @@ class BurgerKingDetailsType extends AbstractAppDetailsType
             ])
             ->add('items', TextareaType::class, [
                 'label' => 'Articles',
-                'help' => 'Un par ligne. Le total du ticket est l\'aura de la notification.',
+                'help' => 'Un par ligne.',
                 'required' => false,
                 'attr' => ['rows' => 4, 'placeholder' => "1× Whopper du drama\n1× Frites de la honte"],
             ])

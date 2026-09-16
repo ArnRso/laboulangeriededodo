@@ -42,24 +42,6 @@ class MediaAccessRepository extends ServiceEntityRepository
     }
 
     /**
-     * Aura cumulée par les ouvertures, éventuellement à partir d'une date.
-     */
-    public function sumAuraForUser(User $user, ?\DateTimeImmutable $since = null): int
-    {
-        $builder = $this->createQueryBuilder('ma')
-            ->select('COALESCE(SUM(m.auraPoints), 0)')
-            ->join('ma.media', 'm')
-            ->andWhere('ma.user = :user')
-            ->setParameter('user', $user);
-
-        if (null !== $since) {
-            $builder->andWhere('ma.openedAt >= :since')->setParameter('since', $since);
-        }
-
-        return (int) $builder->getQuery()->getSingleScalarResult();
-    }
-
-    /**
      * @return list<MediaAccess>
      */
     public function findByMedia(Media $media): array

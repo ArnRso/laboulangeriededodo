@@ -297,26 +297,10 @@
     font-weight: 800;
 }
 
-.wz-points {
+.wz-flag-end {
     flex: none;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    font-size: 24px;
-    font-weight: 800;
-    color: #ffc400;
+    font-size: 26px;
     line-height: 1;
-}
-
-.wz-points small {
-    font-size: 10px;
-    color: #fff;
-    letter-spacing: 0.5px;
-    margin-top: 3px;
-}
-
-.wz-arrival-neg .wz-points {
-    color: #ff7a8a;
 }
 
 .f-open-wz .f-cta {

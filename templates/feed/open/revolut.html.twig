@@ -2,15 +2,11 @@
 
 {% set data = media.appData %}
 {% set counterparty = data.counterparty|default('Dodo du passé') %}
-{% set negative = media.auraPoints < 0 %}
-{% set amount = (negative ? '−' : '+') ~ media.auraPoints|abs|number_format(0, ',', ' ') ~ ' aura' %}
 
 {% block title %}{{ media.title }} · Revolut{% endblock %}
 {% block body_class %}f-open f-open-rv{% endblock %}
 
 {% block body %}
-    {{ include('feed/_aura_toast.html.twig', {media: media, justOpened: justOpened}, with_context: false) }}
-
     <main class="f-wrap f-wrap-open">
         <div class="f-bar">
             <a class="f-back" href="{{ path('app_feed') }}" aria-label="Retour">‹</a>
@@ -20,9 +16,8 @@
 
         <header class="rv-hero">
             <span class="rv-av">{{ counterparty|first|upper }}</span>
-            <div class="rv-amount {{ negative ? 'rv-amount-neg' : '' }}">{{ amount }}</div>
-            <p class="rv-sub">{{ counterparty }} · {{ data.statusLabel|default('Terminé') }}</p>
             <h1 class="rv-title">{{ media.title }}</h1>
+            <p class="rv-sub">{{ counterparty }} · {{ data.statusLabel|default('Terminé') }}</p>
         </header>
 
         <section class="rv-card">
@@ -30,7 +25,7 @@
             <div class="rv-row"><span class="rv-ic">🗂</span><span>Catégorie</span><b>{{ data.category|default('Décisions') }}</b></div>
             <div class="rv-row"><span class="rv-ic">💳</span><span>Carte</span><b>•••• {{ data.cardLast4|default('2015') }}</b></div>
             <div class="rv-row"><span class="rv-ic">🧾</span><span>Référence</span><b class="rv-ref">{{ data.reference|default('CB 2015 SOIRÉE DONT ON NE PARLE PLUS') }}</b></div>
-            <div class="rv-row"><span class="rv-ic">{{ negative ? '💀' : '✨' }}</span><span>Statut</span><b>{{ data.statusLabel|default('Terminé') }}</b></div>
+            <div class="rv-row"><span class="rv-ic">✨</span><span>Statut</span><b>{{ data.statusLabel|default('Terminé') }}</b></div>
         </section>
 
         <h2 class="rv-h2">Reçu</h2>

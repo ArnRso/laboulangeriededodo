@@ -6,8 +6,6 @@
 {% block body_class %}f-open f-open-nf{% endblock %}
 
 {% block body %}
-    {{ include('feed/_aura_toast.html.twig', {media: media, justOpened: justOpened}, with_context: false) }}
-
     <main class="f-wrap f-wrap-open">
         <div class="nf-hero">
             {{ include('feed/_media.html.twig', {media: media, class: 'nf-media'}, with_context: false) }}
@@ -43,14 +41,6 @@
         <div class="nf-lines">
             <p><span>Avec :</span> {{ data.cast|default('Dodo du passé') }}</p>
             <p><span>Genres :</span> {{ data.genres|default('Drame · Comédie · Documentaire') }}</p>
-        </div>
-
-        <div class="nf-rate">
-            <span class="nf-rate-icon" aria-hidden="true">{{ media.auraPoints < 0 ? '👎' : '👍👍' }}</span>
-            <div>
-                <b>Ta note : {{ media.auraPoints > 0 ? '+' : '' }}{{ media.auraPoints }} aura</b>
-                <small>{{ media.auraMessage|default(media.auraPoints < 0 ? 'Cette décision était objectivement catastrophique.' : 'Ne la gaspille pas.') }}</small>
-            </div>
         </div>
 
         <div class="nf-tabs" aria-hidden="true"><span class="on">Épisodes</span><span>Plus de titres similaires</span></div>

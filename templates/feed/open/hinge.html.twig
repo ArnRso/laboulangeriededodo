@@ -8,8 +8,6 @@
 {% block body_class %}f-open f-open-hg{% endblock %}
 
 {% block body %}
-    {{ include('feed/_aura_toast.html.twig', {media: media, justOpened: justOpened}, with_context: false) }}
-
     <main class="f-wrap f-wrap-open">
         <div class="f-bar">
             <a class="f-back" href="{{ path('app_feed') }}" aria-label="Retour">‹</a>
@@ -21,7 +19,6 @@
             <span class="hg-banner-av">{{ recipient and recipient.avatar ? recipient.avatar.value : '🦤' }}</span>
             <div>
                 <b>{{ likedBy }} a aimé ta réponse</b>
-                <small>{{ media.auraPoints > 0 ? '+' : '' }}{{ media.auraPoints }} aura{% if media.auraMessage %} · {{ media.auraMessage|lower }}{% endif %}</small>
             </div>
             <span class="hg-banner-heart" aria-hidden="true">♥</span>
         </div>

@@ -189,16 +189,6 @@
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
 }
 
-.ca-aura b {
-    color: var(--f-pink);
-    font-size: 18px;
-    font-weight: 800;
-}
-
-.ca-aura-neg b {
-    color: #ff3b30;
-}
-
 .f-open-ca .f-cta a {
     background: #ff3b30;
 }

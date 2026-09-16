@@ -10,7 +10,6 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\EnumType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\UrlType;
@@ -53,7 +52,7 @@ class MediaType extends AbstractType
                 'label' => 'Description',
                 'required' => false,
                 'attr' => ['rows' => 3],
-                'help' => 'Reprise par l\'app à sa façon : note du restaurant, légende, bio du match, compte-rendu…',
+                'help' => 'Reprise dans le fil, sous le titre.',
             ])
             // Le type est choisi par les onglets, qui alimentent ce champ caché.
             ->add('type', EnumType::class, [
@@ -83,17 +82,6 @@ class MediaType extends AbstractType
                 'label' => 'Délai d\'arrivée',
                 'allow_zero' => true,
                 'help' => 'Temps après l\'ouverture de la notification précédente. Zéro pour enchaîner tout de suite ; sans effet sur la première du fil.',
-            ])
-            ->add('auraPoints', IntegerType::class, [
-                'label' => 'Aura gagnée à l\'ouverture',
-                'empty_data' => '0',
-                'help' => 'Positif par défaut. Mets une valeur négative pour une décision objectivement catastrophique.',
-            ])
-            ->add('auraMessage', TextareaType::class, [
-                'label' => 'Phrase d\'aura',
-                'required' => false,
-                'attr' => ['rows' => 2, 'placeholder' => 'Tu viens de débloquer +100 aura. Ne la gaspille pas.'],
-                'help' => 'Affichée avec le gain d\'aura. Laisse vide pour la phrase par défaut.',
             ])
             ->add('published', CheckboxType::class, [
                 'label' => 'Dans le fil',

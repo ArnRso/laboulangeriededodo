@@ -84,7 +84,7 @@ body {
     font-weight: 700;
 }
 
-/* En-tête : horloge, date, aura (G3A, sans la saison). */
+/* En-tête : horloge et date (G3A, sans la saison). */
 .f-clock {
     text-align: center;
     margin: 4px 0 18px;
@@ -104,24 +104,6 @@ body {
     color: var(--f-muted);
     margin-top: 4px;
     text-transform: lowercase;
-}
-
-.f-aura {
-    display: inline-flex;
-    gap: 6px;
-    align-items: center;
-    margin-top: 10px;
-    background: rgba(255, 255, 255, 0.65);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border-radius: 999px;
-    padding: 6px 12px;
-    font-size: 12px;
-    font-weight: 800;
-}
-
-.f-aura b {
-    color: var(--f-pink);
 }
 
 .f-grp {
@@ -353,22 +335,6 @@ body {
     color: var(--f-seen);
 }
 
-.f-aurachip {
-    flex: none;
-    font-size: 12px;
-    font-weight: 800;
-    color: var(--f-pink);
-    background: #fff0f6;
-    border-radius: 999px;
-    padding: 4px 8px;
-    align-self: center;
-}
-
-.f-aurachip-neg {
-    color: #e0245e;
-    background: #ffe9ee;
-}
-
 /* Pile repliée. */
 .f-stack {
     width: 100%;
@@ -437,40 +403,6 @@ body {
     font-size: 12px;
     color: var(--f-muted);
     font-weight: 700;
-}
-
-/* Toast d'aura. */
-.f-toast {
-    position: fixed;
-    top: 14px;
-    left: 50%;
-    transform: translate(-50%, -140%);
-    background: var(--f-ink);
-    color: #fff;
-    border-radius: 18px;
-    padding: 10px 16px;
-    font-size: 13px;
-    font-weight: 700;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
-    z-index: 10;
-    max-width: calc(100% - 28px);
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    transition: transform 0.45s cubic-bezier(0.2, 0.9, 0.3, 1.2);
-}
-
-.f-toast.is-visible {
-    transform: translate(-50%, 0);
-}
-
-.f-toast b {
-    color: var(--f-pink);
-    font-size: 15px;
-}
-
-.f-toast-neg b {
-    color: #ff7a8a;
 }
 
 /* Formulaires du fil : connexion, invitation, options. */
@@ -886,40 +818,10 @@ body {
     margin: 12px;
 }
 
-.ue-receipt {
-    margin-top: 16px;
-    border-top: 1px solid #e8e8e8;
-    padding-top: 12px;
-}
-
-.ue-row {
-    display: flex;
-    justify-content: space-between;
-    font-size: 13px;
-    font-weight: 600;
-    padding: 5px 0;
-    color: #6b6b6b;
-}
-
-.ue-row-total {
-    border-top: 1px solid #e8e8e8;
-    margin-top: 6px;
-    padding-top: 10px;
-    font-size: 16px;
-    font-weight: 800;
-    color: #000;
-}
-
-.ue-row-total span:last-child {
-    color: #06c167;
-}
-
-.ue-row-total .ue-neg {
-    color: #e0245e;
-}
-
 .ue-rate {
-    margin-top: 16px;
+    margin-top: 20px;
+    border-top: 1px solid #e8e8e8;
+    padding-top: 16px;
     text-align: center;
 }
 
@@ -1131,18 +1033,6 @@ body {
     font-weight: 600;
 }
 
-.ig-aura {
-    margin-left: auto;
-    color: var(--f-pink);
-    font-weight: 800;
-    font-size: 14px;
-    white-space: nowrap;
-}
-
-.ig-aura-neg {
-    color: #e0245e;
-}
-
 .ig-back {
     display: block;
     margin-top: 14px;
@@ -1297,10 +1187,6 @@ body {
 }
 
 .td-drama b {
-    color: #ff3b5c;
-}
-
-.td-drama .td-neg {
     color: #ff3b5c;
 }
 
@@ -1625,46 +1511,6 @@ body {
     font-size: 13px;
     line-height: 1.5;
     color: #1f2b3a;
-}
-
-.dl-refund {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 10px;
-    background: #eaf8f0;
-    border: 1px solid #cdebd9;
-    border-radius: 12px;
-    padding: 10px 12px;
-}
-
-.dl-refund b {
-    font-size: 13px;
-    font-weight: 800;
-    color: #1a9b5b;
-    display: block;
-}
-
-.dl-refund span {
-    font-size: 12px;
-    color: #6b7785;
-    font-weight: 600;
-}
-
-.dl-refund-v {
-    font-size: 15px !important;
-    font-weight: 800 !important;
-    color: var(--f-pink) !important;
-    white-space: nowrap;
-}
-
-.dl-refund-neg {
-    background: #fff1f3;
-    border-color: #ffd2da;
-}
-
-.dl-refund-neg b {
-    color: #e0245e;
 }
 
 /* Coup de pouce de démonstration : le formulaire ne s'affiche jamais, seul le

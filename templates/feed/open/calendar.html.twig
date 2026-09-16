@@ -6,8 +6,6 @@
 {% block body_class %}f-open f-open-ca{% endblock %}
 
 {% block body %}
-    {{ include('feed/_aura_toast.html.twig', {media: media, justOpened: justOpened}, with_context: false) }}
-
     <main class="f-wrap f-wrap-open">
         <div class="f-bar f-bar-inverse ca-bar">
             <a class="f-back" href="{{ path('app_feed') }}" aria-label="Retour">‹</a>
@@ -68,17 +66,6 @@
             <span>Peut-être</span>
             <span>Refuser</span>
         </div>
-
-        <h2 class="ca-h2">Récompense d'assiduité</h2>
-        <section class="ca-group">
-            <div class="ca-row ca-aura {{ media.auraPoints < 0 ? 'ca-aura-neg' : '' }}">
-                <span class="ca-ic" aria-hidden="true">{{ media.auraPoints < 0 ? '💀' : '✨' }}</span>
-                <div>
-                    <b>{{ media.auraPoints > 0 ? '+' : '' }}{{ media.auraPoints }} aura</b>
-                    <small>{{ media.auraMessage|default(media.auraPoints < 0 ? 'Présence notée. Cette décision était objectivement catastrophique.' : 'Présence validée. Ne la gaspille pas.') }}</small>
-                </div>
-            </div>
-        </section>
     </main>
 
     {% if not preview %}

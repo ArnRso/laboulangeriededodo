@@ -216,28 +216,6 @@
     font-weight: 600;
 }
 
-.mt-aura b {
-    display: block;
-    font-size: 28px;
-    font-weight: 800;
-    letter-spacing: -0.5px;
-    line-height: 1.1;
-    color: #fff4ae;
-}
-
-.mt-aura-neg b {
-    color: #ffb3bd;
-}
-
-.mt-aura span {
-    display: block;
-    margin-top: 4px;
-    font-size: 13px;
-    font-weight: 700;
-    opacity: 0.9;
-    line-height: 1.4;
-}
-
 .f-open-mt .f-cta {
     background: rgba(255, 255, 255, 0.9);
     border-top: 0;

@@ -143,32 +143,6 @@
     font-weight: 600;
 }
 
-.mc-row {
-    display: flex;
-    justify-content: space-between;
-    font-size: 13px;
-    font-weight: 600;
-    padding: 5px 0;
-    color: #6b6b6b;
-}
-
-.mc-row-total {
-    border-top: 1px solid #ececec;
-    margin-top: 6px;
-    padding-top: 10px;
-    font-size: 16px;
-    font-weight: 800;
-    color: #27251f;
-}
-
-.mc-row-total span:last-child {
-    color: #da291c;
-}
-
-.mc-row-total .mc-neg {
-    color: #27251f;
-}
-
 .mc-slogan {
     display: flex;
     align-items: center;

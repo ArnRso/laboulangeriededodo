@@ -101,64 +101,6 @@
     pointer-events: none;
 }
 
-.tk-gift {
-    position: absolute;
-    left: 12px;
-    top: 64px;
-    z-index: 2;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 6px 12px 6px 6px;
-    border-radius: 999px;
-    background: linear-gradient(90deg, #fe2c55, #ff7a59);
-    font-size: 12px;
-    font-weight: 600;
-    box-shadow: 0 6px 18px rgba(254, 44, 85, 0.4);
-    animation: tk-gift-in 0.6s cubic-bezier(0.2, 0.9, 0.3, 1.2) both;
-    pointer-events: none;
-}
-
-.tk-gift-neg {
-    background: linear-gradient(90deg, #3a3a3a, #151515);
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5);
-}
-
-@keyframes tk-gift-in {
-    0% {
-        transform: translateX(-120%);
-    }
-
-    100% {
-        transform: translateX(0);
-    }
-}
-
-.tk-gift-av {
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    background: #fff;
-    display: grid;
-    place-items: center;
-    font-size: 15px;
-}
-
-.tk-gift-txt b {
-    font-weight: 800;
-    display: block;
-    font-size: 12px;
-}
-
-.tk-gift-v {
-    margin-left: 4px;
-    font-size: 14px;
-}
-
-.tk-gift-v b {
-    font-weight: 800;
-}
-
 .tk-rail {
     position: absolute;
     right: 10px;

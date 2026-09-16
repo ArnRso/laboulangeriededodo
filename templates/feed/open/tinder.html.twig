@@ -9,8 +9,6 @@
 {% block status %}{% endblock %}
 
 {% block body %}
-    {{ include('feed/_aura_toast.html.twig', {media: media, justOpened: justOpened}, with_context: false) }}
-
     <div class="td-confetti" aria-hidden="true">
         <i style="left:10%;animation-delay:-1s"></i><i style="left:25%;animation-delay:-4s"></i><i style="left:45%;animation-delay:-2s"></i>
         <i style="left:62%;animation-delay:-6s"></i><i style="left:80%;animation-delay:-3s"></i><i style="left:92%;animation-delay:-5s"></i>
@@ -31,11 +29,7 @@
         </div>
 
         <div class="td-drama">
-            <span>
-                Drama level <b>{{ data.dramaLevel|default(50) }} %</b>
-                · <b class="{{ media.auraPoints < 0 ? 'td-neg' : '' }}">{{ media.auraPoints > 0 ? '+' : '' }}{{ media.auraPoints }} aura</b>
-                {% if media.auraMessage %} · {{ media.auraMessage|lower }}{% endif %}
-            </span>
+            <span>Drama level <b>{{ data.dramaLevel|default(50) }} %</b></span>
         </div>
 
         <div class="td-card">

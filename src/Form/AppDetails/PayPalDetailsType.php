@@ -16,7 +16,7 @@ class PayPalDetailsType extends AbstractAppDetailsType
         $builder
             ->add('counterparty', TextType::class, [
                 'label' => 'Expéditeur / destinataire',
-                'help' => 'Qui paie (ou qui encaisse, si l\'aura est négative).',
+                'help' => 'Qui paie.',
                 'constraints' => [new NotBlank()],
             ])
             ->add('note', TextType::class, [

@@ -101,22 +101,6 @@
     opacity: 0.95;
 }
 
-.du-streak-lost {
-    background: #9e9e9e;
-    box-shadow: 0 4px 0 #777;
-}
-
-.du-streak-lost .du-flame {
-    filter: grayscale(1);
-    opacity: 0.6;
-}
-
-.du-streak-lost b {
-    text-decoration: line-through;
-    text-decoration-thickness: 3px;
-    text-decoration-color: #ff4b4b;
-}
-
 .du-sheet {
     background: #fff;
     color: #3c3c3c;
@@ -302,53 +286,6 @@
     border-radius: 14px;
     padding: 14px;
     box-shadow: 0 4px 0 #46a302;
-}
-
-.du-reward {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-top: 16px;
-    background: #fff6d6;
-    border: 2px solid #ffe08a;
-    border-radius: 16px;
-    padding: 12px 14px;
-}
-
-.du-reward-ic {
-    font-size: 30px;
-    flex: none;
-}
-
-.du-reward b {
-    display: block;
-    font-size: 14px;
-    font-weight: 800;
-    line-height: 1.3;
-}
-
-.du-reward s {
-    color: #afafaf;
-}
-
-.du-reward em {
-    font-style: normal;
-    color: var(--f-pink);
-}
-
-.du-reward small {
-    font-size: 12px;
-    font-weight: 600;
-    color: #777;
-}
-
-.du-reward-neg {
-    background: #ffe5e5;
-    border-color: #ffb3b3;
-}
-
-.du-reward-neg em {
-    color: #ff4b4b;
 }
 
 .f-open-du .f-cta {

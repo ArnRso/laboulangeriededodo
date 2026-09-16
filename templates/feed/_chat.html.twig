@@ -2,8 +2,7 @@
     Une conversation en bulles, partagée par les messageries (WhatsApp,
     Messenger, iMessage). Le contact envoie d'abord le souvenir, puis viennent
     les lignes de `conversation` (« moi: » pour une bulle envoyée), et la
-    description en dernière bulle du contact. L'aura arrive en réaction sur le
-    souvenir et en message système à la fin.
+    description en dernière bulle du contact.
 
     Paramètres :
       - media   : Media
@@ -49,19 +48,10 @@
                     <p>{{ b.text }}</p>
                 {% endif %}
                 <span class="{{ p }}-t">{{ '%02d:%02d'|format((minutes // 60) % 24, minutes % 60) }}{% if b.side == 'out' and ticks|default('') %} <i>{{ ticks }}</i>{% endif %}</span>
-                {% if b.kind == 'media' %}
-                    <span class="{{ p }}-react {{ media.auraPoints < 0 ? p ~ '-react-neg' : '' }}">{{ media.auraPoints < 0 ? '💀' : '✨' }}<b>{{ media.auraPoints > 0 ? '+' : '' }}{{ media.auraPoints }}</b></span>
-                {% endif %}
             </div>
         </div>
         {% if loop.index0 == lastOut and receipt|default('') %}
             <div class="{{ p }}-receipt">{{ receipt }}</div>
         {% endif %}
     {% endfor %}
-
-    <div class="{{ p }}-sys {{ media.auraPoints < 0 ? p ~ '-sys-neg' : '' }}">
-        {{ media.auraPoints < 0 ? '💀' : '✨' }}
-        <b>{{ media.auraPoints > 0 ? '+' : '' }}{{ media.auraPoints }} aura</b>
-        · {{ media.auraMessage|default(media.auraPoints < 0 ? 'Cette décision était objectivement catastrophique.' : 'Ne la gaspille pas.') }}
-    </div>
 </div>

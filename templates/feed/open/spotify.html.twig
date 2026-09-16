@@ -14,8 +14,6 @@
 {% block body_class %}f-open f-open-sp{% endblock %}
 
 {% block body %}
-    {{ include('feed/_aura_toast.html.twig', {media: media, justOpened: justOpened}, with_context: false) }}
-
     <main class="f-wrap f-wrap-open">
         <div class="f-bar">
             <a class="f-back" href="{{ path('app_feed') }}" aria-label="Retour">⌄</a>
@@ -70,11 +68,10 @@
                 <span class="sp-artist-av">{{ recipient and recipient.avatar ? recipient.avatar.value : '🦤' }}</span>
                 <div>
                     <b>{{ artist }}</b>
-                    <small>{{ media.auraPoints > 0 ? '+' : '' }}{{ media.auraPoints }} aura · auditeurs mensuels</small>
+                    <small>{{ data.plays|default('1 240 écoutes') }}</small>
                 </div>
                 <span class="sp-follow">Suivre</span>
             </div>
-            <div class="sp-artist-row"><span>{{ data.plays|default('1 240 écoutes') }}</span><span>{{ media.auraMessage|default(media.auraPoints < 0 ? 'Cette décision était objectivement catastrophique.' : 'Ne la gaspille pas.') }}</span></div>
         </div>
     </main>
 

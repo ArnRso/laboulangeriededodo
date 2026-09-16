@@ -287,24 +287,6 @@
     font-weight: 800;
 }
 
-.sp-artist-row {
-    display: flex;
-    justify-content: space-between;
-    gap: 12px;
-    margin-top: 14px;
-    padding-top: 12px;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    font-size: 12px;
-    font-weight: 600;
-    color: rgba(255, 255, 255, 0.7);
-}
-
-.sp-artist-row span:first-child {
-    color: #fff;
-    font-weight: 800;
-    white-space: nowrap;
-}
-
 .f-open-sp .f-cta {
     background: #121212;
     border-top-color: #282828;

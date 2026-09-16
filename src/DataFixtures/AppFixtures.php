@@ -44,8 +44,6 @@ class AppFixtures extends Fixture
                 ->setDescription($definition['description'])
                 ->setType($definition['type'])
                 ->setDelayMinutes($definition['delay'])
-                ->setAuraPoints($definition['aura'])
-                ->setAuraMessage($definition['auraMessage'] ?? null)
                 ->setAppData($definition['appData']);
 
             if (MediaType::TEXT === $definition['type']) {
@@ -61,7 +59,7 @@ class AppFixtures extends Fixture
     }
 
     /**
-     * @return list<array{app: AppKind, title: string, description: string, type: MediaType, content: string, delay: int, aura: int, auraMessage?: string, appData: array<string, mixed>}>
+     * @return list<array{app: AppKind, title: string, description: string, type: MediaType, content: string, delay: int, appData: array<string, mixed>}>
      */
     private function notifications(): array
     {
@@ -73,7 +71,6 @@ class AppFixtures extends Fixture
                 'type' => MediaType::TEXT,
                 'content' => 'Tu te souviens de ce jour de septembre ? Moi oui. Toi tu avais dit « je reste une heure ». Il était 4 h 12.',
                 'delay' => 0,
-                'aura' => 100,
                 'appData' => [
                     'courier' => 'Dodo du passé',
                     'trip' => 'Ton adolescence → Aujourd\'hui · 11 ans de trajet',
@@ -87,7 +84,6 @@ class AppFixtures extends Fixture
                 'type' => MediaType::LINK,
                 'content' => 'https://open.spotify.com/',
                 'delay' => 1440,
-                'aura' => 100,
                 'appData' => [
                     'username' => 'dodo.du.passe',
                     'location' => 'Nos années lycée · Septembre 2015',
@@ -106,8 +102,6 @@ class AppFixtures extends Fixture
                 'type' => MediaType::TEXT,
                 'content' => 'Preuve photo à venir. Tu ne l\'as jamais supprimée, on l\'a retrouvée.',
                 'delay' => 1440,
-                'aura' => -500,
-                'auraMessage' => 'Désolé. Cette décision était objectivement catastrophique.',
                 'appData' => [
                     'matchName' => 'La coupe de 2015',
                     'matchAge' => 19,
@@ -124,7 +118,6 @@ class AppFixtures extends Fixture
                 'type' => MediaType::TEXT,
                 'content' => 'Trois jours mémorables, dont deux passés à chercher ton sac.',
                 'delay' => 60,
-                'aura' => 100,
                 'appData' => [
                     'practitioner' => 'Dr Passé',
                     'specialty' => 'Spécialiste des décisions catastrophiques',
@@ -140,7 +133,6 @@ class AppFixtures extends Fixture
                 'type' => MediaType::TEXT,
                 'content' => 'Tu conduisais. Personne ne sait encore comment on est arrivés.',
                 'delay' => 1440,
-                'aura' => 100,
                 'appData' => [
                     'courier' => 'Dodo du passé',
                     'trip' => 'Quelque part → Ailleurs · 3 détours',
@@ -154,7 +146,6 @@ class AppFixtures extends Fixture
                 'type' => MediaType::TEXT,
                 'content' => 'jsuis dehors depuis 20 min vous êtes où',
                 'delay' => 30,
-                'aura' => 100,
                 'appData' => [
                     'contact' => 'Dodo du passé',
                     'contactEmoji' => '👶',
@@ -169,7 +160,6 @@ class AppFixtures extends Fixture
                 'type' => MediaType::TEXT,
                 'content' => 'Ce soir-là, trois chansons. Zéro note juste. Une salle entière conquise.',
                 'delay' => 1440,
-                'aura' => 100,
                 'appData' => [
                     'username' => 'dodo.du.passe',
                     'sound' => 'son original – dodo.du.passe · karaoké (sped up)',
@@ -186,7 +176,6 @@ class AppFixtures extends Fixture
                 'type' => MediaType::LINK,
                 'content' => 'https://open.spotify.com/',
                 'delay' => 720,
-                'aura' => 100,
                 'appData' => [
                     'artist' => 'Dodo du passé',
                     'album' => 'Lost Media (Deluxe)',
@@ -203,8 +192,6 @@ class AppFixtures extends Fixture
                 'type' => MediaType::TEXT,
                 'content' => 'Reçu retrouvé dans une poche de veste. Pas la tienne.',
                 'delay' => 1440,
-                'aura' => -200,
-                'auraMessage' => 'Paiement refusé par ta dignité.',
                 'appData' => [
                     'counterparty' => 'Le bar de 2015',
                     'reference' => 'CB 2015 TOURNÉE GÉNÉRALE',
@@ -220,7 +207,6 @@ class AppFixtures extends Fixture
                 'type' => MediaType::TEXT,
                 'content' => 'On t\'avait dit de démonter les pieds du canapé.',
                 'delay' => 1440,
-                'aura' => 100,
                 'appData' => [
                     'city' => 'Ton premier appart',
                     'temperature' => 9,
@@ -238,7 +224,6 @@ class AppFixtures extends Fixture
                 'type' => MediaType::TEXT,
                 'content' => 'Tout le monde avait prévu le coup. Toi seul a été surpris, comme chaque année.',
                 'delay' => 1440,
-                'aura' => 250,
                 'appData' => [
                     'date' => 'Samedi 23 août 2015',
                     'timeRange' => '21:00 – 04:12',

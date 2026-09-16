@@ -7,8 +7,6 @@
 {% block body_class %}f-open f-open-ig{% endblock %}
 
 {% block body %}
-    {{ include('feed/_aura_toast.html.twig', {media: media, justOpened: justOpened}, with_context: false) }}
-
     <main class="f-wrap f-wrap-open">
         <div class="f-bar f-bar-line">
             <a class="f-back" href="{{ path('app_feed') }}" aria-label="Retour">‹</a>
@@ -61,14 +59,15 @@
             <b>Publier</b>
         </div>
 
-        <div class="ig-badge">
-            <span class="ig-ring"><span>{{ media.auraPoints < 0 ? '💀' : '👑' }}</span></span>
-            <div>
-                <b>{% if data.badge|default('') %}Nouveau badge débloqué{% else %}Aura mise à jour{% endif %}</b>
-                <small>{{ data.badge|default(media.auraPoints < 0 ? 'Cette décision était objectivement catastrophique.' : 'Ne la gaspille pas.') }}</small>
+        {% if data.badge|default('') %}
+            <div class="ig-badge">
+                <span class="ig-ring"><span>👑</span></span>
+                <div>
+                    <b>Nouveau badge débloqué</b>
+                    <small>{{ data.badge }}</small>
+                </div>
             </div>
-            <span class="ig-aura {{ media.auraPoints < 0 ? 'ig-aura-neg' : '' }}">{{ media.auraPoints > 0 ? '+' : '' }}{{ media.auraPoints }} aura</span>
-        </div>
+        {% endif %}
 
         {% if not preview %}
             <a class="ig-back" href="{{ path('app_feed') }}">Retour aux notifications</a>

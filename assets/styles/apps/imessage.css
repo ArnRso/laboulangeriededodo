@@ -65,7 +65,6 @@
 }
 
 .im-stamp,
-.im-sys,
 .im-receipt {
     font-size: 11px;
     font-weight: 600;
@@ -80,19 +79,6 @@
 .im-stamp b {
     display: block;
     font-weight: 700;
-}
-
-.im-sys {
-    margin: 16px 20px 0;
-    line-height: 1.4;
-}
-
-.im-sys b {
-    color: #0a84ff;
-}
-
-.im-sys-neg b {
-    color: #ff3b30;
 }
 
 .im-chat {
@@ -215,27 +201,6 @@
 
 .im-cap {
     padding: 7px 12px 8px;
-}
-
-.im-react {
-    position: absolute;
-    top: -14px;
-    right: -8px;
-    display: inline-flex;
-    align-items: center;
-    gap: 3px;
-    padding: 4px 9px;
-    border-radius: 999px;
-    background: #0a84ff;
-    color: #fff;
-    border: 2px solid #fff;
-    font-size: 12px;
-    font-weight: 700;
-    z-index: 1;
-}
-
-.im-react-neg {
-    background: #ff3b30;
 }
 
 .im-receipt {

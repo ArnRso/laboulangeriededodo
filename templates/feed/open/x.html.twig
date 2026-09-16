@@ -22,18 +22,12 @@
 {% block body_class %}f-open f-open-x{% endblock %}
 
 {% block body %}
-    {{ include('feed/_aura_toast.html.twig', {media: media, justOpened: justOpened}, with_context: false) }}
-
     <main class="f-wrap f-wrap-open">
         <div class="f-bar f-bar-line">
             <a class="f-back" href="{{ path('app_feed') }}" aria-label="Retour">‹</a>
             <b>Post</b>
             <span class="f-bar-spacer"></span>
         </div>
-
-        {% if media.auraPoints >= 0 %}
-            <div class="x-repost">🔁 <b>ta.mere</b> a reposté</div>
-        {% endif %}
 
         <article class="x-post">
             <div class="x-head">
@@ -62,17 +56,6 @@
                 <span>🔖</span>
                 <span>↗</span>
             </div>
-
-            {% if media.auraPoints < 0 %}
-                <div class="x-note">
-                    <b>👥 Les lecteurs ont ajouté du contexte qu'ils ont jugé utile</b>
-                    <p>
-                        Ce post vaut <strong>{{ media.auraPoints }} aura</strong>.
-                        {{ media.auraMessage|default('Cette décision était objectivement catastrophique.') }}
-                    </p>
-                    <small>Est-ce utile ? <u>Oui</u> · <u>Non</u></small>
-                </div>
-            {% endif %}
         </article>
 
         <div class="x-reply-box" aria-hidden="true">
@@ -80,22 +63,6 @@
             <span>Poste ta réponse</span>
             <b>Répondre</b>
         </div>
-
-        {% if media.auraPoints >= 0 %}
-            <article class="x-post x-reply">
-                <div class="x-head">
-                    <span class="x-av x-av-s">👵</span>
-                    <div class="x-names">
-                        <b>ta.mere <i class="x-badge" aria-hidden="true">✓</i></b>
-                        <small>@ta.mere · maintenant</small>
-                    </div>
-                </div>
-                <div class="x-text x-text-s">
-                    <p><span class="x-mention">@{{ handle }}</span> <strong class="x-aura">+{{ media.auraPoints }} aura</strong>. {{ media.auraMessage|default('Ne la gaspille pas.') }}</p>
-                </div>
-                <div class="x-acts x-acts-s" aria-hidden="true"><span>💬 <small>1</small></span><span>🔁 <small>{{ x.short(data.reposts) }}</small></span><span>♡ <small>{{ x.short(data.likes) }}</small></span><span>📊</span></div>
-            </article>
-        {% endif %}
     </main>
 
     {% if not preview %}

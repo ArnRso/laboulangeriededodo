@@ -61,18 +61,13 @@
     line-height: 1;
 }
 
-.ly-amount {
-    margin-top: 12px;
-    font-size: 50px;
+.ly-title {
+    margin: 16px 0 0;
+    font-size: 30px;
     font-weight: 800;
-    letter-spacing: -2px;
-    line-height: 1;
-    font-variant-numeric: tabular-nums;
+    letter-spacing: -1px;
+    line-height: 1.15;
     color: #1b69ff;
-}
-
-.ly-amount-neg {
-    color: #0d1b3d;
 }
 
 .ly-who {
@@ -85,13 +80,6 @@
 .ly-who b {
     color: #0d1b3d;
     font-weight: 800;
-}
-
-.ly-title {
-    margin: 6px 0 0;
-    font-size: 18px;
-    font-weight: 800;
-    line-height: 1.3;
 }
 
 .ly-bubble {

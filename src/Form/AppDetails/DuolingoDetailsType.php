@@ -18,7 +18,7 @@ class DuolingoDetailsType extends AbstractAppDetailsType
         $builder
             ->add('streakDays', IntegerType::class, [
                 'label' => 'Jours de série',
-                'help' => 'Le nombre de jours « sans pratiquer » que le hibou reproche. Barré si l\'aura est négative.',
+                'help' => 'Le nombre de jours « sans pratiquer » que le hibou reproche.',
                 'constraints' => [new PositiveOrZero()],
             ])
             ->add('lesson', TextType::class, [

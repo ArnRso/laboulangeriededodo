@@ -11,8 +11,6 @@
 {% block body_class %}f-open f-open-dv{% endblock %}
 
 {% block body %}
-    {{ include('feed/_aura_toast.html.twig', {media: media, justOpened: justOpened}, with_context: false) }}
-
     <main class="f-wrap f-wrap-open">
         <header class="dv-top">
             <div class="f-bar f-bar-inverse">
@@ -62,14 +60,6 @@
                 <p class="dv-instr">{{ media.description }}</p>
             </section>
         {% endif %}
-
-        <section class="dv-card dv-receipt">
-            <h2>Reçu</h2>
-            <div class="dv-row"><span>Sous-total</span><span>{{ media.auraPoints > 0 ? '+' : '' }}{{ media.auraPoints }} aura</span></div>
-            <div class="dv-row"><span>Frais de livraison</span><span>0 aura</span></div>
-            <div class="dv-row"><span>Frais de service</span><span>0 aura</span></div>
-            <div class="dv-row dv-row-total"><span>Total</span><span class="{{ media.auraPoints < 0 ? 'dv-neg' : '' }}">{{ media.auraPoints > 0 ? '+' : '' }}{{ media.auraPoints }} aura</span></div>
-        </section>
     </main>
 
     {% if not preview %}

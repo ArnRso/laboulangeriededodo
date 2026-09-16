@@ -22,8 +22,6 @@
 {% block body_class %}f-open f-open-mt{% endblock %}
 
 {% block body %}
-    {{ include('feed/_aura_toast.html.twig', {media: media, justOpened: justOpened}, with_context: false) }}
-
     <main class="f-wrap f-wrap-open">
         <div class="f-bar f-bar-inverse">
             <a class="f-back" href="{{ path('app_feed') }}" aria-label="Retour">‹</a>
@@ -82,14 +80,6 @@
                 <p class="mt-text">{{ media.description }}</p>
             </section>
         {% endif %}
-
-        <section class="mt-card">
-            <small class="mt-h2">🌡️ Pression d'aura</small>
-            <div class="mt-aura {{ media.auraPoints < 0 ? 'mt-aura-neg' : '' }}">
-                <b>{{ media.auraPoints > 0 ? '+' : '' }}{{ media.auraPoints }} aura</b>
-                <span>{{ media.auraMessage|default(media.auraPoints < 0 ? 'Dépression en approche. Cette décision était objectivement catastrophique.' : 'Anticyclone. Ne la gaspille pas.') }}</span>
-            </div>
-        </section>
     </main>
 
     {% if not preview %}

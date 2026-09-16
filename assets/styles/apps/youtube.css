@@ -268,47 +268,6 @@
     font-weight: 700;
 }
 
-.yt-pinned {
-    display: block;
-    font-size: 11px;
-    color: #606060;
-    font-weight: 700;
-    margin: 0 0 6px 40px;
-}
-
-.yt-comment-row {
-    display: flex;
-    gap: 10px;
-    align-items: flex-start;
-}
-
-.yt-comment-row small {
-    font-size: 12px;
-    color: #606060;
-    font-weight: 700;
-}
-
-.yt-comment-row p {
-    margin: 2px 0 6px;
-    font-size: 14px;
-    line-height: 1.4;
-}
-
-.yt-aura {
-    font-weight: 800;
-    color: #065fd4;
-}
-
-.yt-aura-neg {
-    color: #c00;
-}
-
-.yt-comment-acts {
-    font-size: 12px;
-    color: #606060;
-    font-weight: 700;
-}
-
 .yt-comment-add {
     display: flex;
     align-items: center;

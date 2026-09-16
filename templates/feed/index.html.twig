@@ -11,10 +11,6 @@
                  data-clock-target="time"
                  data-action="pointerdown->cheat-code#holdStart pointerup->cheat-code#holdEnd pointerleave->cheat-code#holdEnd pointercancel->cheat-code#holdEnd contextmenu->cheat-code#holdEnd">{{ now|date('H:i') }}</div>
             <div class="f-clock-date" data-clock-target="date">{{ dateLabel }}</div>
-            <div class="f-aura">
-                ✨ <b>{{ auraTotal|number_format(0, ',', ' ') }} aura</b>
-                · {{ auraToday >= 0 ? '+' : '' }}{{ auraToday|number_format(0, ',', ' ') }} aujourd'hui
-            </div>
         </header>
 
         {% if overview.next %}

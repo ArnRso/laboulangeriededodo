@@ -60,7 +60,6 @@ class FeedControllerTest extends WebTestCase
 
         self::assertResponseIsSuccessful();
         self::assertSelectorTextContains('body', 'Aucune notification');
-        self::assertSelectorTextContains('.f-aura', '0 aura');
     }
 
     public function testFirstNotificationIsFreshAndTheSecondIsWaiting(): void
@@ -98,7 +97,6 @@ class FeedControllerTest extends WebTestCase
         self::assertResponseIsSuccessful();
         self::assertSelectorTextContains('body', 'Commande livrée');
         self::assertSelectorTextContains('body', 'Notification 1');
-        self::assertSelectorExists('[data-controller="aura-toast"]', 'Le gain d\'aura s\'affiche à la première ouverture.');
         self::assertNotNull($this->accessRepository->findOneByUserAndMedia($this->dorian, $medias[0]));
     }
 
@@ -110,7 +108,6 @@ class FeedControllerTest extends WebTestCase
         $this->client->request('GET', sprintf('/mon-espace/notifications/%d', (int) $medias[0]->getId()));
 
         self::assertResponseIsSuccessful();
-        self::assertSelectorNotExists('[data-controller="aura-toast"]');
     }
 
     public function testEachAppHasItsOwnScreen(): void
@@ -164,7 +161,6 @@ class FeedControllerTest extends WebTestCase
         self::assertSelectorExists('[data-controller="countdown"]');
         self::assertSelectorTextContains('.f-grp', 'En route');
         self::assertSelectorTextContains('.f-n-seen', 'Notification 1');
-        self::assertSelectorTextContains('.f-aura', '+100 aujourd');
     }
 
     public function testSecondOpensOnceTheDelayHasElapsed(): void
@@ -182,18 +178,6 @@ class FeedControllerTest extends WebTestCase
 
         self::assertResponseIsSuccessful();
         self::assertSelectorTextContains('body', 'Notification 2');
-    }
-
-    public function testNegativeAuraIsShownAsALoss(): void
-    {
-        $media = $this->mediaFactory->createNotification(0, 'La coupe de 2015', AppKind::TINDER, auraPoints: -500);
-
-        $this->client->request('GET', sprintf('/mon-espace/notifications/%d', (int) $media->getId()));
-        self::assertSelectorTextContains('.f-toast', '-500 aura');
-
-        $this->client->request('GET', '/mon-espace');
-        self::assertSelectorTextContains('.f-aura', '-500 aura');
-        self::assertSelectorExists('.f-aurachip-neg');
     }
 
     public function testSeenNotificationsBeyondThreeAreFoldedInAStack(): void

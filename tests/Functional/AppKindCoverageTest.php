@@ -77,7 +77,7 @@ class AppKindCoverageTest extends WebTestCase
             'waze' => 'Itinéraire vers ton adolescence',
             'revolut' => 'Dodo du passé · transaction',
             'paypal' => 'Tu as reçu un paiement de Dodo du passé',
-            'lydia' => 'Dodo du passé t\'a envoyé de l\'aura 💸',
+            'lydia' => 'Dodo du passé t\'a envoyé un virement 💸',
             'meteo' => 'Alerte météo : Nuageux avec risque de drama',
             'calendar' => 'Rappel · Samedi 23 août 2015',
         ];
@@ -212,7 +212,6 @@ class AppKindCoverageTest extends WebTestCase
         $this->client->request('GET', sprintf('/mon-espace/notifications/%d', (int) $media->getId()));
         self::assertResponseIsSuccessful();
         self::assertSelectorExists('body.f-open');
-        self::assertSelectorExists('[data-controller="aura-toast"]');
         self::assertSelectorTextContains('main', 'Souvenir '.$appKind->value);
         self::assertSelectorTextContains('main', 'Une description qui doit apparaître quelque part.');
         self::assertSelectorExists('.f-media-text', 'Le souvenir lui-même passe par feed/_media.html.twig.');

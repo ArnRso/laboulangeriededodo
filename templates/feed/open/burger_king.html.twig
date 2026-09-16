@@ -6,14 +6,11 @@
     {% if line|trim %}{% set items = items|merge([line|trim]) %}{% endif %}
 {% endfor %}
 {% if items is empty %}{% set items = [media.title] %}{% endif %}
-{% set share = (media.auraPoints / items|length)|round(0, 'floor') %}
 
 {% block title %}{{ media.title }} · Burger King{% endblock %}
 {% block body_class %}f-open f-open-bk{% endblock %}
 
 {% block body %}
-    {{ include('feed/_aura_toast.html.twig', {media: media, justOpened: justOpened}, with_context: false) }}
-
     <main class="f-wrap f-wrap-open">
         <header class="bk-top">
             <div class="f-bar f-bar-inverse">
@@ -33,11 +30,9 @@
 
             <ul class="bk-items">
                 {% for item in items %}
-                    {% set price = loop.last ? media.auraPoints - share * (loop.index - 1) : share %}
-                    <li><span>{{ item }}</span><b>{{ price > 0 ? '+' : '' }}{{ price }} aura</b></li>
+                    <li><span>{{ item }}</span></li>
                 {% endfor %}
             </ul>
-            <div class="bk-total"><span>Total</span><b class="{{ media.auraPoints < 0 ? 'bk-neg' : '' }}">{{ media.auraPoints > 0 ? '+' : '' }}{{ media.auraPoints }} aura</b></div>
             <small class="bk-thanks">Merci, à bientôt. Sauce au choix : regrets ou nostalgie.</small>
         </section>
 

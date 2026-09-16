@@ -204,50 +204,9 @@
     white-space: nowrap;
 }
 
-.br-moji-aura i {
-    background: #fff;
-    border-color: #fff;
-}
-
-.br-moji-aura small {
-    color: #fff;
-}
-
-.br-moji-neg i {
-    background: #2a0f14;
-    border-color: #e0245e;
-}
-
 .br-moji-add i {
     background: transparent;
     border-style: dashed;
-}
-
-.br-aura {
-    margin-top: 6px;
-    border-radius: 14px;
-    padding: 12px 14px;
-    background: #161616;
-    border: 1px solid #2a2a2a;
-    display: flex;
-    align-items: baseline;
-    gap: 10px;
-}
-
-.br-aura b {
-    font-size: 16px;
-    font-weight: 800;
-    white-space: nowrap;
-}
-
-.br-aura span {
-    font-size: 12px;
-    color: #9a9a9a;
-    font-weight: 600;
-}
-
-.br-aura-neg b {
-    color: #ff6b87;
 }
 
 .br-comment {
