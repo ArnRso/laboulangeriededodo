@@ -296,4 +296,20 @@ class FeedControllerTest extends WebTestCase
 
         self::assertResponseRedirects('/mon-espace', null, 'La troisième reste verrouillée.');
     }
+
+    public function testADraftWithoutAppIsInvisibleToTheRecipient(): void
+    {
+        $draft = $this->mediaFactory->createDraft(0, 'Encore sans app');
+        $this->mediaFactory->createNotification(1, 'Bien habillée', delayMinutes: 0);
+
+        $this->client->request('GET', '/mon-espace');
+
+        self::assertResponseIsSuccessful();
+        self::assertSelectorTextNotContains('main', 'Encore sans app');
+        self::assertSelectorTextContains('main', 'Bien habillée');
+
+        $this->client->request('GET', sprintf('/mon-espace/notifications/%d', (int) $draft->getId()));
+
+        self::assertResponseRedirects('/mon-espace', null, 'Un brouillon ne s\'ouvre pas, même en devinant son URL.');
+    }
 }

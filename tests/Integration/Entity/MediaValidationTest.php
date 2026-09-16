@@ -3,6 +3,7 @@
 namespace App\Tests\Integration\Entity;
 
 use App\Entity\Media;
+use App\Enum\AppKind;
 use App\Enum\MediaType;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -107,6 +108,35 @@ class MediaValidationTest extends KernelTestCase
         self::assertViolation($this->validator->validate($media), 'delayMinutes');
     }
 
+    public function testADraftWithoutMemoryIsValid(): void
+    {
+        $draft = $this->createMedia(MediaType::TEXT)->setAppKind(null)->setPublished(false);
+
+        self::assertCount(0, $this->validator->validate($draft), 'Le souvenir d\'un brouillon peut venir plus tard.');
+    }
+
+    public function testADraftStillChecksTheFileAgainstItsType(): void
+    {
+        $draft = $this->createMedia(MediaType::VIDEO)->setAppKind(null)->setPublished(false);
+        $draft->setFile($this->createUploadedFile('film.mp4', 'video/mp4', $this->pngContent()));
+
+        self::assertViolation($this->validator->validate($draft), 'file');
+    }
+
+    public function testADraftCannotBePublished(): void
+    {
+        $draft = $this->createMedia(MediaType::TEXT)->setAppKind(null)->setPublished(true);
+
+        self::assertViolation($this->validator->validate($draft), 'published');
+    }
+
+    public function testADressedNotificationStillNeedsItsMemory(): void
+    {
+        $media = $this->createMedia(MediaType::TEXT)->setPublished(false);
+
+        self::assertViolation($this->validator->validate($media), 'textContent');
+    }
+
     /**
      * Le contenu compte : getMimeType() inspecte les octets du fichier plutôt
      * que son extension, ce qui est justement ce qui déjoue un renommage.
@@ -132,7 +162,7 @@ class MediaValidationTest extends KernelTestCase
     private function createMedia(MediaType $type): Media
     {
         $media = new Media();
-        $media->setTitle('Titre')->setType($type);
+        $media->setTitle('Titre')->setType($type)->setAppKind(AppKind::UBER_EATS);
 
         return $media;
     }

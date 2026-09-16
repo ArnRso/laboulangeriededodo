@@ -27,8 +27,12 @@ class Media
     #[ORM\Column]
     private int $position = 0;
 
-    #[ORM\Column(enumType: AppKind::class)]
-    private AppKind $appKind = AppKind::UBER_EATS;
+    /**
+     * L'application imitée. Absente tant que la notification est un brouillon :
+     * on remplit d'abord, on habille ensuite.
+     */
+    #[ORM\Column(nullable: true, enumType: AppKind::class)]
+    private ?AppKind $appKind = null;
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
@@ -70,6 +74,15 @@ class Media
     #[ORM\Column(type: 'json')]
     private array $appData = [];
 
+    /**
+     * Bouts de texte préparés sans savoir encore où ils iront : ils se placent
+     * dans les champs de l'app au moment de l'habillage.
+     *
+     * @var list<array{label: string, text: string}>
+     */
+    #[ORM\Column(type: 'json')]
+    private array $fragments = [];
+
     #[ORM\Column]
     private bool $published = true;
 
@@ -101,16 +114,34 @@ class Media
         return $this;
     }
 
-    public function getAppKind(): AppKind
+    public function getAppKind(): ?AppKind
     {
         return $this->appKind;
     }
 
-    public function setAppKind(AppKind $appKind): static
+    public function setAppKind(?AppKind $appKind): static
     {
         $this->appKind = $appKind;
 
         return $this;
+    }
+
+    /**
+     * L'application, là où le code a la garantie qu'elle est choisie : rendre
+     * l'écran d'un brouillon serait une erreur de programmation, pas un cas.
+     */
+    public function requireAppKind(): AppKind
+    {
+        if (null === $this->appKind) {
+            throw new \LogicException(sprintf('La notification « %s » est un brouillon : elle n\'a pas encore d\'application.', $this->title));
+        }
+
+        return $this->appKind;
+    }
+
+    public function isDraft(): bool
+    {
+        return null === $this->appKind;
     }
 
     public function getTitle(): string
@@ -256,6 +287,57 @@ class Media
         return $this;
     }
 
+    /**
+     * @return list<array{label: string, text: string}>
+     */
+    public function getFragments(): array
+    {
+        return $this->fragments;
+    }
+
+    /**
+     * Les lignes sans texte sont écartées : une étiquette seule ne se place
+     * nulle part.
+     *
+     * @param list<array<string, mixed>> $fragments
+     */
+    public function setFragments(array $fragments): static
+    {
+        $this->fragments = [];
+
+        foreach ($fragments as $fragment) {
+            $label = $fragment['label'] ?? '';
+            $text = $fragment['text'] ?? '';
+
+            $this->addFragment(\is_string($label) ? $label : '', \is_string($text) ? $text : '');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Un même texte n'est gardé qu'une fois : l'habillage archive ce qu'il
+     * abandonne, et peut repasser plusieurs fois sur la même notification.
+     */
+    public function addFragment(string $label, string $text): static
+    {
+        $text = trim($text);
+
+        if ('' === $text) {
+            return $this;
+        }
+
+        foreach ($this->fragments as $existing) {
+            if ($existing['text'] === $text) {
+                return $this;
+            }
+        }
+
+        $this->fragments[] = ['label' => trim($label), 'text' => $text];
+
+        return $this;
+    }
+
     public function isPublished(): bool
     {
         return $this->published;
@@ -285,6 +367,15 @@ class Media
     #[Assert\Callback]
     public function validateContent(ExecutionContextInterface $context): void
     {
+        // Un brouillon peut attendre son souvenir ; seule la cohérence d'un
+        // fichier déjà déposé reste vérifiée. La règle complète s'applique dès
+        // qu'une application est choisie, donc avant toute mise dans le fil.
+        if (null === $this->appKind) {
+            $this->validateFileMatchesType($context);
+
+            return;
+        }
+
         if (MediaType::LINK === $this->type && null === $this->url) {
             $context->buildViolation('Un média de type Lien doit avoir une URL.')
                 ->atPath('url')
@@ -304,6 +395,20 @@ class Media
         }
 
         $this->validateFileMatchesType($context);
+    }
+
+    /**
+     * Sans application, il n'y a pas d'écran à montrer : un brouillon ne peut
+     * pas être dans le fil.
+     */
+    #[Assert\Callback]
+    public function validateDraftStaysHidden(ExecutionContextInterface $context): void
+    {
+        if (null === $this->appKind && $this->published) {
+            $context->buildViolation('Un brouillon ne peut pas être dans le fil : choisis d\'abord son application.')
+                ->atPath('published')
+                ->addViolation();
+        }
     }
 
     /**

@@ -37,8 +37,11 @@ class MediaRepository extends ServiceEntityRepository
      */
     public function findPublishedOrdered(): array
     {
+        // Un brouillon n'a pas d'écran : il n'existe pas pour le destinataire,
+        // même si un jour la validation laissait passer un « published ».
         return $this->createQueryBuilder('m')
             ->andWhere('m.published = true')
+            ->andWhere('m.appKind IS NOT NULL')
             ->orderBy('m.position', 'ASC')
             ->addOrderBy('m.id', 'ASC')
             ->getQuery()

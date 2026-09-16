@@ -46,6 +46,31 @@ final readonly class MediaFactory
     }
 
     /**
+     * Une notification sans application ni souvenir : remplie d'abord,
+     * habillée plus tard.
+     *
+     * @param list<array{label: string, text: string}> $fragments
+     */
+    public function createDraft(
+        int $position = 0,
+        string $title = 'Brouillon',
+        ?string $description = null,
+        array $fragments = [],
+    ): Media {
+        $media = new Media();
+        $media->setPosition($position)
+            ->setTitle($title)
+            ->setDescription($description)
+            ->setFragments($fragments)
+            ->setPublished(false);
+
+        $this->entityManager->persist($media);
+        $this->entityManager->flush();
+
+        return $media;
+    }
+
+    /**
      * Un fil de notifications au délai uniforme, titrées « Notification 1 », « Notification 2 »….
      *
      * @return list<Media>

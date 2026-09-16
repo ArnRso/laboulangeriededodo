@@ -68,7 +68,7 @@ class NotificationController extends AbstractController
     #[Route('/{id}/modifier', name: 'app_admin_notification_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
     public function edit(Request $request, Media $media, FeedManager $feedManager): Response
     {
-        $form = $this->createForm(MediaType::class, $media, ['app_kind' => $media->getAppKind()]);
+        $form = $this->createForm(MediaType::class, $media, ['app_kind' => $media->requireAppKind()]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -139,7 +139,7 @@ class NotificationController extends AbstractController
      */
     private function renderDraft(Request $request, Media $media): Response
     {
-        $form = $this->createForm(MediaType::class, $media, ['app_kind' => $media->getAppKind()]);
+        $form = $this->createForm(MediaType::class, $media, ['app_kind' => $media->requireAppKind()]);
         $form->handleRequest($request);
 
         return $this->renderScreen($media, embedded: true);
@@ -147,7 +147,7 @@ class NotificationController extends AbstractController
 
     private function renderScreen(Media $media, bool $embedded): Response
     {
-        return $this->render($media->getAppKind()->template(), [
+        return $this->render($media->requireAppKind()->template(), [
             'media' => $media,
             'preview' => true,
             'embedded' => $embedded,

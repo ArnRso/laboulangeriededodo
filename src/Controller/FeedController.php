@@ -57,7 +57,7 @@ class FeedController extends AbstractController
             return $this->redirectToRoute('app_feed');
         }
 
-        return $this->render($media->getAppKind()->template(), [
+        return $this->render($media->requireAppKind()->template(), [
             'media' => $media,
             'preview' => false,
             'justOpened' => $justOpened,
