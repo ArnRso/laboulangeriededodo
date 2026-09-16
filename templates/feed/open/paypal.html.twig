@@ -50,6 +50,17 @@
             <section class="pp-card"><p class="pp-details">{{ details }}</p></section>
         {% endif %}
 
+        {% if data.transactionId|default('') or data.fee|default('') %}
+            <section class="pp-card pp-lines">
+                {% if data.transactionId|default('') %}
+                    <div class="pp-line"><span>Numéro de transaction</span><b>{{ data.transactionId }}</b></div>
+                {% endif %}
+                {% if data.fee|default('') %}
+                    <div class="pp-line"><span>Frais</span><b>{{ data.fee }}</b></div>
+                {% endif %}
+            </section>
+        {% endif %}
+
         <div class="pp-btns" aria-hidden="true">
             <span class="pp-btn">Transférer vers mon compte</span>
             <span class="pp-btn pp-btn-s">Envoyer un remerciement</span>

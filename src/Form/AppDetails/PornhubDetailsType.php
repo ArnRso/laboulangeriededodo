@@ -78,7 +78,7 @@ class PornhubDetailsType extends AbstractAppDetailsType
             'likePercent' => 98,
             'duration' => '4:12',
             'tags' => "lost media\ncanon event\namateur de mauvaises décisions",
-            'comments' => '',
+            'comments' => "marie83: j'étais là, je confirme\ndodo.du.passe: supprimez ça",
         ];
     }
 }

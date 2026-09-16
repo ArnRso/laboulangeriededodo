@@ -258,4 +258,112 @@ class AppKindCoverageTest extends WebTestCase
         self::assertStringNotContainsString('TITRE-DU-MEDIA', $main, 'Un emplacement affiche encore le titre du média alors que tous les champs sont remplis.');
         self::assertStringNotContainsString('DESCRIPTION-DU-MEDIA', $main, 'Un emplacement affiche encore la description du média alors que tous les champs sont remplis.');
     }
+    /**
+     * Les entiers rendus sous forme graphique — étoiles allumées, largeur d'une
+     * barre — plutôt qu'écrits en toutes lettres à l'écran.
+     */
+    private const array GRAPHIC_FIELDS = ['stars', 'rating', 'progress'];
+
+    /**
+     * Rien de ce que l'admin saisit ne doit rester invisible : chaque champ de
+     * détails remplit un emplacement de l'écran. Un champ jamais rendu est un
+     * champ que l'admin remplit pour rien.
+     */
+    #[DataProvider('appKinds')]
+    public function testEveryDetailFieldIsRenderedSomewhere(AppKind $appKind): void
+    {
+        $this->client->loginUser($this->userFactory->createAdmin());
+
+        $registry = self::getContainer()->get(AppDetailsRegistry::class);
+        $defaults = $registry->defaultsFor($appKind);
+
+        $appData = [];
+        $markers = [];
+
+        foreach ($defaults as $field => $default) {
+            if (\is_bool($default)) {
+                $appData[$field] = true;
+
+                continue;
+            }
+
+            // Certains entiers ne se lisent pas en chiffres : une note de 3
+            // allume trois étoiles, une progression de 73 % fixe une largeur.
+            // On les vérifie sur ce qu'ils produisent, pas sur leur valeur.
+            if (\is_int($default)) {
+                $appData[$field] = 73;
+
+                if (!\in_array($field, self::GRAPHIC_FIELDS, true)) {
+                    $markers[$field] = '73';
+                }
+
+                continue;
+            }
+
+            $marker = sprintf('Zz%sZz', ucfirst($field));
+            $appData[$field] = $marker;
+            $markers[$field] = $marker;
+        }
+
+        $crawler = $this->client->request('POST', sprintf('/admin/notifications/nouveau/%s/apercu', $appKind->value), [
+            'media' => [
+                'title' => 'Titre du média',
+                'description' => 'Description du média.',
+                'type' => MediaType::TEXT->value,
+                'textContent' => 'Le souvenir lui-même.',
+                'appData' => $appData,
+            ],
+        ]);
+
+        self::assertResponseIsSuccessful();
+
+        $screen = $crawler->filter('body')->text();
+
+        foreach ($markers as $field => $marker) {
+            self::assertStringContainsString(
+                $marker,
+                $screen,
+                sprintf('Le champ « %s » de %s ne s\'affiche nulle part sur l\'écran.', $field, $appKind->label()),
+            );
+        }
+    }
+
+    /**
+     * @return iterable<string, array{AppKind, string, string}>
+     */
+    public static function graphicFields(): iterable
+    {
+        yield 'uber_eats stars' => [AppKind::UBER_EATS, 'stars', '.ue-stars'];
+        yield 'uber rating' => [AppKind::UBER, 'rating', '.ub-stars'];
+        yield 'spotify progress' => [AppKind::SPOTIFY, 'progress', '.sp-progress-bar'];
+    }
+
+    /**
+     * Les champs rendus graphiquement se vérifient sur leur effet : trois
+     * étoiles allumées sur cinq, une barre remplie au tiers.
+     */
+    #[DataProvider('graphicFields')]
+    public function testAGraphicFieldChangesWhatIsDrawn(AppKind $appKind, string $field, string $selector): void
+    {
+        $this->client->loginUser($this->userFactory->createAdmin());
+
+        $registry = self::getContainer()->get(AppDetailsRegistry::class);
+        $rendered = [];
+
+        foreach ([1, 4] as $value) {
+            $crawler = $this->client->request('POST', sprintf('/admin/notifications/nouveau/%s/apercu', $appKind->value), [
+                'media' => [
+                    'title' => 'Titre',
+                    'type' => MediaType::TEXT->value,
+                    'textContent' => 'Souvenir',
+                    'appData' => [...$registry->defaultsFor($appKind), $field => $value],
+                ],
+            ]);
+
+            self::assertResponseIsSuccessful();
+            $rendered[$value] = $crawler->filter($selector)->html();
+        }
+
+        self::assertNotSame($rendered[1], $rendered[4], sprintf('Changer « %s » ne change rien à ce qui est dessiné.', $field));
+    }
 }

@@ -10,7 +10,8 @@
       - data     : appData
       - prefix   : préfixe CSS de l'app (wa, ms, im)
       - ticks    : marque après l'heure des bulles envoyées (optionnel)
-      - receipt  : mention sous la dernière bulle envoyée (optionnel)
+      - receipt  : mention sous la dernière bulle envoyée, ou sous la
+                   dernière bulle tout court si la conversation n'en contient aucune
       - caption  : légende sous le souvenir (optionnel, repli sur media.title)
       - lastLine : dernière bulle du contact (optionnel, repli sur media.description)
 #}
@@ -55,7 +56,7 @@
                 <span class="{{ p }}-t">{{ '%02d:%02d'|format((minutes // 60) % 24, minutes % 60) }}{% if b.side == 'out' and ticks|default('') %} <i>{{ ticks }}</i>{% endif %}</span>
             </div>
         </div>
-        {% if loop.index0 == lastOut and receipt|default('') %}
+        {% if loop.index0 == (lastOut > -1 ? lastOut : bubbles|length - 1) and receipt|default('') %}
             <div class="{{ p }}-receipt">{{ receipt }}</div>
         {% endif %}
     {% endfor %}

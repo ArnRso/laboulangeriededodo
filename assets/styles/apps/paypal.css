@@ -182,6 +182,29 @@
     font-weight: 600;
 }
 
+.pp-lines {
+    display: grid;
+    gap: 10px;
+}
+
+.pp-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+    font-size: 13px;
+}
+
+.pp-line span {
+    color: #6b7785;
+}
+
+.pp-line b {
+    font-weight: 700;
+    text-align: right;
+    word-break: break-word;
+}
+
 .pp-btns {
     display: flex;
     flex-direction: column;

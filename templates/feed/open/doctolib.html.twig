@@ -44,6 +44,11 @@
             <h2 class="dl-h2">Compte-rendu</h2>
             <section class="dl-card"><p class="dl-cr">{{ report }}</p></section>
         {% endif %}
+
+        {% if data.refundLabel|default('') %}
+            <h2 class="dl-h2">Prise en charge</h2>
+            <section class="dl-card"><p class="dl-refund">{{ data.refundLabel }}</p></section>
+        {% endif %}
     </main>
 
     {% if not preview %}

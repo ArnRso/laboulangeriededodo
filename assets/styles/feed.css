@@ -1513,6 +1513,13 @@ body {
     color: #1f2b3a;
 }
 
+.dl-refund {
+    margin: 0;
+    font-size: 13px;
+    font-weight: 700;
+    color: #107aca;
+}
+
 /* Coup de pouce de démonstration : le formulaire ne s'affiche jamais, seul le
    clin d'œil apparaît le temps que la page se recharge. */
 .f-cheat {
