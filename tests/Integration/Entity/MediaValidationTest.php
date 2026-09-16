@@ -108,6 +108,20 @@ class MediaValidationTest extends KernelTestCase
         self::assertViolation($this->validator->validate($media), 'delayMinutes');
     }
 
+    public function testAnEmptyFileFieldIsNotInspected(): void
+    {
+        // Ce qu'un navigateur envoie quand le champ fichier reste vide.
+        $empty = new UploadedFile('', '', null, \UPLOAD_ERR_NO_FILE, true);
+
+        $draft = $this->createMedia(MediaType::IMAGE)->setAppKind(null)->setPublished(false);
+        $draft->setFile($empty);
+        self::assertCount(0, $this->validator->validate($draft), 'Un brouillon sans fichier reste valide.');
+
+        $media = $this->createMedia(MediaType::IMAGE);
+        $media->setFile($empty);
+        self::assertCount(0, $this->validator->validate($media), 'Une notification habillée ne plante pas non plus : c\'est la contrainte du formulaire qui refuse l\'envoi vide.');
+    }
+
     public function testADraftWithoutMemoryIsValid(): void
     {
         $draft = $this->createMedia(MediaType::TEXT)->setAppKind(null)->setPublished(false);

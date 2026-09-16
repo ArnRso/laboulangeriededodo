@@ -97,6 +97,27 @@ class NotificationControllerTest extends WebTestCase
         ], $draft->getFragments());
     }
 
+    public function testSubmittingADraftWithAnUntouchedFileFieldDoesNotCrash(): void
+    {
+        $crawler = $this->client->request('GET', '/admin/notifications/brouillon');
+        $form = $crawler->selectButton('Enregistrer le brouillon')->form();
+        $values = $form->getPhpValues();
+        $media = $values['media'] ?? [];
+        $values['media'] = array_merge(\is_array($media) ? $media : [], [
+            'title' => 'Sans fichier choisi',
+            'type' => MediaType::IMAGE->value,
+        ]);
+
+        // Un navigateur poste le champ fichier même vide : un envoi en erreur
+        // au chemin vide, sur lequel getMimeType() se cassait les dents.
+        $this->client->request($form->getMethod(), $form->getUri(), $values, [
+            'media' => ['file' => new UploadedFile('', '', null, \UPLOAD_ERR_NO_FILE, true)],
+        ]);
+
+        self::assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY, 'Le champ fichier vide est refusé proprement, sans faire exploser la validation.');
+        self::assertCount(0, $this->mediaRepository->findAll());
+    }
+
     public function testADraftMayHaveNoMemoryYet(): void
     {
         $this->submitDraft(['title' => 'Juste un titre', 'type' => MediaType::TEXT->value]);

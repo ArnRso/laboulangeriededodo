@@ -419,7 +419,9 @@ class Media
     {
         $prefix = $this->type->mimePrefix();
 
-        if (null === $this->file || null === $prefix) {
+        // Un champ fichier laissé vide arrive quand même, sous la forme d'un
+        // envoi en erreur au chemin vide : il n'y a alors rien à inspecter.
+        if (null === $this->file || null === $prefix || !is_file($this->file->getPathname())) {
             return;
         }
 
