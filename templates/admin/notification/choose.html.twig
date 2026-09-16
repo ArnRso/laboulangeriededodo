@@ -1,27 +1,36 @@
 {% extends 'admin/_layout.html.twig' %}
 
-{% block title %}Nouvelle notification{% endblock %}
+{% block title %}{{ media ? 'Habiller ' ~ media.title : 'Nouvelle notification' }}{% endblock %}
 
 {% block admin_body %}
-    <h1 class="h3 mb-1">Nouvelle notification</h1>
-    <p class="text-body-secondary mb-4">Étape 1 sur 2 — quelle application va la faire passer ?</p>
+    {% if media %}
+        <h1 class="h3 mb-1">Habiller « {{ media.title }} »</h1>
+        <p class="text-body-secondary mb-4">
+            Quelle application va la faire passer ?
+            {% if media.appKind %}Aujourd'hui : {{ media.appKind.label }}. Ses textes te seront proposés pour la nouvelle.{% endif %}
+        </p>
+    {% else %}
+        <h1 class="h3 mb-1">Nouvelle notification</h1>
+        <p class="text-body-secondary mb-4">Étape 1 sur 2 — quelle application va la faire passer ?</p>
 
-    <a class="card border-warning text-decoration-none text-body mb-2" href="{{ path('app_admin_notification_draft_new') }}">
-        <div class="card-body d-flex gap-3">
-            <span class="fs-1">📝</span>
-            <div>
-                <h2 class="h6 card-title mb-1">Sans application pour l'instant</h2>
-                <p class="card-text text-body-secondary small mb-0">Je remplis ce que j'ai — titre, souvenir, bouts de texte — et je choisis l'application plus tard.</p>
+        <a class="card border-warning text-decoration-none text-body mb-2" href="{{ path('app_admin_notification_draft_new') }}">
+            <div class="card-body d-flex gap-3">
+                <span class="fs-1">📝</span>
+                <div>
+                    <h2 class="h6 card-title mb-1">Sans application pour l'instant</h2>
+                    <p class="card-text text-body-secondary small mb-0">Je remplis ce que j'ai — titre, souvenir, bouts de texte — et je choisis l'application plus tard.</p>
+                </div>
             </div>
-        </div>
-    </a>
+        </a>
+    {% endif %}
 
     {% for category, kinds in appKinds %}
         <h2 class="h5 mt-4 mb-3">{{ category }}</h2>
         <div class="row g-3">
             {% for appKind in kinds %}
                 <div class="col-12 col-md-6 col-xl-4">
-                    <a class="card h-100 text-decoration-none text-body" href="{{ path('app_admin_notification_new', {app: appKind.value}) }}">
+                    <a class="card h-100 text-decoration-none text-body"
+                       href="{{ media ? path('app_admin_notification_dress', {id: media.id, app: appKind.value}) : path('app_admin_notification_new', {app: appKind.value}) }}">
                         <div class="card-body d-flex gap-3">
                             <span class="fs-1">{{ appKind.icon }}</span>
                             <div>
@@ -35,5 +44,5 @@
         </div>
     {% endfor %}
 
-    <a class="btn btn-outline-secondary mt-4" href="{{ path('app_admin_notification_index') }}">Annuler</a>
+    <a class="btn btn-outline-secondary mt-4" href="{{ media ? path('app_admin_notification_edit', {id: media.id}) : path('app_admin_notification_index') }}">Annuler</a>
 {% endblock %}

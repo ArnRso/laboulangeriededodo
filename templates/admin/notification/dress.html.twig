@@ -1,0 +1,63 @@
+{% extends 'admin/_layout.html.twig' %}
+
+{% block title %}Habiller {{ media.title }} en {{ appKind.label }}{% endblock %}
+
+{% block admin_body %}
+    <div class="d-flex justify-content-between align-items-start mb-4">
+        <div>
+            <h1 class="h3 mb-1">{{ appKind.icon }} Habiller « {{ media.title }} » en {{ appKind.label }}</h1>
+            <p class="text-body-secondary mb-0">{{ appKind.pitch }}</p>
+        </div>
+        <a class="btn btn-outline-secondary" href="{{ path('app_admin_notification_dress_choose', {id: media.id}) }}">Changer d'application</a>
+    </div>
+
+    <div class="alert alert-light border mb-4">
+        <b class="d-block mb-2">Ce que tu as sous la main</b>
+        <ul class="mb-2 small">
+            {% for source in sources %}
+                {% if source.value %}
+                    <li><b>{{ source.label }}</b> — « {{ source.excerpt(90) }} »</li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+        <p class="small text-body-secondary mb-0">Pour chaque champ, choisis d'où vient le texte — n'importe quelle source peut aller n'importe où — ou tape-le en texte libre. Un champ sans source garde la valeur par défaut de l'app.</p>
+    </div>
+
+    <div class="row g-4"
+         data-controller="live-preview"
+         data-live-preview-url-value="{{ path('app_admin_notification_dress_preview', {id: media.id, app: appKind.value}) }}"
+         data-action="input->live-preview#refresh change->live-preview#refresh">
+        <div class="col-12 col-lg-7">
+            {{ form_start(form, {attr: {'data-live-preview-target': 'form'}}) }}
+                {% for field in fields %}
+                    {% set child = attribute(form.fields, field.name) %}
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h2 class="h6 mb-1">{{ field.label }}</h2>
+                            {% if field.help %}
+                                <p class="form-text mt-0 mb-2">{{ field.help }}</p>
+                            {% endif %}
+                            {% if field.default is not null and field.default is not same as('') and field.default is not same as(true) and field.default is not same as(false) %}
+                                <p class="small text-body-secondary mb-2">Par défaut : « {{ field.default }} »</p>
+                            {% endif %}
+                            {% if child.sources is defined %}
+                                {{ form_row(child.sources) }}
+                            {% else %}
+                                {{ form_row(child.source) }}
+                            {% endif %}
+                            {{ form_row(child.custom) }}
+                        </div>
+                    </div>
+                {% endfor %}
+
+                <div class="d-flex gap-2 mt-3">
+                    <button type="submit" class="btn btn-primary">Habiller en {{ appKind.label }}</button>
+                    <a class="btn btn-outline-secondary" href="{{ path('app_admin_notification_edit', {id: media.id}) }}">Annuler</a>
+                </div>
+            {{ form_end(form) }}
+        </div>
+        <div class="col-12 col-lg-5">
+            {{ include('admin/notification/_live_preview.html.twig') }}
+        </div>
+    </div>
+{% endblock %}

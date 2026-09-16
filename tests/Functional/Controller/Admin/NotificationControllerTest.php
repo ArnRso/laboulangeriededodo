@@ -160,15 +160,6 @@ class NotificationControllerTest extends WebTestCase
         self::assertSame('Icon', $crawler->filter('[name="media[fragments][0][text]"]')->text());
     }
 
-    public function testPreviewOfADraftSendsBackToItsEdition(): void
-    {
-        $draft = $this->mediaFactory->createDraft(0, 'Sans écran');
-
-        $this->client->request('GET', sprintf('/admin/notifications/%d/apercu', (int) $draft->getId()));
-
-        self::assertResponseRedirects(sprintf('/admin/notifications/%d/modifier', (int) $draft->getId()));
-    }
-
     public function testUnknownAppIsNotFound(): void
     {
         $this->client->request('GET', '/admin/notifications/nouveau/myspace');

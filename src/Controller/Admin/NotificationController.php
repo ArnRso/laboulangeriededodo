@@ -5,11 +5,17 @@ namespace App\Controller\Admin;
 use App\Entity\Media;
 use App\Enum\AppKind;
 use App\Form\AppDetails\AppDetailsRegistry;
+use App\Form\DressType;
 use App\Form\MediaType;
 use App\Repository\MediaRepository;
+use App\Service\Dressing\AppFieldCatalog;
+use App\Service\Dressing\DressMapping;
+use App\Service\Dressing\NotificationDresser;
+use App\Service\Dressing\SourceCatalog;
 use App\Service\FeedManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\ExpressionLanguage\Expression;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -40,7 +46,66 @@ class NotificationController extends AbstractController
     {
         return $this->render('admin/notification/choose.html.twig', [
             'appKinds' => AppKind::byCategory(),
+            'media' => null,
         ]);
+    }
+
+    /**
+     * Habiller une notification : d'abord l'application, puis le mapping.
+     */
+    #[Route('/{id}/habiller', name: 'app_admin_notification_dress_choose', requirements: ['id' => '\d+'], methods: ['GET'])]
+    public function dressChoose(Media $media, NotificationDresser $dresser): Response
+    {
+        if (!$dresser->canDress($media)) {
+            return $this->refuseDressing($media);
+        }
+
+        return $this->render('admin/notification/choose.html.twig', [
+            'appKinds' => AppKind::byCategory(),
+            'media' => $media,
+        ]);
+    }
+
+    #[Route('/{id}/habiller/{app}', name: 'app_admin_notification_dress', requirements: ['id' => '\d+', 'app' => new EnumRequirement(AppKind::class)], methods: ['GET', 'POST'])]
+    public function dress(Request $request, Media $media, AppKind $app, AppFieldCatalog $catalog, SourceCatalog $sourceCatalog, NotificationDresser $dresser, FeedManager $feedManager): Response
+    {
+        if (!$dresser->canDress($media)) {
+            return $this->refuseDressing($media);
+        }
+
+        $form = $this->dressForm($media, $app, $catalog, $sourceCatalog);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $dresser->dress($media, $app, DressMapping::fromFormData($form->getData()));
+            $feedManager->update($media);
+            $this->addFlash('success', sprintf('Habillée en %s. Vérifie les détails avant de la mettre dans le fil.', $app->label()));
+
+            return $this->redirectToRoute('app_admin_notification_edit', ['id' => $media->getId()]);
+        }
+
+        return $this->render('admin/notification/dress.html.twig', [
+            'form' => $form,
+            'media' => $media,
+            'appKind' => $app,
+            'fields' => $catalog->fieldsFor($app),
+            'sources' => $sourceCatalog->for($media),
+        ]);
+    }
+
+    /**
+     * L'écran tel que le mapping en cours le donnerait, sans rien enregistrer.
+     */
+    #[Route('/{id}/habiller/{app}/apercu', name: 'app_admin_notification_dress_preview', requirements: ['id' => '\d+', 'app' => new EnumRequirement(AppKind::class)], methods: ['POST'])]
+    public function dressPreview(Request $request, Media $media, AppKind $app, AppFieldCatalog $catalog, SourceCatalog $sourceCatalog, NotificationDresser $dresser): Response
+    {
+        $form = $this->dressForm($media, $app, $catalog, $sourceCatalog);
+        $form->handleRequest($request);
+
+        $draft = clone $media;
+        $dresser->dress($draft, $app, DressMapping::fromFormData($form->getData()));
+
+        return $this->renderScreen($draft, embedded: true);
     }
 
     /**
@@ -120,7 +185,7 @@ class NotificationController extends AbstractController
         if ($media->isDraft()) {
             $this->addFlash('info', 'Ce brouillon n\'a pas encore d\'application : choisis-la pour voir son écran.');
 
-            return $this->redirectToRoute('app_admin_notification_edit', ['id' => $media->getId()]);
+            return $this->redirectToRoute('app_admin_notification_dress_choose', ['id' => $media->getId()]);
         }
 
         if ($request->isMethod('POST')) {
@@ -174,6 +239,24 @@ class NotificationController extends AbstractController
         $form->handleRequest($request);
 
         return $this->renderScreen($media, embedded: true);
+    }
+
+    /**
+     * @return FormInterface<array<string, mixed>|null>
+     */
+    private function dressForm(Media $media, AppKind $app, AppFieldCatalog $catalog, SourceCatalog $sourceCatalog): FormInterface
+    {
+        return $this->createForm(DressType::class, null, [
+            'fields' => $catalog->fieldsFor($app),
+            'sources' => $sourceCatalog->for($media),
+        ]);
+    }
+
+    private function refuseDressing(Media $media): Response
+    {
+        $this->addFlash('error', 'Dorian a déjà ouvert cette notification : elle ne change plus d\'application.');
+
+        return $this->redirectToRoute('app_admin_notification_edit', ['id' => $media->getId()]);
     }
 
     private function renderScreen(Media $media, bool $embedded): Response

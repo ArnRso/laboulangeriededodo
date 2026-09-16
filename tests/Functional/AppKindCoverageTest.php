@@ -6,6 +6,7 @@ use App\Enum\AppFieldKind;
 use App\Enum\AppKind;
 use App\Enum\MediaType;
 use App\Form\AppDetails\AppDetailsRegistry;
+use App\Repository\MediaRepository;
 use App\Service\Dressing\AppFieldCatalog;
 use App\Tests\Factory\MediaFactory;
 use App\Tests\Factory\UserFactory;
@@ -394,5 +395,47 @@ class AppKindCoverageTest extends WebTestCase
                 self::assertContains($field->kind, [AppFieldKind::INTEGER, AppFieldKind::CHOICE], $field->name);
             }
         }
+    }
+
+    #[DataProvider('appKinds')]
+    public function testTheDressingFormOffersEveryField(AppKind $appKind): void
+    {
+        $this->client->loginUser($this->userFactory->createAdmin());
+        $draft = $this->mediaFactory->createDraft(0, 'À habiller');
+
+        $crawler = $this->client->request('GET', sprintf('/admin/notifications/%d/habiller/%s', (int) $draft->getId(), $appKind->value));
+
+        self::assertResponseIsSuccessful();
+
+        $registry = self::getContainer()->get(AppDetailsRegistry::class);
+        foreach (array_keys($registry->defaultsFor($appKind)) as $field) {
+            self::assertGreaterThan(0, $crawler->filter(sprintf('[name^="dress[fields][%s]["]', $field))->count(), sprintf('Le champ « %s » de %s n\'est pas proposé à l\'habillage.', $field, $appKind->label()));
+        }
+    }
+
+    /**
+     * Sans aucun mapping, l'habillage vaut les défauts de l'app : rien ne
+     * peut bloquer le passage d'un brouillon à n'importe quelle app.
+     */
+    #[DataProvider('appKinds')]
+    public function testADraftCanBeDressedAsAnyApp(AppKind $appKind): void
+    {
+        $this->client->loginUser($this->userFactory->createAdmin());
+        $draft = $this->mediaFactory->createDraft(0, 'Brouillon '.$appKind->value);
+
+        $this->client->request('GET', sprintf('/admin/notifications/%d/habiller/%s', (int) $draft->getId(), $appKind->value));
+        $this->client->submitForm('Habiller en '.$appKind->label());
+
+        self::assertResponseRedirects(sprintf('/admin/notifications/%d/modifier', (int) $draft->getId()));
+
+        $entityManager = self::getContainer()->get(EntityManagerInterface::class);
+        $entityManager->clear();
+        $dressed = self::getContainer()->get(MediaRepository::class)->find((int) $draft->getId());
+        self::assertNotNull($dressed);
+        self::assertSame($appKind, $dressed->getAppKind());
+        self::assertSame(self::getContainer()->get(AppDetailsRegistry::class)->defaultsFor($appKind), $dressed->getAppData());
+
+        $this->client->followRedirect();
+        self::assertResponseIsSuccessful();
     }
 }
