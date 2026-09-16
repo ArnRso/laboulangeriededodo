@@ -49,6 +49,8 @@
                         </form>
                         {% if media.appKind %}
                             <a class="btn btn-sm btn-outline-primary" href="{{ path('app_admin_notification_preview', {id: media.id}) }}">Aperçu</a>
+                        {% else %}
+                            <a class="btn btn-sm btn-primary" href="{{ path('app_admin_notification_dress_choose', {id: media.id}) }}">Habiller</a>
                         {% endif %}
                         <a class="btn btn-sm btn-outline-secondary" href="{{ path('app_admin_notification_edit', {id: media.id}) }}">Modifier</a>
                         <form method="post" action="{{ path('app_admin_notification_delete', {id: media.id}) }}"

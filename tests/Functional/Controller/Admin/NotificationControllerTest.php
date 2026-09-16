@@ -6,6 +6,7 @@ use App\Entity\Media;
 use App\Enum\AppKind;
 use App\Enum\MediaType;
 use App\Repository\MediaRepository;
+use App\Service\FeedService;
 use App\Tests\Factory\MediaFactory;
 use App\Tests\Factory\UserFactory;
 use Doctrine\ORM\EntityManagerInterface;
@@ -21,6 +22,7 @@ class NotificationControllerTest extends WebTestCase
     private KernelBrowser $client;
     private MediaFactory $mediaFactory;
     private MediaRepository $mediaRepository;
+    private UserFactory $userFactory;
 
     protected function setUp(): void
     {
@@ -31,8 +33,8 @@ class NotificationControllerTest extends WebTestCase
         $this->mediaFactory = new MediaFactory($entityManager);
         $this->mediaRepository = $container->get(MediaRepository::class);
 
-        $userFactory = new UserFactory($entityManager, $container->get(UserPasswordHasherInterface::class));
-        $this->client->loginUser($userFactory->createAdmin());
+        $this->userFactory = new UserFactory($entityManager, $container->get(UserPasswordHasherInterface::class));
+        $this->client->loginUser($this->userFactory->createAdmin());
     }
 
     public function testIndexListsTheFeedInOrder(): void
@@ -133,6 +135,41 @@ class NotificationControllerTest extends WebTestCase
         self::assertStringContainsString('Pas encore habillé', $item->text());
         self::assertStringContainsString('Sans application', $item->text());
         self::assertCount(0, $item->filter(sprintf('a[href="/admin/notifications/%d/apercu"]', (int) $draft->getId())), 'Rien à prévisualiser sans application.');
+    }
+
+    public function testADraftIsListedWithADressButton(): void
+    {
+        $draft = $this->mediaFactory->createDraft(0, 'À habiller');
+
+        $crawler = $this->client->request('GET', '/admin/notifications');
+
+        $item = $crawler->filter('.list-group-item')->first();
+        self::assertSame('Habiller', trim($item->filter(sprintf('a[href="/admin/notifications/%d/habiller"]', (int) $draft->getId()))->text()));
+    }
+
+    public function testEditionOffersToChangeTheAppUntilTheRecipientOpensIt(): void
+    {
+        $dorian = $this->userFactory->createRecipient();
+        $media = $this->mediaFactory->createNotification(0, 'Modifiable', AppKind::UBER_EATS, delayMinutes: 0);
+        $dressLink = sprintf('a[href="/admin/notifications/%d/habiller"]', (int) $media->getId());
+
+        $this->client->request('GET', sprintf('/admin/notifications/%d/modifier', (int) $media->getId()));
+        self::assertSelectorTextContains($dressLink, 'Changer d\'application');
+
+        self::getContainer()->get(FeedService::class)->open($dorian, $media);
+
+        $this->client->request('GET', sprintf('/admin/notifications/%d/modifier', (int) $media->getId()));
+        self::assertSelectorNotExists($dressLink);
+        self::assertSelectorTextContains('body', 'Dorian l\'a déjà ouverte');
+    }
+
+    public function testEditionOfADraftOffersToChooseTheApp(): void
+    {
+        $draft = $this->mediaFactory->createDraft(0, 'À habiller');
+
+        $this->client->request('GET', sprintf('/admin/notifications/%d/modifier', (int) $draft->getId()));
+
+        self::assertSelectorTextContains(sprintf('a[href="/admin/notifications/%d/habiller"]', (int) $draft->getId()), 'Choisir l\'application');
     }
 
     public function testADraftCanBeEditedWithoutAnApp(): void

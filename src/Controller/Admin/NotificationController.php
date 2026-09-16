@@ -156,7 +156,7 @@ class NotificationController extends AbstractController
     }
 
     #[Route('/{id}/modifier', name: 'app_admin_notification_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
-    public function edit(Request $request, Media $media, FeedManager $feedManager): Response
+    public function edit(Request $request, Media $media, FeedManager $feedManager, NotificationDresser $dresser): Response
     {
         $form = $this->createForm(MediaType::class, $media, ['app_kind' => $media->getAppKind()]);
         $form->handleRequest($request);
@@ -171,6 +171,7 @@ class NotificationController extends AbstractController
         return $this->render('admin/notification/edit.html.twig', [
             'form' => $form,
             'media' => $media,
+            'canDress' => $dresser->canDress($media),
         ]);
     }
 

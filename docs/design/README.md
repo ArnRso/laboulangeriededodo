@@ -18,6 +18,14 @@ docs/design/
 - **Implémenté** dans `templates/feed/`, `assets/styles/feed.css` (socle et
   quatre premières apps) et `assets/styles/apps/` (une feuille par app).
   La liste des 30 apps imitées est dans `inspirations/README.md`.
+- **Brouillons et habillage** (septembre 2026) : une notification peut
+  naître sans application. On remplit ce qu'on a — titre, description,
+  souvenir, et des *fragments* de texte étiquetés — puis on l'**habille** :
+  on choisit l'app et on verse chaque texte dans le champ qu'on veut (un
+  titre peut finir en commentaire), avec l'aperçu en direct. Habiller à
+  nouveau change d'application sans rien perdre : les textes abandonnés
+  redeviennent des fragments. Tant que Dorian n'a pas ouvert la
+  notification, tout reste modifiable ; après, l'application est figée.
 
 ## Ajouter une inspiration
 

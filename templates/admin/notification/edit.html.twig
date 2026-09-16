@@ -7,15 +7,29 @@
         <div>
             {% if media.appKind %}
                 <h1 class="h3 mb-1">{{ media.appKind.icon }} Modifier la notification</h1>
-                <p class="text-body-secondary mb-0">{{ media.appKind.label }} · l'application ne se change pas, supprime et recrée si besoin.</p>
+                <p class="text-body-secondary mb-0">
+                    {{ media.appKind.label }} ·
+                    {% if canDress %}
+                        tu peux la faire passer par une autre application, ses textes suivront.
+                    {% else %}
+                        Dorian l'a déjà ouverte, elle ne change plus d'application.
+                    {% endif %}
+                </p>
             {% else %}
                 <h1 class="h3 mb-1">📝 Modifier le brouillon</h1>
-                <p class="text-body-secondary mb-0">Sans application pour l'instant : remplis ce que tu as, tu l'habilleras plus tard.</p>
+                <p class="text-body-secondary mb-0">Sans application pour l'instant : remplis ce que tu as, puis choisis l'application qui le fera passer.</p>
             {% endif %}
         </div>
-        {% if media.appKind %}
-            <a class="btn btn-outline-primary" href="{{ path('app_admin_notification_preview', {id: media.id}) }}">Aperçu plein écran</a>
-        {% endif %}
+        <div class="d-flex gap-2 flex-shrink-0">
+            {% if media.appKind %}
+                {% if canDress %}
+                    <a class="btn btn-outline-secondary" href="{{ path('app_admin_notification_dress_choose', {id: media.id}) }}">Changer d'application</a>
+                {% endif %}
+                <a class="btn btn-outline-primary" href="{{ path('app_admin_notification_preview', {id: media.id}) }}">Aperçu plein écran</a>
+            {% else %}
+                <a class="btn btn-primary" href="{{ path('app_admin_notification_dress_choose', {id: media.id}) }}">Choisir l'application</a>
+            {% endif %}
+        </div>
     </div>
 
     {% set currentFile %}

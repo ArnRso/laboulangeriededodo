@@ -55,6 +55,19 @@ class AppFixtures extends Fixture
             $manager->persist($media);
         }
 
+        // Un brouillon à habiller depuis l'admin : le contenu est là, l'app non.
+        $draft = new Media();
+        $draft->setPosition(\count($this->notifications()))
+            ->setTitle('La soirée dont on ne parle plus')
+            ->setDescription('Tout le monde en a une version. Aucune ne concorde.')
+            ->setPublished(false)
+            ->setFragments([
+                ['label' => 'Commentaire de Marie', 'text' => "j'étais là, je confirme, et je nie tout"],
+                ['label' => 'Punchline', 'text' => 'Canon event. On ne pouvait rien y faire.'],
+                ['label' => 'Le nom du lieu', 'text' => 'Chez quelqu\'un dont personne ne se souvient'],
+            ]);
+        $manager->persist($draft);
+
         $manager->flush();
     }
 
