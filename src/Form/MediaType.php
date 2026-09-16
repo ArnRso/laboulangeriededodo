@@ -57,9 +57,12 @@ class MediaType extends AbstractType
                 'help' => 'Reprise dans le fil, sous le titre.',
             ])
             // Le type est choisi par les onglets, qui alimentent ce champ caché.
+            // Absent de la requête, il retombe sur le texte : le setter est
+            // typé et n'accepterait pas le null d'un formulaire tronqué.
             ->add('type', EnumType::class, [
                 'class' => MediaTypeEnum::class,
                 'label' => false,
+                'empty_data' => MediaTypeEnum::TEXT->value,
                 'attr' => ['data-media-type-target' => 'input'],
             ])
             ->add('file', FileType::class, [

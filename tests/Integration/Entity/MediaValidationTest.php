@@ -108,6 +108,46 @@ class MediaValidationTest extends KernelTestCase
         self::assertViolation($this->validator->validate($media), 'delayMinutes');
     }
 
+    public function testATitleLongerThanItsColumnIsRefused(): void
+    {
+        $media = $this->createMedia(MediaType::TEXT);
+        $media->setTitle(str_repeat('a', 256))->setTextContent('du contenu');
+
+        self::assertViolation($this->validator->validate($media), 'title');
+    }
+
+    public function testATitleOfExactlyTheColumnLengthIsAccepted(): void
+    {
+        $media = $this->createMedia(MediaType::TEXT);
+        $media->setTitle(str_repeat('a', 255))->setTextContent('du contenu');
+
+        self::assertCount(0, $this->validator->validate($media));
+    }
+
+    public function testAnUrlLongerThanItsColumnIsRefused(): void
+    {
+        $media = $this->createMedia(MediaType::LINK);
+        $media->setUrl('https://example.com/'.str_repeat('a', 2048));
+
+        self::assertViolation($this->validator->validate($media), 'url');
+    }
+
+    public function testADelayBeyondAMonthIsRefused(): void
+    {
+        $media = $this->createMedia(MediaType::TEXT);
+        $media->setTextContent('du contenu')->setDelayMinutes(Media::MAX_DELAY_MINUTES + 1);
+
+        self::assertViolation($this->validator->validate($media), 'delayMinutes');
+    }
+
+    public function testADelayOfExactlyAMonthIsAccepted(): void
+    {
+        $media = $this->createMedia(MediaType::TEXT);
+        $media->setTextContent('du contenu')->setDelayMinutes(Media::MAX_DELAY_MINUTES);
+
+        self::assertCount(0, $this->validator->validate($media));
+    }
+
     public function testAnEmptyFileFieldIsNotInspected(): void
     {
         // Ce qu'un navigateur envoie quand le champ fichier reste vide.

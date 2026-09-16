@@ -19,6 +19,11 @@ use Vich\UploaderBundle\Mapping\Attribute as Vich;
 #[Vich\Uploadable]
 class Media
 {
+    /**
+     * Un mois d'attente : au-delà, la valeur relève de la faute de frappe.
+     */
+    public const int MAX_DELAY_MINUTES = 720 * 60;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -36,6 +41,7 @@ class Media
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
+    #[Assert\Length(max: 255)]
     private string $title;
 
     #[ORM\Column(type: 'text', nullable: true)]
@@ -55,6 +61,7 @@ class Media
 
     #[ORM\Column(length: 2048, nullable: true)]
     #[Assert\Url]
+    #[Assert\Length(max: 2048)]
     private ?string $url = null;
 
     /**
@@ -63,6 +70,7 @@ class Media
      */
     #[ORM\Column]
     #[Assert\PositiveOrZero]
+    #[Assert\LessThanOrEqual(self::MAX_DELAY_MINUTES)]
     private int $delayMinutes = 1440;
 
     /**
