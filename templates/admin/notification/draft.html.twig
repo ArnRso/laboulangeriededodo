@@ -1,0 +1,19 @@
+{% extends 'admin/_layout.html.twig' %}
+
+{% block title %}Nouveau brouillon{% endblock %}
+
+{% block admin_body %}
+    <h1 class="h3 mb-1">📝 Nouveau brouillon</h1>
+    <p class="text-body-secondary mb-4">Sans application pour l'instant : remplis ce que tu as, tu l'habilleras plus tard.</p>
+
+    <div class="row">
+        <div class="col-12 col-lg-8">
+            {{ include('admin/notification/_form.html.twig', {
+                form: form,
+                appKind: null,
+                submitLabel: 'Enregistrer le brouillon',
+                cancelPath: path('app_admin_notification_choose'),
+            }, with_context: false) }}
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,27 @@
+{#
+    Les fragments de texte d'une notification, à placer plus tard dans les
+    champs de l'application. Le prototype passe par la même ligne que les
+    fragments existants, pour que les deux se ressemblent.
+
+    Paramètres :
+      - collection : le sous-formulaire `fragments` (CollectionType)
+#}
+{% set prototypeRow %}
+    {{ include('admin/notification/_fragment_row.html.twig', {row: collection.vars.prototype}, with_context: false) }}
+{% endset %}
+
+<fieldset class="border rounded p-3 mb-3"
+          data-controller="collection"
+          data-collection-index-value="{{ collection|length }}"
+          data-collection-prototype-value="{{ prototypeRow|e('html_attr') }}">
+    <legend class="fs-6 fw-semibold mb-1">Fragments de texte</legend>
+    <p class="form-text mb-3">Des bouts de texte à placer plus tard dans les champs de l'application : une légende, un commentaire d'ami, une punchline…</p>
+
+    <div data-collection-target="items">
+        {% for row in collection %}
+            {{ include('admin/notification/_fragment_row.html.twig', {row: row}, with_context: false) }}
+        {% endfor %}
+    </div>
+
+    <button type="button" class="btn btn-sm btn-outline-primary" data-action="collection#add">Ajouter un fragment</button>
+</fieldset>

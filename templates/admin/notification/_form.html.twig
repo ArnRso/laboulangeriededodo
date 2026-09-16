@@ -39,12 +39,17 @@
         </div>
     </div>
 
-    <fieldset class="border rounded p-3 mb-3">
-        <legend class="fs-6 fw-semibold mb-2">{{ appKind.icon }} Détails {{ appKind.label }}</legend>
-        {% for child in form.appData %}
-            {{ form_row(child) }}
-        {% endfor %}
-    </fieldset>
+    {{ include('admin/notification/_fragments.html.twig', {collection: form.fragments}, with_context: false) }}
+
+    {# Un brouillon n'a pas encore d'application, donc pas de détails. #}
+    {% if form.appData is defined %}
+        <fieldset class="border rounded p-3 mb-3">
+            <legend class="fs-6 fw-semibold mb-2">{{ appKind.icon }} Détails {{ appKind.label }}</legend>
+            {% for child in form.appData %}
+                {{ form_row(child) }}
+            {% endfor %}
+        </fieldset>
+    {% endif %}
 
     <fieldset class="border rounded p-3 mb-3">
         <legend class="fs-6 fw-semibold mb-2">Arrivée</legend>
@@ -57,7 +62,9 @@
             {{ form_errors(form.delayMinutes) }}
             {{ form_help(form.delayMinutes) }}
         </div>
-        {{ form_row(form.published) }}
+        {% if form.published is defined %}
+            {{ form_row(form.published) }}
+        {% endif %}
     </fieldset>
 
     <div class="d-flex gap-2 mt-3">

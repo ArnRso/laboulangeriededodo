@@ -43,6 +43,31 @@ class NotificationController extends AbstractController
         ]);
     }
 
+    /**
+     * Une notification sans application : on remplit ce qu'on a, on l'habille
+     * plus tard.
+     */
+    #[Route('/brouillon', name: 'app_admin_notification_draft_new', methods: ['GET', 'POST'])]
+    public function draft(Request $request, FeedManager $feedManager): Response
+    {
+        $media = new Media();
+        $media->setPublished(false);
+
+        $form = $this->createForm(MediaType::class, $media, ['app_kind' => null]);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $feedManager->add($media);
+            $this->addFlash('success', 'Brouillon enregistré. Habille-le quand tu veux.');
+
+            return $this->redirectToRoute('app_admin_notification_index');
+        }
+
+        return $this->render('admin/notification/draft.html.twig', [
+            'form' => $form,
+        ]);
+    }
+
     #[Route('/nouveau/{app}', name: 'app_admin_notification_new', requirements: ['app' => new EnumRequirement(AppKind::class)], methods: ['GET', 'POST'])]
     public function new(Request $request, AppKind $app, FeedManager $feedManager, AppDetailsRegistry $registry): Response
     {
@@ -68,7 +93,7 @@ class NotificationController extends AbstractController
     #[Route('/{id}/modifier', name: 'app_admin_notification_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
     public function edit(Request $request, Media $media, FeedManager $feedManager): Response
     {
-        $form = $this->createForm(MediaType::class, $media, ['app_kind' => $media->requireAppKind()]);
+        $form = $this->createForm(MediaType::class, $media, ['app_kind' => $media->getAppKind()]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -92,6 +117,12 @@ class NotificationController extends AbstractController
     #[Route('/{id}/apercu', name: 'app_admin_notification_preview', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
     public function preview(Request $request, Media $media): Response
     {
+        if ($media->isDraft()) {
+            $this->addFlash('info', 'Ce brouillon n\'a pas encore d\'application : choisis-la pour voir son écran.');
+
+            return $this->redirectToRoute('app_admin_notification_edit', ['id' => $media->getId()]);
+        }
+
         if ($request->isMethod('POST')) {
             return $this->renderDraft($request, clone $media);
         }

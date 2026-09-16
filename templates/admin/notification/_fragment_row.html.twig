@@ -1,0 +1,14 @@
+{#
+    Une ligne de fragment : sert aux lignes existantes comme au prototype
+    des lignes ajoutées à la volée.
+
+    Paramètres :
+      - row : le sous-formulaire FragmentType
+#}
+<div class="border rounded p-3 mb-2 bg-body-tertiary" data-collection-item>
+    <div class="row g-2">
+        <div class="col-12 col-md-4">{{ form_row(row.label) }}</div>
+        <div class="col-12 col-md-8">{{ form_row(row.text) }}</div>
+    </div>
+    <button type="button" class="btn btn-sm btn-outline-danger" data-action="collection#remove">Retirer</button>
+</div>

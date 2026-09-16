@@ -18,14 +18,19 @@
             {% for media in medias %}
                 <li class="list-group-item d-flex justify-content-between align-items-center gap-3{{ media.published ? '' : ' list-group-item-light' }}">
                     <div class="d-flex align-items-center gap-3 flex-grow-1 min-w-0">
-                        <span class="fs-4" title="{{ media.appKind.label }}">{{ media.appKind.icon }}</span>
+                        {% if media.appKind %}
+                            <span class="fs-4" title="{{ media.appKind.label }}">{{ media.appKind.icon }}</span>
+                        {% else %}
+                            <span class="fs-4" title="Brouillon sans application">📝</span>
+                        {% endif %}
                         <div class="min-w-0">
                             <div class="fw-semibold text-truncate">
                                 {{ media.title }}
                                 {% if not media.published %}<span class="badge text-bg-secondary ms-1">Brouillon</span>{% endif %}
+                                {% if not media.appKind %}<span class="badge text-bg-warning ms-1">Sans application</span>{% endif %}
                             </div>
                             <small class="text-body-secondary">
-                                {{ media.appKind.label }} · {{ media.type.label }} ·
+                                {{ media.appKind ? media.appKind.label : 'À habiller' }} · {{ media.type.label }} ·
                                 {% if loop.first %}immédiate{% else %}{{ media.delayLabel }} après la précédente{% endif %}
                             </small>
                         </div>
@@ -42,7 +47,9 @@
                             <input type="hidden" name="direction" value="down">
                             <button type="submit" class="btn btn-sm btn-outline-secondary" {{ loop.last ? 'disabled' : '' }} aria-label="Descendre">↓</button>
                         </form>
-                        <a class="btn btn-sm btn-outline-primary" href="{{ path('app_admin_notification_preview', {id: media.id}) }}">Aperçu</a>
+                        {% if media.appKind %}
+                            <a class="btn btn-sm btn-outline-primary" href="{{ path('app_admin_notification_preview', {id: media.id}) }}">Aperçu</a>
+                        {% endif %}
                         <a class="btn btn-sm btn-outline-secondary" href="{{ path('app_admin_notification_edit', {id: media.id}) }}">Modifier</a>
                         <form method="post" action="{{ path('app_admin_notification_delete', {id: media.id}) }}"
                               onsubmit="return confirm('Supprimer cette notification ?');">

@@ -8,6 +8,7 @@ use App\Enum\MediaType as MediaTypeEnum;
 use App\Form\AppDetails\AppDetailsRegistry;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\EnumType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -18,8 +19,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\File;
 
 /**
- * Une notification du fil. L'application imitée est fixée en amont : elle
- * décide du sous-formulaire de détails.
+ * Une notification du fil. L'application imitée est fixée en amont, ou pas
+ * encore : un brouillon n'a ni détails d'app ni case « Dans le fil », mais
+ * déjà ses fragments de texte à placer plus tard.
  *
  * @extends AbstractType<Media>
  */
@@ -38,7 +40,7 @@ class MediaType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $appKind = $options['app_kind'];
-        \assert($appKind instanceof AppKind);
+        \assert(null === $appKind || $appKind instanceof AppKind);
 
         $builder
             // Les setters du média sont typés : un champ vidé doit arriver
@@ -78,15 +80,29 @@ class MediaType extends AbstractType
                 'required' => false,
                 'attr' => ['placeholder' => 'https://'],
             ])
+            ->add('fragments', CollectionType::class, [
+                'entry_type' => FragmentType::class,
+                'entry_options' => ['label' => false],
+                'allow_add' => true,
+                'allow_delete' => true,
+                'by_reference' => false,
+                'label' => false,
+            ])
             ->add('delayMinutes', DelayType::class, [
                 'label' => 'Délai d\'arrivée',
                 'allow_zero' => true,
                 'help' => 'Temps après l\'ouverture de la notification précédente. Zéro pour enchaîner tout de suite ; sans effet sur la première du fil.',
-            ])
+            ]);
+
+        if (null === $appKind) {
+            return;
+        }
+
+        $builder
             ->add('published', CheckboxType::class, [
                 'label' => 'Dans le fil',
                 'required' => false,
-                'help' => 'Décoché, la notification reste un brouillon que le destinataire ne voit pas.',
+                'help' => 'Décoché, la notification reste hors du fil : le destinataire ne la voit pas.',
             ])
             ->add('appData', $this->registry->formTypeFor($appKind), [
                 'label' => false,
@@ -98,6 +114,6 @@ class MediaType extends AbstractType
         $resolver
             ->setDefaults(['data_class' => Media::class])
             ->setRequired('app_kind')
-            ->setAllowedTypes('app_kind', AppKind::class);
+            ->setAllowedTypes('app_kind', ['null', AppKind::class]);
     }
 }

@@ -53,9 +53,120 @@ class NotificationControllerTest extends WebTestCase
         $crawler = $this->client->request('GET', '/admin/notifications/nouveau');
 
         self::assertResponseIsSuccessful();
-        self::assertCount(\count(AppKind::cases()), $crawler->filter('a.card'));
+        self::assertCount(\count(AppKind::cases()), $crawler->filter('a.card[href^="/admin/notifications/nouveau/"]'));
         self::assertSelectorTextContains('body', 'Uber Eats');
         self::assertSelectorTextContains('body', 'Doctolib');
+    }
+
+    public function testTheChoosingStepOffersToStartWithoutAnApp(): void
+    {
+        $this->client->request('GET', '/admin/notifications/nouveau');
+
+        self::assertResponseIsSuccessful();
+        self::assertSelectorExists('a.card[href="/admin/notifications/brouillon"]');
+        self::assertSelectorTextContains('a.card[href="/admin/notifications/brouillon"]', 'Sans application');
+    }
+
+    public function testCreatesADraftWithFragments(): void
+    {
+        $this->mediaFactory->createFeed(2);
+
+        $this->submitDraft([
+            'title' => 'Le message de 4 h 12',
+            'description' => 'Tu avais dit une heure.',
+            'type' => MediaType::TEXT->value,
+            'textContent' => 'jsuis dehors depuis 20 min',
+            'fragments' => [
+                ['label' => 'Commentaire de Marie', 'text' => 'j\'étais là, je confirme'],
+                ['label' => '', 'text' => 'il était 4h12'],
+            ],
+        ]);
+
+        self::assertResponseRedirects('/admin/notifications');
+
+        $draft = $this->mediaRepository->findOneBy(['title' => 'Le message de 4 h 12']);
+        self::assertNotNull($draft);
+        self::assertTrue($draft->isDraft());
+        self::assertFalse($draft->isPublished());
+        self::assertSame(2, $draft->getPosition(), 'Le brouillon prend sa place à la fin du fil.');
+        self::assertSame([
+            ['label' => 'Commentaire de Marie', 'text' => 'j\'étais là, je confirme'],
+            ['label' => '', 'text' => 'il était 4h12'],
+        ], $draft->getFragments());
+    }
+
+    public function testADraftMayHaveNoMemoryYet(): void
+    {
+        $this->submitDraft(['title' => 'Juste un titre', 'type' => MediaType::TEXT->value]);
+
+        self::assertResponseRedirects('/admin/notifications');
+
+        $draft = $this->mediaRepository->findOneBy(['title' => 'Juste un titre']);
+        self::assertNotNull($draft);
+        self::assertNull($draft->getTextContent());
+    }
+
+    public function testEmptyFragmentRowsAreDropped(): void
+    {
+        $this->submitDraft([
+            'title' => 'Avec une ligne vide',
+            'type' => MediaType::TEXT->value,
+            'fragments' => [
+                ['label' => 'Oubliée', 'text' => '   '],
+                ['label' => 'Gardée', 'text' => 'un vrai texte'],
+            ],
+        ]);
+
+        $draft = $this->mediaRepository->findOneBy(['title' => 'Avec une ligne vide']);
+        self::assertNotNull($draft);
+        self::assertSame([['label' => 'Gardée', 'text' => 'un vrai texte']], $draft->getFragments());
+    }
+
+    public function testADraftIsListedWithItsBadgeAndWithoutPreview(): void
+    {
+        $draft = $this->mediaFactory->createDraft(0, 'Pas encore habillé');
+
+        $crawler = $this->client->request('GET', '/admin/notifications');
+
+        self::assertResponseIsSuccessful();
+        $item = $crawler->filter('.list-group-item')->first();
+        self::assertStringContainsString('Pas encore habillé', $item->text());
+        self::assertStringContainsString('Sans application', $item->text());
+        self::assertCount(0, $item->filter(sprintf('a[href="/admin/notifications/%d/apercu"]', (int) $draft->getId())), 'Rien à prévisualiser sans application.');
+    }
+
+    public function testADraftCanBeEditedWithoutAnApp(): void
+    {
+        $draft = $this->mediaFactory->createDraft(0, 'À retoucher');
+
+        $crawler = $this->client->request('GET', sprintf('/admin/notifications/%d/modifier', (int) $draft->getId()));
+
+        self::assertResponseIsSuccessful();
+        self::assertSelectorTextContains('h1', 'brouillon');
+        self::assertCount(0, $crawler->filter('[name^="media[appData]"]'), 'Pas de détails sans application.');
+        self::assertCount(0, $crawler->filter('[name="media[published]"]'), 'Un brouillon ne se met pas dans le fil.');
+        self::assertSelectorNotExists('[data-controller="live-preview"]');
+    }
+
+    public function testFragmentsStayEditableOnceTheAppIsChosen(): void
+    {
+        $media = $this->mediaFactory->createNotification(0, 'Habillée', AppKind::INSTAGRAM);
+        $media->addFragment('Instagram · ancien badge', 'Icon');
+        self::getContainer()->get(EntityManagerInterface::class)->flush();
+
+        $crawler = $this->client->request('GET', sprintf('/admin/notifications/%d/modifier', (int) $media->getId()));
+
+        self::assertResponseIsSuccessful();
+        self::assertSame('Icon', $crawler->filter('[name="media[fragments][0][text]"]')->text());
+    }
+
+    public function testPreviewOfADraftSendsBackToItsEdition(): void
+    {
+        $draft = $this->mediaFactory->createDraft(0, 'Sans écran');
+
+        $this->client->request('GET', sprintf('/admin/notifications/%d/apercu', (int) $draft->getId()));
+
+        self::assertResponseRedirects(sprintf('/admin/notifications/%d/modifier', (int) $draft->getId()));
     }
 
     public function testUnknownAppIsNotFound(): void
@@ -356,6 +467,24 @@ class NotificationControllerTest extends WebTestCase
         self::assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
         self::assertSelectorExists('#media_title.is-invalid');
         self::assertCount(0, $this->mediaRepository->findAll());
+    }
+
+    /**
+     * Les lignes de fragments naissent côté navigateur : le crawler ne les a
+     * pas, on complète donc les valeurs du formulaire avant de le renvoyer.
+     *
+     * @param array<string, mixed> $values
+     */
+    private function submitDraft(array $values): void
+    {
+        $crawler = $this->client->request('GET', '/admin/notifications/brouillon');
+        $form = $crawler->selectButton('Enregistrer le brouillon')->form();
+
+        $submitted = $form->getPhpValues();
+        $current = $submitted['media'] ?? [];
+        $submitted['media'] = array_merge(\is_array($current) ? $current : [], $values);
+
+        $this->client->request($form->getMethod(), $form->getUri(), $submitted, $form->getPhpFiles());
     }
 
     private function createUploadedImage(): UploadedFile
