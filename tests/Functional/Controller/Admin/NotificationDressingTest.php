@@ -4,12 +4,14 @@ namespace App\Tests\Functional\Controller\Admin;
 
 use App\Entity\Media;
 use App\Enum\AppKind;
+use App\Enum\MediaType;
 use App\Form\AppDetails\AppDetailsRegistry;
 use App\Repository\MediaRepository;
 use App\Service\FeedService;
 use App\Tests\Factory\MediaFactory;
 use App\Tests\Factory\UserFactory;
 use Doctrine\ORM\EntityManagerInterface;
+use League\Flysystem\FilesystemOperator;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
@@ -218,6 +220,32 @@ class NotificationDressingTest extends WebTestCase
         self::assertResponseRedirects(sprintf('/admin/notifications/%d/habiller', (int) $draft->getId()));
     }
 
+    public function testTheMemoryTravelsFromOneAppToTheNext(): void
+    {
+        $media = $this->mediaFactory->createNotification(0, 'Une photo', AppKind::UBER_EATS, type: MediaType::IMAGE);
+        $media->setFilePath('voyage.png')->setOriginalName('voyage.png');
+        $this->entityManager->flush();
+        $this->mediaStorage()->write('voyage.png', 'contenu');
+
+        try {
+            $this->dress($media, 'instagram', ['caption' => ['sources' => ['title']]]);
+
+            $dressed = $this->reload($media);
+            self::assertSame(AppKind::INSTAGRAM, $dressed->getAppKind());
+            self::assertSame(MediaType::IMAGE, $dressed->getType());
+            self::assertSame('voyage.png', $dressed->getFilePath(), 'Le fichier ne bouge pas quand l\'app change.');
+
+            $this->client->request('GET', sprintf('/admin/notifications/%d/apercu', (int) $media->getId()));
+            self::assertResponseIsSuccessful();
+            self::assertSelectorExists(sprintf('body.f-open-ig .f-media img[src="/medias/%d/fichier"]', (int) $media->getId()), 'Le nouvel écran affiche la même photo.');
+
+            $this->client->request('GET', sprintf('/medias/%d/fichier', (int) $media->getId()));
+            self::assertResponseIsSuccessful();
+        } finally {
+            $this->mediaStorage()->delete('voyage.png');
+        }
+    }
+
     /**
      * Les cases à cocher d'un même tableau sont indexées par position dans le
      * crawler : on poste le mapping tel quel, avec le jeton lu dans la page.
@@ -232,6 +260,11 @@ class NotificationDressingTest extends WebTestCase
         $this->client->request('POST', sprintf('/admin/notifications/%d/habiller/%s', (int) $media->getId(), $app), [
             'dress' => ['_token' => $token, 'fields' => $fields],
         ]);
+    }
+
+    private function mediaStorage(): FilesystemOperator
+    {
+        return self::getContainer()->get('media.storage');
     }
 
     private function reload(Media $media): Media
