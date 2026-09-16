@@ -1,0 +1,224 @@
+/* --- Horoscope ------------------------------------------------------------ */
+.f-open-ho {
+    background: linear-gradient(160deg, #1a0f38 0%, #2b1b54 45%, #7a5af8 100%);
+    background-attachment: fixed;
+    color: #fff;
+}
+
+.f-open-ho .f-bar b {
+    color: #fff;
+}
+
+.f-open-ho .f-wrap-open {
+    position: relative;
+}
+
+/* Le ciel étoilé : trois couches de points, sans image externe. */
+.ho-sky {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.7;
+    background-image:
+        radial-gradient(1.5px 1.5px at 12% 6%, #fff, transparent),
+        radial-gradient(1px 1px at 31% 14%, #f5b0ff, transparent),
+        radial-gradient(2px 2px at 68% 9%, #fff, transparent),
+        radial-gradient(1px 1px at 84% 19%, #fff, transparent),
+        radial-gradient(1.5px 1.5px at 47% 27%, #f5b0ff, transparent),
+        radial-gradient(1px 1px at 8% 38%, #fff, transparent),
+        radial-gradient(2px 2px at 92% 44%, #fff, transparent),
+        radial-gradient(1px 1px at 22% 55%, #f5b0ff, transparent),
+        radial-gradient(1.5px 1.5px at 59% 63%, #fff, transparent),
+        radial-gradient(1px 1px at 77% 74%, #fff, transparent),
+        radial-gradient(1.5px 1.5px at 36% 82%, #f5b0ff, transparent),
+        radial-gradient(1px 1px at 88% 91%, #fff, transparent);
+}
+
+.ho-hero {
+    position: relative;
+    text-align: center;
+    padding: 10px 0 20px;
+}
+
+.ho-glyph {
+    display: block;
+    font-size: 84px;
+    line-height: 1.1;
+    text-shadow: 0 0 24px rgba(245, 176, 255, 0.8);
+}
+
+.ho-hero h1 {
+    margin: 4px 0 0;
+    font-size: 34px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    line-height: 1.1;
+}
+
+.ho-asc {
+    margin: 4px 0 0;
+    font-size: 15px;
+    font-weight: 700;
+    color: #f5b0ff;
+}
+
+.ho-period {
+    margin: 8px 0 0;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    opacity: 0.8;
+}
+
+.ho-card {
+    position: relative;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(245, 176, 255, 0.3);
+    border-radius: 18px;
+    padding: 12px 14px;
+    margin-top: 12px;
+}
+
+.ho-h2 {
+    display: block;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    opacity: 0.85;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(245, 176, 255, 0.25);
+    margin-bottom: 10px;
+}
+
+.ho-title {
+    margin: 0 0 10px;
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: -0.3px;
+    line-height: 1.2;
+}
+
+.ho-media {
+    display: block;
+    padding: 0;
+    border-radius: 12px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.ho-media .f-media-text {
+    padding: 12px 14px;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.ho-media .f-media-link {
+    margin: 12px;
+    background: #fff;
+    color: #2b1b54;
+}
+
+.ho-media audio {
+    padding: 8px;
+}
+
+.ho-text {
+    margin: 10px 0 0;
+    font-size: 15px;
+    line-height: 1.5;
+    font-weight: 600;
+}
+
+.ho-gauges {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.ho-gauge {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.ho-gauge b {
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.ho-stars {
+    display: flex;
+    gap: 2px;
+    font-size: 17px;
+    line-height: 1;
+    color: rgba(255, 255, 255, 0.25);
+}
+
+.ho-stars i {
+    font-style: normal;
+}
+
+.ho-stars .on {
+    color: #ffd93d;
+    text-shadow: 0 0 8px rgba(255, 217, 61, 0.6);
+}
+
+.ho-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.ho-chip {
+    border: 1px solid rgba(245, 176, 255, 0.5);
+    background: rgba(245, 176, 255, 0.15);
+    border-radius: 99px;
+    padding: 6px 12px;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.ho-lucky {
+    display: flex;
+    gap: 12px;
+}
+
+.ho-lucky-cell {
+    flex: 1;
+    text-align: center;
+}
+
+.ho-lucky-cell small {
+    display: block;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    opacity: 0.75;
+}
+
+.ho-lucky-cell b {
+    display: block;
+    margin-top: 4px;
+    font-size: 26px;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.ho-advice .ho-text {
+    font-style: italic;
+}
+
+.f-open-ho .f-cta {
+    background: rgba(255, 255, 255, 0.9);
+    border-top: 0;
+}
+
+.f-open-ho .f-cta a {
+    background: #7a5af8;
+}

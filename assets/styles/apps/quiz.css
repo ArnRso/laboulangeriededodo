@@ -1,0 +1,202 @@
+/* --- Quiz ----------------------------------------------------------------- */
+.f-open-qz {
+    background: #f4f2ff;
+    color: #1d1836;
+}
+
+.f-open-qz .f-bar {
+    background: linear-gradient(140deg, #6c5ce7, #00b894);
+    color: #fff;
+}
+
+.f-open-qz .f-back {
+    background: rgba(255, 255, 255, 0.22);
+    color: #fff;
+}
+
+.f-open-qz .f-flash {
+    background: #6c5ce7;
+}
+
+.qz-top {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 0 14px;
+}
+
+.qz-count {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.1;
+}
+
+.qz-count small {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #8b83b3;
+}
+
+.qz-count b {
+    font-size: 19px;
+    font-weight: 800;
+    color: #6c5ce7;
+}
+
+.qz-count i {
+    font-style: normal;
+    font-size: 14px;
+    color: #a9a2c9;
+}
+
+.qz-track {
+    flex: 1;
+    height: 9px;
+    border-radius: 999px;
+    background: #e2ddf7;
+    overflow: hidden;
+}
+
+.qz-track i {
+    display: block;
+    height: 100%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #6c5ce7, #00b894);
+}
+
+.qz-card {
+    padding: 18px 16px;
+    border-radius: 22px;
+    background: #fff;
+    box-shadow: 0 12px 30px rgba(108, 92, 231, 0.14);
+}
+
+.qz-q {
+    margin: 0;
+    font-size: 21px;
+    font-weight: 800;
+    line-height: 1.3;
+}
+
+.qz-media {
+    margin-top: 14px;
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+.qz-media .f-media-text {
+    margin: 0;
+    padding: 12px 14px;
+    border-radius: 16px;
+    background: #f4f2ff;
+    font-size: 15px;
+    line-height: 1.5;
+}
+
+.qz-answers {
+    list-style: none;
+    margin: 16px 0 0;
+    padding: 0;
+    display: grid;
+    gap: 10px;
+}
+
+.qz-a {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 14px 18px;
+    border: 2px solid #e2ddf7;
+    border-radius: 999px;
+    background: #fff;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.qz-a-good {
+    border-color: #00b894;
+    background: #e6f8f2;
+    color: #04795f;
+}
+
+.qz-tick {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: #00b894;
+    color: #fff;
+    font-style: normal;
+    font-size: 14px;
+    font-weight: 800;
+}
+
+.qz-result {
+    margin-top: 18px;
+    padding: 20px 18px;
+    border-radius: 22px;
+    background: linear-gradient(150deg, #6c5ce7, #00b894);
+    color: #fff;
+    text-align: center;
+}
+
+.qz-h2 {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    opacity: 0.85;
+}
+
+.qz-verdict {
+    display: block;
+    margin-top: 8px;
+    font-size: 19px;
+    font-weight: 800;
+    line-height: 1.3;
+}
+
+.qz-score {
+    margin-top: 10px;
+    font-size: 54px;
+    font-weight: 900;
+    line-height: 1;
+}
+
+.qz-score i {
+    font-style: normal;
+    font-size: 24px;
+    font-weight: 700;
+    opacity: 0.8;
+}
+
+.qz-track-score {
+    margin: 12px auto 0;
+    background: rgba(255, 255, 255, 0.28);
+}
+
+.qz-track-score i {
+    background: #fff;
+}
+
+.qz-text {
+    margin: 14px 0 0;
+    font-size: 15px;
+    line-height: 1.55;
+    opacity: 0.95;
+}
+
+.qz-badge {
+    margin-top: 14px;
+    padding: 11px 14px;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.2);
+    font-size: 14px;
+    font-weight: 700;
+}

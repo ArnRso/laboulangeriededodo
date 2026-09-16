@@ -1,0 +1,76 @@
+{% extends 'base_feed.html.twig' %}
+
+{% set data = media.appData %}
+{% set question = data.question|default('') ?: media.title %}
+{% set resultText = data.resultText|default('') ?: media.description %}
+{% set questionNumber = data.questionNumber|default(4) %}
+{% set questionTotal = data.questionTotal|default(10) %}
+{% set score = data.score|default(0) %}
+
+{% block title %}{{ media.title }} · Quiz{% endblock %}
+{% block body_class %}f-open f-open-qz{% endblock %}
+
+{% block body %}
+    <main class="f-wrap f-wrap-open">
+        <div class="f-bar">
+            <a class="f-back" href="{{ path('app_feed') }}" aria-label="Retour">‹</a>
+            <b>{{ data.quizName|default('À quel point tu connais ton passé ?') }}</b>
+            <span class="f-bar-spacer"></span>
+        </div>
+
+        <header class="qz-top">
+            <div class="qz-count">
+                <small>Question</small>
+                <b>{{ questionNumber }}<i>/{{ questionTotal }}</i></b>
+            </div>
+            <div class="qz-track">
+                <i style="width: {{ questionTotal > 0 ? (questionNumber / questionTotal * 100)|round : 0 }}%"></i>
+            </div>
+        </header>
+
+        <section class="qz-card">
+            <h1 class="qz-q">{{ question }}</h1>
+
+            {{ include('feed/_media.html.twig', {media: media, class: 'qz-media'}, with_context: false) }}
+        </section>
+
+        {% set answers = [] %}
+        {% for line in data.answers|default('')|split('\n') %}
+            {% if line|trim %}{% set answers = answers|merge([line|trim]) %}{% endif %}
+        {% endfor %}
+
+        {% if answers is not empty %}
+            <ul class="qz-answers">
+                {% for answer in answers %}
+                    {% set good = answer starts with '*' %}
+                    <li class="qz-a{{ good ? ' qz-a-good' : '' }}">
+                        <span>{{ good ? answer|slice(1)|trim : answer }}</span>
+                        {% if good %}<i class="qz-tick" aria-label="Bonne réponse">✓</i>{% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        <section class="qz-result">
+            <small class="qz-h2">🧠 Ton résultat</small>
+            <b class="qz-verdict">{{ data.resultTitle|default('Tu es à 87 % un canon event') }}</b>
+
+            <div class="qz-score">{{ score }}<i>%</i></div>
+            <div class="qz-track qz-track-score">
+                <i style="width: {{ score }}%"></i>
+            </div>
+
+            {% if resultText %}
+                <p class="qz-text">{{ resultText }}</p>
+            {% endif %}
+
+            {% if data.badge|default('') %}
+                <div class="qz-badge">{{ data.badge }}</div>
+            {% endif %}
+        </section>
+    </main>
+
+    {% if not preview %}
+        <div class="f-cta"><a href="{{ path('app_feed') }}">Retour aux notifications</a></div>
+    {% endif %}
+{% endblock %}

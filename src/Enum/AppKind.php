@@ -36,6 +36,9 @@ enum AppKind: string
     case LYDIA = 'lydia';
     case METEO = 'meteo';
     case CALENDAR = 'calendar';
+    case HOROSCOPE = 'horoscope';
+    case QUIZ = 'quiz';
+    case PORNHUB = 'pornhub';
 
     public function label(): string
     {
@@ -67,6 +70,9 @@ enum AppKind: string
             self::LYDIA => 'Lydia',
             self::METEO => 'Météo',
             self::CALENDAR => 'Calendrier',
+            self::HOROSCOPE => 'Horoscope',
+            self::QUIZ => 'Quiz',
+            self::PORNHUB => 'Pornhub',
         };
     }
 
@@ -103,6 +109,9 @@ enum AppKind: string
             self::LYDIA => 'Un virement entre amis : message avec emojis, photo jointe.',
             self::METEO => 'Un bulletin : ville, température, conditions (risque de drama), prévisions heure par heure.',
             self::CALENDAR => 'Un événement : date, horaire, lieu, participants, notes.',
+            self::HOROSCOPE => 'Le thème du jour : signe, ascendant, prédiction, compatibilités et chiffre porte-bonheur.',
+            self::QUIZ => 'Un quiz sur lui : une question, quatre réponses, et un résultat qui tombe toujours juste.',
+            self::PORNHUB => 'Une vidéo « recommandée pour toi » : titre racoleur, chaîne, vues et commentaires. Rien d\'explicite, juste le habillage.',
         };
     }
 
@@ -136,6 +145,9 @@ enum AppKind: string
             self::LYDIA => '💸',
             self::METEO => '⛅',
             self::CALENDAR => '📅',
+            self::HOROSCOPE => '🔮',
+            self::QUIZ => '🧠',
+            self::PORNHUB => '🔞',
         };
     }
 
@@ -172,6 +184,9 @@ enum AppKind: string
             self::LYDIA => '#1B69FF',
             self::METEO => 'linear-gradient(180deg, #4A90E2, #87CEEB)',
             self::CALENDAR => '#FF3B30',
+            self::HOROSCOPE => 'linear-gradient(160deg, #2B1B54, #7A5AF8 60%, #F5B0FF)',
+            self::QUIZ => 'linear-gradient(140deg, #6C5CE7, #00B894)',
+            self::PORNHUB => '#FF9000',
         };
     }
 
@@ -187,7 +202,8 @@ enum AppKind: string
             self::SPOTIFY, self::NETFLIX => 'Streaming',
             self::UBER_EATS, self::DELIVEROO, self::BURGER_KING, self::MCDONALDS, self::UBER, self::WAZE => 'Livraison et transport',
             self::REVOLUT, self::PAYPAL, self::LYDIA => 'Argent',
-            self::DOCTOLIB, self::DUOLINGO, self::METEO, self::CALENDAR => 'Quotidien',
+            self::DOCTOLIB, self::DUOLINGO, self::METEO, self::CALENDAR, self::HOROSCOPE => 'Quotidien',
+            self::QUIZ, self::PORNHUB => 'Divertissement',
         };
     }
 
@@ -240,6 +256,9 @@ enum AppKind: string
             self::LYDIA => sprintf('%s t\'a envoyé un virement 💸', self::text($data, 'counterparty', 'Dodo du passé')),
             self::METEO => sprintf('Alerte météo : %s', self::text($data, 'condition', 'risque de drama')),
             self::CALENDAR => sprintf('Rappel · %s', self::text($data, 'date', 'aujourd\'hui')),
+            self::HOROSCOPE => sprintf('🔮 Ton %s du jour est arrivé', self::text($data, 'sign', 'Balance')),
+            self::QUIZ => sprintf('Nouveau quiz : %s', self::text($data, 'quizName', 'À quel point tu te connais ?')),
+            self::PORNHUB => sprintf('%s a mis en ligne une vidéo', self::text($data, 'channel', 'DodoDuPasse')),
         };
     }
 
@@ -270,6 +289,9 @@ enum AppKind: string
             self::LYDIA => 'Voir le virement',
             self::METEO => 'Voir les prévisions',
             self::CALENDAR => 'Voir l\'événement',
+            self::HOROSCOPE => 'Lire mon thème',
+            self::QUIZ => 'Passer le quiz',
+            self::PORNHUB => 'Regarder la vidéo',
         };
     }
 

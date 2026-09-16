@@ -1,0 +1,127 @@
+{% extends 'base_feed.html.twig' %}
+
+{% set data = media.appData %}
+{% set sign = data.sign|default('Balance') %}
+{% set key = sign|lower %}
+{% if 'bélier' in key or 'belier' in key %}
+    {% set glyph = '♈' %}
+{% elseif 'taureau' in key %}
+    {% set glyph = '♉' %}
+{% elseif 'gémeaux' in key or 'gemeaux' in key %}
+    {% set glyph = '♊' %}
+{% elseif 'cancer' in key %}
+    {% set glyph = '♋' %}
+{% elseif 'lion' in key %}
+    {% set glyph = '♌' %}
+{% elseif 'vierge' in key %}
+    {% set glyph = '♍' %}
+{% elseif 'balance' in key %}
+    {% set glyph = '♎' %}
+{% elseif 'scorpion' in key %}
+    {% set glyph = '♏' %}
+{% elseif 'sagittaire' in key %}
+    {% set glyph = '♐' %}
+{% elseif 'capricorne' in key %}
+    {% set glyph = '♑' %}
+{% elseif 'verseau' in key %}
+    {% set glyph = '♒' %}
+{% elseif 'poisson' in key %}
+    {% set glyph = '♓' %}
+{% else %}
+    {% set glyph = '🔮' %}
+{% endif %}
+{% set predictionTitle = data.predictionTitle|default('') ?: media.title %}
+{% set prediction = data.prediction|default('') ?: media.description %}
+{% set gauges = [
+    {label: 'Amour', icon: '💘', score: data.love|default(4)},
+    {label: 'Travail', icon: '💼', score: data.work|default(2)},
+    {label: 'Humeur', icon: '✨', score: data.mood|default(5)},
+] %}
+
+{% block title %}{{ media.title }} · Horoscope{% endblock %}
+{% block body_class %}f-open f-open-ho{% endblock %}
+
+{% block body %}
+    <main class="f-wrap f-wrap-open">
+        <div class="ho-sky" aria-hidden="true"></div>
+
+        <div class="f-bar f-bar-inverse">
+            <a class="f-back" href="{{ path('app_feed') }}" aria-label="Retour">‹</a>
+            <b>Horoscope</b>
+            <span class="f-bar-spacer"></span>
+        </div>
+
+        <header class="ho-hero">
+            <span class="ho-glyph" aria-hidden="true">{{ glyph }}</span>
+            <h1>{{ sign }}</h1>
+            {% if data.ascendant|default('') %}
+                <p class="ho-asc">{{ data.ascendant }}</p>
+            {% endif %}
+            {% if data.period|default('') %}
+                <p class="ho-period">{{ data.period }}</p>
+            {% endif %}
+        </header>
+
+        <section class="ho-card">
+            <small class="ho-h2">🔮 Ta prédiction</small>
+            <h2 class="ho-title">{{ predictionTitle }}</h2>
+            {{ include('feed/_media.html.twig', {media: media, class: 'ho-media'}, with_context: false) }}
+            {% if prediction %}
+                <p class="ho-text">{{ prediction }}</p>
+            {% endif %}
+        </section>
+
+        <section class="ho-card">
+            <small class="ho-h2">📊 Tes vibes du jour</small>
+            <div class="ho-gauges">
+                {% for gauge in gauges %}
+                    {% set score = max(0, min(5, gauge.score)) %}
+                    <div class="ho-gauge">
+                        <b>{{ gauge.icon }} {{ gauge.label }}</b>
+                        <span class="ho-stars" aria-label="{{ score }} étoiles sur 5">
+                            {% for i in 1..5 %}<i class="{{ i <= score ? 'on' : '' }}">★</i>{% endfor %}
+                        </span>
+                    </div>
+                {% endfor %}
+            </div>
+        </section>
+
+        {% set signs = [] %}
+        {% for line in data.compatibility|default('')|split('\n') %}
+            {% if line|trim %}{% set signs = signs|merge([line|trim]) %}{% endif %}
+        {% endfor %}
+
+        {% if signs is not empty %}
+            <section class="ho-card">
+                <small class="ho-h2">💞 Compatibilités</small>
+                <div class="ho-chips">
+                    {% for compatible in signs %}
+                        <span class="ho-chip">{{ compatible }}</span>
+                    {% endfor %}
+                </div>
+            </section>
+        {% endif %}
+
+        <section class="ho-card ho-lucky">
+            <div class="ho-lucky-cell">
+                <small>Chiffre porte-bonheur</small>
+                <b>{{ data.luckyNumber|default(7) }}</b>
+            </div>
+            <div class="ho-lucky-cell">
+                <small>Couleur</small>
+                <b>{{ data.luckyColor|default('Rose fluo') }}</b>
+            </div>
+        </section>
+
+        {% if data.advice|default('') %}
+            <section class="ho-card ho-advice">
+                <small class="ho-h2">🌙 Le conseil du jour</small>
+                <p class="ho-text">{{ data.advice }}</p>
+            </section>
+        {% endif %}
+    </main>
+
+    {% if not preview %}
+        <div class="f-cta"><a href="{{ path('app_feed') }}">Retour aux notifications</a></div>
+    {% endif %}
+{% endblock %}

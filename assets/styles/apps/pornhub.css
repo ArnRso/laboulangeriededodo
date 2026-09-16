@@ -1,0 +1,319 @@
+/* --- Pornhub -------------------------------------------------------------- */
+.f-open-ph {
+    background: #000;
+    color: #fff;
+}
+
+.ph-logo {
+    display: flex;
+    align-items: center;
+    font-size: 18px !important;
+    font-weight: 800;
+    letter-spacing: -0.6px;
+}
+
+.ph-logo-a {
+    color: #fff;
+}
+
+.ph-logo-b {
+    background: #ff9000;
+    color: #000;
+    border-radius: 4px;
+    padding: 0 5px;
+    margin-left: 2px;
+}
+
+.ph-player {
+    position: relative;
+    margin: 0 -14px;
+    aspect-ratio: 16 / 9;
+    background: #0a0a0a;
+    overflow: hidden;
+}
+
+.ph-media,
+.ph-media img,
+.ph-media video {
+    width: 100%;
+    height: 100%;
+}
+
+.ph-media img {
+    object-fit: cover;
+}
+
+.ph-media video {
+    object-fit: contain;
+}
+
+.ph-media.f-media-type-text,
+.ph-media.f-media-type-link,
+.ph-media.f-media-type-audio {
+    display: grid;
+    place-items: center;
+    padding: 20px 24px 34px;
+    background: linear-gradient(160deg, #1f1f1f, #000 60%, #3a1a00 150%);
+}
+
+.ph-media .f-media-text {
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1.35;
+    text-align: center;
+}
+
+.ph-media .f-media-link {
+    background: #ff9000;
+    color: #000;
+    border-radius: 999px;
+    padding: 12px 18px;
+    font-size: 14px;
+    font-weight: 800;
+}
+
+.ph-duration {
+    position: absolute;
+    right: 10px;
+    bottom: 34px;
+    background: rgba(0, 0, 0, 0.8);
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 5px;
+    border-radius: 4px;
+    pointer-events: none;
+}
+
+.ph-controls {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 20px 10px 0;
+    background: linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.7));
+    pointer-events: none;
+}
+
+.ph-time {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+
+.ph-progress {
+    display: block;
+    height: 3px;
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.ph-progress i {
+    position: relative;
+    display: block;
+    width: 40%;
+    height: 100%;
+    background: #ff9000;
+}
+
+.ph-progress i::after {
+    content: '';
+    position: absolute;
+    right: -6px;
+    top: -4px;
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    background: #ff9000;
+}
+
+.ph-title {
+    margin: 12px 0 4px;
+    font-size: 17px;
+    font-weight: 800;
+    line-height: 1.3;
+}
+
+.ph-meta {
+    font-size: 12px;
+    color: #9c9c9c;
+    font-weight: 600;
+}
+
+.ph-rating {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.ph-bar {
+    flex: 1;
+    height: 4px;
+    border-radius: 2px;
+    background: #d0342c;
+    overflow: hidden;
+}
+
+.ph-bar i {
+    display: block;
+    height: 100%;
+    background: #6cc04a;
+}
+
+.ph-percent {
+    font-size: 12px;
+    font-weight: 800;
+    color: #d8d8d8;
+    flex: none;
+}
+
+.ph-channel {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 0;
+    border-bottom: 1px solid #1f1f1f;
+}
+
+.ph-channel b {
+    font-size: 14px;
+    font-weight: 800;
+    color: #ff9000;
+}
+
+.ph-av {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: #1f1f1f;
+    display: grid;
+    place-items: center;
+    font-size: 17px;
+    flex: none;
+}
+
+.ph-av-s {
+    width: 28px;
+    height: 28px;
+    font-size: 14px;
+}
+
+.ph-sub {
+    margin-left: auto;
+    background: #ff9000;
+    color: #000;
+    border-radius: 4px;
+    padding: 8px 14px;
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.ph-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 12px;
+}
+
+.ph-tag {
+    background: #1f1f1f;
+    color: #c8c8c8;
+    border-radius: 3px;
+    padding: 5px 10px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.ph-desc {
+    margin-top: 12px;
+    background: #111;
+    border-radius: 8px;
+    padding: 12px;
+    font-size: 13px;
+    line-height: 1.45;
+}
+
+.ph-desc b {
+    display: block;
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: #9c9c9c;
+    margin-bottom: 4px;
+}
+
+.ph-desc p {
+    margin: 0;
+}
+
+.ph-comments {
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px solid #1f1f1f;
+}
+
+.ph-comments-head {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.ph-comments-head b {
+    font-size: 15px;
+    font-weight: 800;
+}
+
+.ph-comments-head small {
+    font-size: 12px;
+    color: #9c9c9c;
+    font-weight: 700;
+}
+
+.ph-cm {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.ph-cm b {
+    font-size: 12px;
+    font-weight: 800;
+    color: #ff9000;
+}
+
+.ph-cm p {
+    margin: 2px 0 0;
+    font-size: 13px;
+    line-height: 1.4;
+}
+
+.ph-cm-add {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 14px;
+    font-size: 13px;
+    color: #9c9c9c;
+    font-weight: 600;
+}
+
+.ph-cm-add span:last-child {
+    flex: 1;
+    background: #111;
+    border-radius: 999px;
+    padding: 9px 14px;
+}
+
+.f-open-ph .f-cta a {
+    background: #ff9000;
+    color: #000;
+}
+
+/* Une vraie vidéo garde ses propres commandes. */
+.ph-player:has(.f-media-type-video) .ph-controls,
+.ph-player:has(.f-media-type-video) .ph-duration {
+    display: none;
+}

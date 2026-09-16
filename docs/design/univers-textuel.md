@@ -4,15 +4,12 @@ Cadeau d'anniversaire pour un ami : l'humour prime. Registre Gen Z / TikTok,
 autodérision, queer, références pop et automobile. Toute phrase visible par
 Dorian doit tenir dans ce ton. Jamais « XP », jamais de ton corporate.
 
-## La monnaie : l'AURA
+## Pas de points
 
-- On gagne ou on perd de l'**aura**, pas des points d'expérience.
-- Chaque notification fixe son aura : +100 par défaut, **négatif possible**
-  pour une mauvaise décision, avec une phrase dédiée.
-
-> Tu viens de débloquer +100 aura. Ne la gaspille pas.
-
-> −500 aura. Désolé. Cette décision était objectivement catastrophique.
+L'application a longtemps compté des points d'**aura** gagnés ou perdus à
+chaque ouverture. La notion a été retirée en septembre 2026 : une
+notification ne rapporte plus rien, elle raconte. Les tournures ci-dessous
+restent valables pour le ton, mais ne les rattache plus à un score.
 
 ## Vocabulaire à réutiliser
 
@@ -71,5 +68,5 @@ quatre implémentées (Uber Eats, Instagram, Tinder, Doctolib) :
 ## Textes déjà en place
 
 Les phrases de l'interface sont dans les gabarits `templates/feed/` ; les
-textes de chaque notification (titre, description, détails par app, phrase
-d'aura) se saisissent dans l'admin.
+textes de chaque notification (titre, description, et un champ par
+emplacement de l'écran de l'app) se saisissent dans l'admin.

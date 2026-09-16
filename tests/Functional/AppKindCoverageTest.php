@@ -80,6 +80,9 @@ class AppKindCoverageTest extends WebTestCase
             'lydia' => 'Dodo du passé t\'a envoyé un virement 💸',
             'meteo' => 'Alerte météo : Nuageux avec risque de drama',
             'calendar' => 'Rappel · Samedi 23 août 2015',
+            'horoscope' => '🔮 Ton Balance du jour est arrivé',
+            'quiz' => 'Nouveau quiz : À quel point tu connais ton passé ?',
+            'pornhub' => 'DodoDuPasse a mis en ligne une vidéo',
         ];
 
         foreach (AppKind::cases() as $appKind) {
@@ -239,7 +242,7 @@ class AppKindCoverageTest extends WebTestCase
             };
         }
 
-        $this->client->request('POST', sprintf('/admin/notifications/nouveau/%s/apercu', $appKind->value), [
+        $crawler = $this->client->request('POST', sprintf('/admin/notifications/nouveau/%s/apercu', $appKind->value), [
             'media' => [
                 'title' => 'TITRE-DU-MEDIA',
                 'description' => 'DESCRIPTION-DU-MEDIA',
@@ -251,7 +254,7 @@ class AppKindCoverageTest extends WebTestCase
 
         self::assertResponseIsSuccessful();
 
-        $main = self::getClient()->getCrawler()->filter('main')->text();
+        $main = $crawler->filter('main')->text();
         self::assertStringNotContainsString('TITRE-DU-MEDIA', $main, 'Un emplacement affiche encore le titre du média alors que tous les champs sont remplis.');
         self::assertStringNotContainsString('DESCRIPTION-DU-MEDIA', $main, 'Un emplacement affiche encore la description du média alors que tous les champs sont remplis.');
     }

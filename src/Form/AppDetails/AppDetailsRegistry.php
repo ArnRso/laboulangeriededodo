@@ -44,6 +44,9 @@ final class AppDetailsRegistry
             AppKind::LYDIA => LydiaDetailsType::class,
             AppKind::METEO => MeteoDetailsType::class,
             AppKind::CALENDAR => CalendarDetailsType::class,
+            AppKind::HOROSCOPE => HoroscopeDetailsType::class,
+            AppKind::QUIZ => QuizDetailsType::class,
+            AppKind::PORNHUB => PornhubDetailsType::class,
         };
     }
 

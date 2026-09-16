@@ -25,3 +25,6 @@ import './styles/apps/paypal.css';
 import './styles/apps/lydia.css';
 import './styles/apps/meteo.css';
 import './styles/apps/calendar.css';
+import './styles/apps/horoscope.css';
+import './styles/apps/quiz.css';
+import './styles/apps/pornhub.css';

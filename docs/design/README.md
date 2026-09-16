@@ -17,7 +17,7 @@ docs/design/
   Plus Jakarta Sans. Voir `maquettes/g5.html` et les `maquettes/open-*.html`.
 - **Implémenté** dans `templates/feed/`, `assets/styles/feed.css` (socle et
   quatre premières apps) et `assets/styles/apps/` (une feuille par app).
-  La liste des 27 apps imitées est dans `inspirations/README.md`.
+  La liste des 30 apps imitées est dans `inspirations/README.md`.
 
 ## Ajouter une inspiration
 

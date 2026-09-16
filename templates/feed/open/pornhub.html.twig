@@ -1,0 +1,98 @@
+{% extends 'base_feed.html.twig' %}
+
+{% set data = media.appData %}
+{% set channel = data.channel|default('DodoDuPasse') %}
+{% set duration = data.duration|default('4:12') %}
+{% set likePercent = data.likePercent|default(98) %}
+{% set avatar = recipient and recipient.avatar ? recipient.avatar.value : '🦤' %}
+
+{% block title %}{{ media.title }} · Pornhub{% endblock %}
+{% block body_class %}f-open f-open-ph{% endblock %}
+
+{% block body %}
+    <main class="f-wrap f-wrap-open">
+        <div class="f-bar">
+            <a class="f-back" href="{{ path('app_feed') }}" aria-label="Retour">‹</a>
+            <b class="ph-logo"><span class="ph-logo-a">Porn</span><span class="ph-logo-b">hub</span></b>
+            <span class="f-bar-spacer"></span>
+        </div>
+
+        <div class="ph-player">
+            {{ include('feed/_media.html.twig', {media: media, class: 'ph-media'}, with_context: false) }}
+            <span class="ph-duration">{{ duration }}</span>
+            <div class="ph-controls" aria-hidden="true">
+                <span class="ph-time">1:42 / {{ duration }}</span>
+                <span class="ph-progress"><i></i></span>
+            </div>
+        </div>
+
+        <h1 class="ph-title">{{ data.videoTitle|default(media.title) }}</h1>
+
+        <div class="ph-meta">{{ data.views|default('1,2 M de vues') }} · il y a {{ data.uploadedAgo|default('11 ans') }}</div>
+
+        <div class="ph-rating">
+            <span class="ph-bar"><i style="width: {{ likePercent }}%"></i></span>
+            <span class="ph-percent">👍 {{ likePercent }} %</span>
+        </div>
+
+        <div class="ph-channel">
+            <span class="ph-av">{{ avatar }}</span>
+            <b>{{ channel }}</b>
+            <span class="ph-sub">S'abonner</span>
+        </div>
+
+        {% set tags = [] %}
+        {% for line in data.tags|default('')|split('\n') %}
+            {% if line|trim %}{% set tags = tags|merge([line|trim]) %}{% endif %}
+        {% endfor %}
+
+        {% if tags is not empty %}
+            <div class="ph-tags">
+                {% for tag in tags %}
+                    <span class="ph-tag">{{ tag }}</span>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% set videoDescription = data.videoDescription|default(media.description) %}
+        {% if videoDescription %}
+            <div class="ph-desc">
+                <b>Description</b>
+                <p>{{ videoDescription }}</p>
+            </div>
+        {% endif %}
+
+        {% set comments = [] %}
+        {% for line in data.comments|default('')|split('\n') %}
+            {% if line|trim %}{% set comments = comments|merge([line|trim]) %}{% endif %}
+        {% endfor %}
+
+        <section class="ph-comments">
+            <div class="ph-comments-head"><b>Commentaires</b><small>{{ comments|length }}</small></div>
+
+            {% for comment in comments %}
+                {% set parts = comment|split(':', 2) %}
+                <div class="ph-cm">
+                    <span class="ph-av ph-av-s">{{ avatar }}</span>
+                    <div>
+                        {% if parts|length == 2 %}
+                            <b>{{ parts[0]|trim }}</b>
+                            <p>{{ parts[1]|trim }}</p>
+                        {% else %}
+                            <p>{{ comment }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+
+            <div class="ph-cm-add" aria-hidden="true">
+                <span class="ph-av ph-av-s">{{ avatar }}</span>
+                <span>Ajouter un commentaire…</span>
+            </div>
+        </section>
+    </main>
+
+    {% if not preview %}
+        <div class="f-cta"><a href="{{ path('app_feed') }}">Retour aux notifications</a></div>
+    {% endif %}
+{% endblock %}
