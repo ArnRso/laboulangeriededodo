@@ -40,6 +40,16 @@ class IMessageDetailsType extends AbstractAppDetailsType
                 'label' => 'Accusé sous la dernière bulle envoyée',
                 'help' => '« Distribué », « Lu il y a 11 ans »…',
                 'required' => false,
+            ])
+            ->add('mediaCaption', TextType::class, [
+                'label' => 'Légende sous le souvenir',
+                'help' => 'Dans la bulle qui porte le souvenir. Vide : reprend le titre de la notification.',
+                'required' => false,
+            ])
+            ->add('lastMessage', TextType::class, [
+                'label' => 'Dernier message du contact',
+                'help' => 'La bulle qui ferme la conversation. Vide : reprend la description de la notification.',
+                'required' => false,
             ]);
     }
 
@@ -54,6 +64,8 @@ tu avais dit « je reste une heure »
 moi: et ?
 il était 4h12.',
             'deliveredLabel' => 'Lu il y a 11 ans',
+            'mediaCaption' => '',
+            'lastMessage' => '',
         ];
     }
 }

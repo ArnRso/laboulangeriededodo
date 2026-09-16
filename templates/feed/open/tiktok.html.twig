@@ -43,7 +43,7 @@
             <div class="tk-info">
                 <b class="tk-user">@{{ username }}</b>
                 <p class="tk-cap">
-                    {{ media.title }}{% if media.description %} {{ media.description }}{% endif %}
+                    {{ data.caption|default(media.title ~ (media.description ? ' ' ~ media.description : '')) }}
                     {% if data.hashtags|default('') %}<span class="tk-tags">{{ data.hashtags }}</span>{% endif %}
                 </p>
                 <div class="tk-sound">

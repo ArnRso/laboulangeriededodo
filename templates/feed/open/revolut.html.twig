@@ -2,6 +2,10 @@
 
 {% set data = media.appData %}
 {% set counterparty = data.counterparty|default('Dodo du passé') %}
+{% set label = data.label|default('') ?: media.title %}
+{% set statusLabel = data.statusLabel|default('Terminé') %}
+{% set heroStatus = data.heroStatus|default('') ?: statusLabel %}
+{% set note = data.note|default('') ?: media.description %}
 
 {% block title %}{{ media.title }} · Revolut{% endblock %}
 {% block body_class %}f-open f-open-rv{% endblock %}
@@ -16,8 +20,8 @@
 
         <header class="rv-hero">
             <span class="rv-av">{{ counterparty|first|upper }}</span>
-            <h1 class="rv-title">{{ media.title }}</h1>
-            <p class="rv-sub">{{ counterparty }} · {{ data.statusLabel|default('Terminé') }}</p>
+            <h1 class="rv-title">{{ label }}</h1>
+            <p class="rv-sub">{{ counterparty }} · {{ heroStatus }}</p>
         </header>
 
         <section class="rv-card">
@@ -25,7 +29,7 @@
             <div class="rv-row"><span class="rv-ic">🗂</span><span>Catégorie</span><b>{{ data.category|default('Décisions') }}</b></div>
             <div class="rv-row"><span class="rv-ic">💳</span><span>Carte</span><b>•••• {{ data.cardLast4|default('2015') }}</b></div>
             <div class="rv-row"><span class="rv-ic">🧾</span><span>Référence</span><b class="rv-ref">{{ data.reference|default('CB 2015 SOIRÉE DONT ON NE PARLE PLUS') }}</b></div>
-            <div class="rv-row"><span class="rv-ic">✨</span><span>Statut</span><b>{{ data.statusLabel|default('Terminé') }}</b></div>
+            <div class="rv-row"><span class="rv-ic">✨</span><span>Statut</span><b>{{ statusLabel }}</b></div>
         </section>
 
         <h2 class="rv-h2">Reçu</h2>
@@ -33,9 +37,9 @@
             {{ include('feed/_media.html.twig', {media: media, class: 'rv-media'}, with_context: false) }}
         </section>
 
-        {% if media.description %}
+        {% if note %}
             <h2 class="rv-h2">Note</h2>
-            <section class="rv-card"><p class="rv-note">{{ media.description }}</p></section>
+            <section class="rv-card"><p class="rv-note">{{ note }}</p></section>
         {% endif %}
 
         <div class="rv-acts" aria-hidden="true">

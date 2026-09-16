@@ -19,7 +19,7 @@
 
         <div class="im-stamp"><b>iMessage</b><span>{{ data.statusLine|default('Il y a 11 ans, 23:41') }}</span></div>
 
-        {{ include('feed/_chat.html.twig', {media: media, data: data, prefix: 'im', receipt: data.deliveredLabel|default('Distribué')}, with_context: false) }}
+        {{ include('feed/_chat.html.twig', {media: media, data: data, prefix: 'im', receipt: data.deliveredLabel|default('Distribué'), caption: data.mediaCaption|default(''), lastLine: data.lastMessage|default('')}, with_context: false) }}
 
         <div class="im-input" aria-hidden="true">
             <span class="im-plus">＋</span>

@@ -3,6 +3,7 @@
 namespace App\Form\AppDetails;
 
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Validator\Constraints\NotBlank;
@@ -37,6 +38,17 @@ class UberDetailsType extends AbstractAppDetailsType
                 'label' => 'Durée de la course',
                 'required' => false,
             ])
+            ->add('rideTitle', TextType::class, [
+                'label' => 'Titre de la course',
+                'help' => 'Le grand titre sous la carte. Vide : reprend le titre de la notification.',
+                'required' => false,
+            ])
+            ->add('tripNote', TextareaType::class, [
+                'label' => 'Note de trajet',
+                'help' => 'Vide : reprend la description de la notification.',
+                'required' => false,
+                'attr' => ['rows' => 3],
+            ])
             ->add('rating', ChoiceType::class, [
                 'label' => 'Note donnée au chauffeur',
                 'choices' => [
@@ -57,6 +69,8 @@ class UberDetailsType extends AbstractAppDetailsType
             'fromPlace' => 'Ton adolescence',
             'toPlace' => 'Aujourd\'hui',
             'duration' => '11 ans',
+            'rideTitle' => '',
+            'tripNote' => '',
             'rating' => 5,
         ];
     }

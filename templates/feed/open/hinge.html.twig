@@ -3,6 +3,8 @@
 {% set data = media.appData %}
 {% set name = data.name|default(media.title) %}
 {% set likedBy = data.likedBy|default(name) %}
+{% set photoCaption = data.photoCaption|default('') ?: media.title %}
+{% set answer = data.answer|default('') ?: (media.description|default(media.title)) %}
 
 {% block title %}{{ media.title }} · Hinge{% endblock %}
 {% block body_class %}f-open f-open-hg{% endblock %}
@@ -27,13 +29,13 @@
 
         <div class="hg-card hg-photo hg-photo-{{ media.type.value }}">
             {{ include('feed/_media.html.twig', {media: media, class: 'hg-media'}, with_context: false) }}
-            {% if media.description %}<div class="hg-caption">{{ media.title }}</div>{% endif %}
+            {% if photoCaption %}<div class="hg-caption">{{ photoCaption }}</div>{% endif %}
             <span class="hg-like" aria-hidden="true">♥</span>
         </div>
 
         <div class="hg-card hg-prompt">
             <small>{{ data.prompt|default('Ce qui me rend heureux') }}</small>
-            <p>{{ media.description|default(media.title) }}</p>
+            <p>{{ answer }}</p>
             {% if data.comment|default('') %}
                 <div class="hg-comment">
                     <span>{{ likedBy }}</span>

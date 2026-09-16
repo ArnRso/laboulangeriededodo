@@ -21,7 +21,7 @@
         <div class="wa-day">Aujourd'hui</div>
         <div class="wa-lock">🔒 Les messages sont chiffrés de bout en bout. Personne, pas même WhatsApp, ne peut les lire. Ta mère, si.</div>
 
-        {{ include('feed/_chat.html.twig', {media: media, data: data, prefix: 'wa', ticks: '✓✓'}, with_context: false) }}
+        {{ include('feed/_chat.html.twig', {media: media, data: data, prefix: 'wa', ticks: '✓✓', caption: data.mediaCaption|default(''), lastLine: data.lastMessage|default('')}, with_context: false) }}
 
         <div class="wa-input" aria-hidden="true">
             <div class="wa-field"><span>😊</span><span class="wa-ph">Message</span><span>📎</span><span>📷</span></div>

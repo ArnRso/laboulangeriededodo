@@ -34,6 +34,12 @@ class InstagramDetailsType extends AbstractAppDetailsType
                 'label' => 'Nombre d\'autres likes',
                 'constraints' => [new PositiveOrZero()],
             ])
+            ->add('caption', TextareaType::class, [
+                'label' => 'Légende sous la photo',
+                'help' => 'Vide : reprend le titre et la description de la notification.',
+                'required' => false,
+                'attr' => ['rows' => 3],
+            ])
             ->add('hashtags', TextType::class, [
                 'label' => 'Hashtags',
                 'required' => false,
@@ -62,6 +68,7 @@ class InstagramDetailsType extends AbstractAppDetailsType
             'location' => '',
             'likedBy' => 'ta.mere',
             'likesCount' => 1240,
+            'caption' => '',
             'hashtags' => '#LoreUnlocked #CanonEvent',
             'comments' => '',
             'timeAgo' => 'Il y a 11 ans',

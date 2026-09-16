@@ -1,18 +1,23 @@
 {#
     Une conversation en bulles, partagée par les messageries (WhatsApp,
     Messenger, iMessage). Le contact envoie d'abord le souvenir, puis viennent
-    les lignes de `conversation` (« moi: » pour une bulle envoyée), et la
-    description en dernière bulle du contact.
+    les lignes de `conversation` (« moi: » pour une bulle envoyée), et
+    `lastLine` en dernière bulle du contact. Chaque messagerie passe ses propres
+    `caption` et `lastLine` pour rester pilotable indépendamment des autres.
 
     Paramètres :
-      - media   : Media
-      - data    : appData
-      - prefix  : préfixe CSS de l'app (wa, ms, im)
-      - ticks   : marque après l'heure des bulles envoyées (optionnel)
-      - receipt : mention sous la dernière bulle envoyée (optionnel)
+      - media    : Media
+      - data     : appData
+      - prefix   : préfixe CSS de l'app (wa, ms, im)
+      - ticks    : marque après l'heure des bulles envoyées (optionnel)
+      - receipt  : mention sous la dernière bulle envoyée (optionnel)
+      - caption  : légende sous le souvenir (optionnel, repli sur media.title)
+      - lastLine : dernière bulle du contact (optionnel, repli sur media.description)
 #}
 {% set p = prefix %}
 {% set contactEmoji = data.contactEmoji|default('👶') %}
+{% set caption = caption|default('') ?: media.title %}
+{% set lastLine = lastLine|default('') ?: media.description %}
 
 {% set bubbles = [{side: 'in', kind: 'media', text: ''}] %}
 {% for line in data.conversation|default('')|split('\n') %}
@@ -24,8 +29,8 @@
         {% set bubbles = bubbles|merge([{side: 'in', kind: 'text', text: line}]) %}
     {% endif %}
 {% endfor %}
-{% if media.description %}
-    {% set bubbles = bubbles|merge([{side: 'in', kind: 'text', text: media.description}]) %}
+{% if lastLine %}
+    {% set bubbles = bubbles|merge([{side: 'in', kind: 'text', text: lastLine}]) %}
 {% endif %}
 
 {% set lastOut = -1 %}
@@ -43,7 +48,7 @@
             <div class="{{ p }}-b {{ p }}-b-{{ b.side }}{{ b.kind == 'media' ? ' ' ~ p ~ '-b-media' }}">
                 {% if b.kind == 'media' %}
                     {{ include('feed/_media.html.twig', {media: media, class: p ~ '-media'}, with_context: false) }}
-                    <p class="{{ p }}-cap">{{ media.title }}</p>
+                    <p class="{{ p }}-cap">{{ caption }}</p>
                 {% else %}
                     <p>{{ b.text }}</p>
                 {% endif %}

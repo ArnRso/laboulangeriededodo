@@ -3,6 +3,7 @@
 namespace App\Form\AppDetails;
 
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Validator\Constraints\NotBlank;
@@ -19,6 +20,17 @@ class YouTubeDetailsType extends AbstractAppDetailsType
             ->add('channel', TextType::class, [
                 'label' => 'Chaîne',
                 'constraints' => [new NotBlank()],
+            ])
+            ->add('videoTitle', TextType::class, [
+                'label' => 'Titre sous le lecteur',
+                'help' => 'Vide : reprend le titre.',
+                'required' => false,
+            ])
+            ->add('videoDescription', TextareaType::class, [
+                'label' => 'Description sous le lecteur',
+                'help' => 'Le texte du panneau « … plus ». Vide : reprend la description.',
+                'required' => false,
+                'attr' => ['rows' => 4],
             ])
             ->add('views', TextType::class, [
                 'label' => 'Vues affichées',
@@ -50,6 +62,8 @@ class YouTubeDetailsType extends AbstractAppDetailsType
     {
         return [
             'channel' => 'Dodo du passé',
+            'videoTitle' => '',
+            'videoDescription' => '',
             'views' => '1,2 M de vues',
             'uploadedAgo' => '11 ans',
             'likes' => 42000,

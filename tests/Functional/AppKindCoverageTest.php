@@ -216,4 +216,43 @@ class AppKindCoverageTest extends WebTestCase
         self::assertSelectorTextContains('main', 'Une description qui doit apparaître quelque part.');
         self::assertSelectorExists('.f-media-text', 'Le souvenir lui-même passe par feed/_media.html.twig.');
     }
+
+    /**
+     * Chaque endroit qui affiche du texte doit être pilotable séparément : en
+     * remplissant tous les champs de détails, ni le titre ni la description du
+     * média ne doivent plus apparaître à l'écran.
+     */
+    #[DataProvider('appKinds')]
+    public function testEveryTextSlotCanBeOverridden(AppKind $appKind): void
+    {
+        $this->client->loginUser($this->userFactory->createAdmin());
+
+        $registry = self::getContainer()->get(AppDetailsRegistry::class);
+        $appData = [];
+
+        foreach ($registry->defaultsFor($appKind) as $field => $default) {
+            $appData[$field] = match (true) {
+                \is_bool($default) => $default,
+                \is_int($default) => $default,
+                '' === $default => 'Valeur propre à '.$field,
+                default => $default,
+            };
+        }
+
+        $this->client->request('POST', sprintf('/admin/notifications/nouveau/%s/apercu', $appKind->value), [
+            'media' => [
+                'title' => 'TITRE-DU-MEDIA',
+                'description' => 'DESCRIPTION-DU-MEDIA',
+                'type' => MediaType::TEXT->value,
+                'textContent' => 'Le souvenir lui-même.',
+                'appData' => $appData,
+            ],
+        ]);
+
+        self::assertResponseIsSuccessful();
+
+        $main = self::getClient()->getCrawler()->filter('main')->text();
+        self::assertStringNotContainsString('TITRE-DU-MEDIA', $main, 'Un emplacement affiche encore le titre du média alors que tous les champs sont remplis.');
+        self::assertStringNotContainsString('DESCRIPTION-DU-MEDIA', $main, 'Un emplacement affiche encore la description du média alors que tous les champs sont remplis.');
+    }
 }

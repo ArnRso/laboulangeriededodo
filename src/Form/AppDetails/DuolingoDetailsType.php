@@ -3,6 +3,7 @@
 namespace App\Form\AppDetails;
 
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Validator\Constraints\NotBlank;
@@ -34,6 +35,17 @@ class DuolingoDetailsType extends AbstractAppDetailsType
                 'label' => 'Phrase du hibou',
                 'help' => 'Passive-agressive, comme il se doit.',
                 'required' => false,
+            ])
+            ->add('exercise', TextType::class, [
+                'label' => 'Consigne de l\'exercice',
+                'help' => 'Le gros titre sous « Exercice ». Vide : reprend le titre de la notification.',
+                'required' => false,
+            ])
+            ->add('answer', TextareaType::class, [
+                'label' => 'Bonne réponse',
+                'help' => 'Vide : reprend la description de la notification.',
+                'required' => false,
+                'attr' => ['rows' => 3],
             ]);
     }
 
@@ -44,6 +56,8 @@ class DuolingoDetailsType extends AbstractAppDetailsType
             'lesson' => 'Leçon 4 : les excuses de dernière minute',
             'course' => 'Dodo → Adulte',
             'owlLine' => 'Tu as ignoré mes rappels. Je n\'ai pas oublié. Je n\'oublie jamais.',
+            'exercise' => '',
+            'answer' => '',
         ];
     }
 }

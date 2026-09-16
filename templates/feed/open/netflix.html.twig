@@ -17,7 +17,7 @@
         </div>
 
         <div class="nf-kind"><span class="nf-n nf-n-small" aria-hidden="true">N</span> SÉRIE</div>
-        <h1 class="nf-title">{{ media.title }}</h1>
+        <h1 class="nf-title">{{ data.showTitle|default(media.title) }}</h1>
 
         <div class="nf-meta">
             <b>{{ data.match|default(98) }} % de correspondance</b>
@@ -36,7 +36,8 @@
             <span class="nf-btn nf-btn-list">+ Ma liste</span>
         </div>
 
-        {% if media.description %}<p class="nf-synopsis">{{ media.description }}</p>{% endif %}
+        {% set synopsis = data.synopsis|default(media.description) %}
+        {% if synopsis %}<p class="nf-synopsis">{{ synopsis }}</p>{% endif %}
 
         <div class="nf-lines">
             <p><span>Avec :</span> {{ data.cast|default('Dodo du passé') }}</p>

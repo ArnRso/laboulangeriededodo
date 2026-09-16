@@ -1,6 +1,8 @@
 {% extends 'base_feed.html.twig' %}
 
 {% set data = media.appData %}
+{% set eventTitle = data.eventTitle|default('') ?: media.title %}
+{% set notes = data.notes|default('') ?: media.description %}
 
 {% block title %}{{ media.title }} · Calendrier{% endblock %}
 {% block body_class %}f-open f-open-ca{% endblock %}
@@ -15,7 +17,7 @@
 
         <header class="ca-head">
             <div class="ca-cal"><i aria-hidden="true"></i>{{ data.calendarName|default('Canon events') }}</div>
-            <h1>{{ media.title }}</h1>
+            <h1>{{ eventTitle }}</h1>
             <b class="ca-date">{{ data.date|default('Samedi 23 août 2015') }}</b>
             {% if data.timeRange|default('') %}<span class="ca-time">{{ data.timeRange }}</span>{% endif %}
         </header>
@@ -55,9 +57,9 @@
             {{ include('feed/_media.html.twig', {media: media, class: 'ca-media'}, with_context: false) }}
         </section>
 
-        {% if media.description %}
+        {% if notes %}
             <h2 class="ca-h2">Notes</h2>
-            <section class="ca-group"><p class="ca-notes">{{ media.description }}</p></section>
+            <section class="ca-group"><p class="ca-notes">{{ notes }}</p></section>
         {% endif %}
 
         <h2 class="ca-h2">Répondre</h2>

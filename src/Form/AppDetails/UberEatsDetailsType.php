@@ -25,6 +25,21 @@ class UberEatsDetailsType extends AbstractAppDetailsType
                 'help' => 'Affiché sous la carte, par exemple « Ton adolescence → Aujourd\'hui · 11 ans de trajet ».',
                 'required' => false,
             ])
+            ->add('orderTitle', TextType::class, [
+                'label' => 'Titre de la commande',
+                'help' => 'Le grand titre en haut de l\'écran. Vide : reprend le titre de la notification.',
+                'required' => false,
+            ])
+            ->add('itemName', TextType::class, [
+                'label' => 'Nom de l\'article',
+                'help' => 'La ligne « 1× … » dans « Ta commande ». Vide : reprend le titre de la notification.',
+                'required' => false,
+            ])
+            ->add('itemNote', TextType::class, [
+                'label' => 'Description de l\'article',
+                'help' => 'Sous le nom de l\'article. Vide : reprend la description de la notification.',
+                'required' => false,
+            ])
             ->add('stars', ChoiceType::class, [
                 'label' => 'Note de la commande',
                 'choices' => [
@@ -42,6 +57,9 @@ class UberEatsDetailsType extends AbstractAppDetailsType
         return [
             'courier' => 'Dodo du passé',
             'trip' => 'Ton adolescence → Aujourd\'hui · 11 ans de trajet',
+            'orderTitle' => '',
+            'itemName' => '',
+            'itemNote' => '',
             'stars' => 5,
         ];
     }

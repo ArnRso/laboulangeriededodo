@@ -2,6 +2,7 @@
 
 namespace App\Form\AppDetails;
 
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Validator\Constraints\NotBlank;
@@ -36,7 +37,24 @@ class RevolutDetailsType extends AbstractAppDetailsType
             ])
             ->add('statusLabel', TextType::class, [
                 'label' => 'Statut affiché',
+                'help' => 'Dans la ligne « Statut » de la fiche.',
                 'required' => false,
+            ])
+            ->add('heroStatus', TextType::class, [
+                'label' => 'Statut à côté du nom',
+                'help' => 'Dans l\'en-tête, après le nom. Vide : reprend le statut affiché.',
+                'required' => false,
+            ])
+            ->add('label', TextType::class, [
+                'label' => 'Libellé de la transaction',
+                'help' => 'Le gros titre de l\'en-tête. Vide : reprend le titre de la notification.',
+                'required' => false,
+            ])
+            ->add('note', TextareaType::class, [
+                'label' => 'Note',
+                'help' => 'Vide : reprend la description de la notification.',
+                'required' => false,
+                'attr' => ['rows' => 3],
             ]);
     }
 
@@ -48,6 +66,9 @@ class RevolutDetailsType extends AbstractAppDetailsType
             'cardLast4' => '2015',
             'category' => 'Décisions',
             'statusLabel' => 'Terminé',
+            'heroStatus' => '',
+            'label' => '',
+            'note' => '',
         ];
     }
 }

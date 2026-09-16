@@ -3,6 +3,8 @@
 {% set data = media.appData %}
 {% set matchName = data.matchName|default(media.title) %}
 {% set hoursLeft = data.hoursLeft|default(24) %}
+{% set aboutTitle = data.aboutTitle|default('') ?: media.title %}
+{% set aboutText = data.aboutText|default('') ?: media.description %}
 
 {% block title %}{{ media.title }} · Bumble{% endblock %}
 {% block body_class %}f-open f-open-bb{% endblock %}
@@ -51,8 +53,8 @@
 
                 <div class="bb-about">
                     <small>À propos de moi</small>
-                    <b>{{ media.title }}</b>
-                    {% if media.description %}<p>{{ media.description }}</p>{% endif %}
+                    <b>{{ aboutTitle }}</b>
+                    {% if aboutText %}<p>{{ aboutText }}</p>{% endif %}
                 </div>
             </div>
         </div>

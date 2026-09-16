@@ -36,8 +36,9 @@
         </div>
 
         <div class="br-cap">
-            <b>{{ media.title }}</b>
-            {% if media.description %}<p>{{ media.description }}</p>{% endif %}
+            <b>{{ data.caption|default(media.title) }}</b>
+            {% set captionText = data.captionText|default(media.description) %}
+            {% if captionText %}<p>{{ captionText }}</p>{% endif %}
         </div>
 
         {% set realmojis = [] %}

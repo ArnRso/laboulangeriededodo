@@ -41,8 +41,9 @@
             <div class="sn-msg">
                 <small>{{ sender|upper }}</small>
                 <div class="sn-bubble">
-                    <b>{{ media.title }}</b>
-                    {% if media.description %}<p>{{ media.description }}</p>{% endif %}
+                    <b>{{ data.chatTitle|default(media.title) }}</b>
+                    {% set chatText = data.chatText|default(media.description) %}
+                    {% if chatText %}<p>{{ chatText }}</p>{% endif %}
                 </div>
             </div>
 

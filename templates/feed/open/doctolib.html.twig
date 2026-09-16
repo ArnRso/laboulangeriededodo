@@ -1,6 +1,8 @@
 {% extends 'base_feed.html.twig' %}
 
 {% set data = media.appData %}
+{% set reason = data.reason|default('') ?: media.title %}
+{% set report = data.report|default('') ?: media.description %}
 
 {% block title %}{{ media.title }} · Doctolib{% endblock %}
 {% block body_class %}f-open f-open-dl{% endblock %}
@@ -30,7 +32,7 @@
             {% if data.address|default('') %}
                 <div class="dl-row"><span class="dl-ic">📍</span><div><b>Cabinet</b><span>{{ data.address|nl2br }}</span></div></div>
             {% endif %}
-            <div class="dl-row"><span class="dl-ic">📝</span><div><b>Motif de consultation</b><span>{{ media.title }}</span></div></div>
+            <div class="dl-row"><span class="dl-ic">📝</span><div><b>Motif de consultation</b><span>{{ reason }}</span></div></div>
         </section>
 
         <h2 class="dl-h2">Document partagé par le praticien</h2>
@@ -38,9 +40,9 @@
             {{ include('feed/_media.html.twig', {media: media, class: 'dl-media'}, with_context: false) }}
         </section>
 
-        {% if media.description %}
+        {% if report %}
             <h2 class="dl-h2">Compte-rendu</h2>
-            <section class="dl-card"><p class="dl-cr">{{ media.description }}</p></section>
+            <section class="dl-card"><p class="dl-cr">{{ report }}</p></section>
         {% endif %}
     </main>
 

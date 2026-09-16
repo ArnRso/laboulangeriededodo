@@ -34,6 +34,17 @@ class BurgerKingDetailsType extends AbstractAppDetailsType
                 'label' => 'Phrase de la couronne',
                 'help' => 'Le titre décerné dans l\'encart 👑.',
                 'required' => false,
+            ])
+            ->add('ticketTitle', TextType::class, [
+                'label' => 'Titre du ticket',
+                'help' => 'En tête du ticket. Vide : reprend le titre de la notification.',
+                'required' => false,
+            ])
+            ->add('cookNote', TextareaType::class, [
+                'label' => 'Note du cuisinier',
+                'help' => 'Vide : reprend la description de la notification.',
+                'required' => false,
+                'attr' => ['rows' => 3],
             ]);
     }
 
@@ -44,6 +55,8 @@ class BurgerKingDetailsType extends AbstractAppDetailsType
             'restaurant' => 'Burger King · Ton adolescence',
             'items' => '',
             'crownLine' => 'Roi du drama du jour',
+            'ticketTitle' => '',
+            'cookNote' => '',
         ];
     }
 }

@@ -33,6 +33,17 @@ class WazeDetailsType extends AbstractAppDetailsType
                 'help' => 'Une par ligne, emoji compris.',
                 'required' => false,
                 'attr' => ['rows' => 4, 'placeholder' => "🚓 Radar de nostalgie dans 300 m\n🚧 Travaux sur ta maturité"],
+            ])
+            ->add('routeTitle', TextType::class, [
+                'label' => 'Titre dans « Sur ta route »',
+                'help' => 'Vide : reprend le titre de la notification.',
+                'required' => false,
+            ])
+            ->add('report', TextareaType::class, [
+                'label' => 'Rapport d\'un Wazer',
+                'help' => 'Vide : reprend la description de la notification.',
+                'required' => false,
+                'attr' => ['rows' => 3],
             ]);
     }
 
@@ -44,6 +55,8 @@ class WazeDetailsType extends AbstractAppDetailsType
             'distance' => '11 ans',
             'alerts' => '🚓 Radar de nostalgie dans 300 m
 🚧 Travaux sur ta maturité',
+            'routeTitle' => '',
+            'report' => '',
         ];
     }
 }

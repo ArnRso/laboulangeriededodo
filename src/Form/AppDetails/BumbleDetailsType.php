@@ -40,6 +40,17 @@ class BumbleDetailsType extends AbstractAppDetailsType
                 'help' => 'Une par ligne.',
                 'required' => false,
                 'attr' => ['rows' => 4],
+            ])
+            ->add('aboutTitle', TextType::class, [
+                'label' => 'Titre du bloc « À propos de moi »',
+                'help' => 'Vide : reprend le titre de la notification.',
+                'required' => false,
+            ])
+            ->add('aboutText', TextareaType::class, [
+                'label' => 'Texte du bloc « À propos de moi »',
+                'help' => 'Vide : reprend la description de la notification.',
+                'required' => false,
+                'attr' => ['rows' => 3],
             ]);
     }
 
@@ -53,6 +64,8 @@ class BumbleDetailsType extends AbstractAppDetailsType
             'chips' => '🚩 Red flag
 🎭 Canon event
 🌈 Gay panic',
+            'aboutTitle' => '',
+            'aboutText' => '',
         ];
     }
 }

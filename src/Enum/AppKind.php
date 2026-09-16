@@ -76,7 +76,7 @@ enum AppKind: string
     public function pitch(): string
     {
         return match ($this) {
-            self::UBER_EATS => 'Une commande livrée : le souvenir est le plat, la description la note du restaurant, l\'aura le reçu.',
+            self::UBER_EATS => 'Une commande livrée : le souvenir est le plat, la description la note du restaurant.',
             self::INSTAGRAM => 'Une publication : photo, likes, légende et faux commentaires d\'amis.',
             self::TINDER => 'Un match : le souvenir devient un profil, idéal pour une décision discutable.',
             self::DOCTOLIB => 'Un rendez-vous honoré chez Dr Passé : document partagé, compte-rendu.',

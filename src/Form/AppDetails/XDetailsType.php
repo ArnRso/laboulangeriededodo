@@ -4,6 +4,7 @@ namespace App\Form\AppDetails;
 
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Validator\Constraints\NotBlank;
@@ -29,6 +30,18 @@ class XDetailsType extends AbstractAppDetailsType
             ->add('verified', CheckboxType::class, [
                 'label' => 'Badge bleu certifié',
                 'required' => false,
+            ])
+            ->add('postText', TextareaType::class, [
+                'label' => 'Texte du post',
+                'help' => 'Vide : reprend le titre.',
+                'required' => false,
+                'attr' => ['rows' => 3],
+            ])
+            ->add('postExtra', TextareaType::class, [
+                'label' => 'Second paragraphe du post',
+                'help' => 'Vide : reprend la description.',
+                'required' => false,
+                'attr' => ['rows' => 3],
             ])
             ->add('replies', IntegerType::class, [
                 'label' => 'Réponses',
@@ -59,6 +72,8 @@ class XDetailsType extends AbstractAppDetailsType
             'displayName' => 'Dodo du passé',
             'handle' => 'dodo.du.passe',
             'verified' => true,
+            'postText' => '',
+            'postExtra' => '',
             'replies' => 412,
             'reposts' => 2015,
             'likes' => 13400,

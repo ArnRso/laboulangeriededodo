@@ -29,7 +29,7 @@
 
         <header class="ub-hero">
             <div class="ub-done">Course terminée</div>
-            <h1>{{ media.title }}</h1>
+            <h1>{{ data.rideTitle|default(media.title) }}</h1>
             <p>{{ 'now'|date('d/m/Y') }} · {{ data.duration|default('11 ans') }} de trajet</p>
         </header>
 
@@ -65,10 +65,11 @@
         <section class="ub-lost">
             <h2>Objet oublié dans la voiture</h2>
             {{ include('feed/_media.html.twig', {media: media, class: 'ub-media'}, with_context: false) }}
-            {% if media.description %}
+            {% set tripNote = data.tripNote|default(media.description) %}
+            {% if tripNote %}
                 <div class="ub-note">
                     <small>Note de trajet</small>
-                    <p>{{ media.description }}</p>
+                    <p>{{ tripNote }}</p>
                 </div>
             {% endif %}
         </section>

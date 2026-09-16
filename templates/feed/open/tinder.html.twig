@@ -2,6 +2,7 @@
 
 {% set data = media.appData %}
 {% set matchName = data.matchName|default(media.title) %}
+{% set bio = data.bio|default('') ?: media.description %}
 
 {% block title %}{{ media.title }} · Tinder{% endblock %}
 {% block body_class %}f-open f-open-td{% endblock %}
@@ -46,7 +47,7 @@
                 </div>
             </div>
             <div class="td-body">
-                {% if media.description %}<p>{{ media.description }}</p>{% endif %}
+                {% if bio %}<p>{{ bio }}</p>{% endif %}
 
                 {% set chips = [] %}
                 {% for line in data.chips|default('')|split('\n') %}

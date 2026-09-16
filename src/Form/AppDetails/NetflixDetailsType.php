@@ -4,6 +4,7 @@ namespace App\Form\AppDetails;
 
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Validator\Constraints\Range;
@@ -19,6 +20,17 @@ class NetflixDetailsType extends AbstractAppDetailsType
             ->add('match', IntegerType::class, [
                 'label' => 'Correspondance (%)',
                 'constraints' => [new Range(min: 0, max: 100)],
+            ])
+            ->add('showTitle', TextType::class, [
+                'label' => 'Titre de la fiche',
+                'help' => 'Vide : reprend le titre.',
+                'required' => false,
+            ])
+            ->add('synopsis', TextareaType::class, [
+                'label' => 'Synopsis',
+                'help' => 'Vide : reprend la description.',
+                'required' => false,
+                'attr' => ['rows' => 4],
             ])
             ->add('year', TextType::class, [
                 'label' => 'Année',
@@ -54,6 +66,8 @@ class NetflixDetailsType extends AbstractAppDetailsType
     {
         return [
             'match' => 98,
+            'showTitle' => '',
+            'synopsis' => '',
             'year' => '2015',
             'rating' => '16+',
             'seasons' => '1 saison',

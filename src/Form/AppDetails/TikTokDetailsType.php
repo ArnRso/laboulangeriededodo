@@ -3,6 +3,7 @@
 namespace App\Form\AppDetails;
 
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Validator\Constraints\NotBlank;
@@ -20,6 +21,12 @@ class TikTokDetailsType extends AbstractAppDetailsType
                 'label' => 'Compte qui publie',
                 'help' => 'Sans le @, il est ajouté à l\'écran.',
                 'constraints' => [new NotBlank()],
+            ])
+            ->add('caption', TextareaType::class, [
+                'label' => 'Légende sur la vidéo',
+                'help' => 'Vide : reprend le titre et la description de la notification.',
+                'required' => false,
+                'attr' => ['rows' => 3],
             ])
             ->add('sound', TextType::class, [
                 'label' => 'Son original',
@@ -48,6 +55,7 @@ class TikTokDetailsType extends AbstractAppDetailsType
     {
         return [
             'username' => 'dodo.du.passe',
+            'caption' => '',
             'sound' => 'son original – dodo.du.passe · lore unlocked (sped up)',
             'likes' => 48200,
             'comments' => 1312,

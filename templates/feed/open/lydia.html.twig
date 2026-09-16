@@ -2,6 +2,9 @@
 
 {% set data = media.appData %}
 {% set counterparty = data.counterparty|default('Dodo du passé') %}
+{% set label = data.label|default('') ?: media.title %}
+{% set comment = data.comment|default('') ?: media.description %}
+{% set commentAuthor = data.commentAuthor|default('') ?: counterparty %}
 {% set avatar = recipient and recipient.avatar ? recipient.avatar.value : '🦤' %}
 
 {% block title %}{{ media.title }} · Lydia{% endblock %}
@@ -23,7 +26,7 @@
             </div>
 
             <span class="ly-emoji">{{ data.emoji|default('💸') }}</span>
-            <h1 class="ly-title">{{ media.title }}</h1>
+            <h1 class="ly-title">{{ label }}</h1>
             <p class="ly-who"><b>{{ counterparty }}</b> t'a envoyé ça</p>
 
             {% if data.message|default('') %}
@@ -38,12 +41,12 @@
             {{ include('feed/_media.html.twig', {media: media, class: 'ly-media'}, with_context: false) }}
         </section>
 
-        {% if media.description %}
+        {% if comment %}
             <section class="ly-card ly-comment">
-                <span class="ly-comment-av">{{ counterparty|first|upper }}</span>
+                <span class="ly-comment-av">{{ commentAuthor|first|upper }}</span>
                 <div>
-                    <b>{{ counterparty }}</b>
-                    <p>{{ media.description }}</p>
+                    <b>{{ commentAuthor }}</b>
+                    <p>{{ comment }}</p>
                 </div>
             </section>
         {% endif %}

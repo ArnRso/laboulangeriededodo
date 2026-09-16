@@ -15,7 +15,7 @@
 
         <header class="ue-hero">
             <div class="ue-status"><i>✓</i>Commande livrée</div>
-            <h1>{{ media.title }}</h1>
+            <h1>{{ data.orderTitle|default(media.title) }}</h1>
             <p>Commande n° {{ media.position + 1 }} · livrée par {{ data.courier|default('Dodo du passé') }}</p>
         </header>
 
@@ -30,8 +30,9 @@
             <div class="ue-item">
                 <span class="ue-qty">1×</span>
                 <div class="ue-item-body">
-                    <b>{{ media.title }}</b>
-                    {% if media.description %}<p>{{ media.description }}</p>{% endif %}
+                    <b>{{ data.itemName|default(media.title) }}</b>
+                    {% set itemNote = data.itemNote|default(media.description) %}
+                    {% if itemNote %}<p>{{ itemNote }}</p>{% endif %}
                 </div>
             </div>
 

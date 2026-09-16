@@ -2,6 +2,8 @@
 
 {% set data = media.appData %}
 {% set counterparty = data.counterparty|default('Dodo du passé') %}
+{% set label = data.label|default('') ?: media.title %}
+{% set details = data.details|default('') ?: media.description %}
 {% set email = counterparty|lower|replace({' ': '.', '\'': '', é: 'e', è: 'e', ê: 'e', à: 'a', ç: 'c', ô: 'o', î: 'i', ï: 'i', ù: 'u', û: 'u'}) ~ '@passe.fr' %}
 
 {% block title %}{{ media.title }} · PayPal{% endblock %}
@@ -18,7 +20,7 @@
         <header class="pp-hero">
             <span class="pp-check">✓</span>
             <p class="pp-kicker">Tu as reçu un paiement</p>
-            <h1 class="pp-title">{{ media.title }}</h1>
+            <h1 class="pp-title">{{ label }}</h1>
             <small class="pp-date">{{ 'now'|date('d/m/Y') }} · {{ 'now'|date('H:i') }}</small>
         </header>
 
@@ -43,9 +45,9 @@
             {{ include('feed/_media.html.twig', {media: media, class: 'pp-media'}, with_context: false) }}
         </section>
 
-        {% if media.description %}
+        {% if details %}
             <h2 class="pp-h2">Détails</h2>
-            <section class="pp-card"><p class="pp-details">{{ media.description }}</p></section>
+            <section class="pp-card"><p class="pp-details">{{ details }}</p></section>
         {% endif %}
 
         <div class="pp-btns" aria-hidden="true">

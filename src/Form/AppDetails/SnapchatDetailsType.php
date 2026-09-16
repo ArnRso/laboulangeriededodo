@@ -3,6 +3,7 @@
 namespace App\Form\AppDetails;
 
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Validator\Constraints\NotBlank;
@@ -31,6 +32,17 @@ class SnapchatDetailsType extends AbstractAppDetailsType
                 'help' => 'Le bandeau noir posé sur la photo. Laisse vide pour ne rien afficher.',
                 'required' => false,
             ])
+            ->add('chatTitle', TextType::class, [
+                'label' => 'Message dans le chat',
+                'help' => 'La ligne en gras de la bulle sous le Snap. Vide : reprend le titre.',
+                'required' => false,
+            ])
+            ->add('chatText', TextareaType::class, [
+                'label' => 'Suite du message dans le chat',
+                'help' => 'Vide : reprend la description.',
+                'required' => false,
+                'attr' => ['rows' => 3],
+            ])
             ->add('timer', IntegerType::class, [
                 'label' => 'Compteur (secondes)',
                 'constraints' => [new Range(min: 1, max: 60)],
@@ -43,6 +55,8 @@ class SnapchatDetailsType extends AbstractAppDetailsType
             'sender' => 'Dodo du passé',
             'streak' => 4015,
             'caption' => 'leaked footage 👀',
+            'chatTitle' => '',
+            'chatText' => '',
             'timer' => 10,
         ];
     }

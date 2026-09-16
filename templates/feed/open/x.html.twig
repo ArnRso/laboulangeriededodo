@@ -40,8 +40,9 @@
             </div>
 
             <div class="x-text">
-                <p>{{ media.title }}</p>
-                {% if media.description %}<p>{{ media.description }}</p>{% endif %}
+                <p>{{ data.postText|default(media.title) }}</p>
+                {% set postExtra = data.postExtra|default(media.description) %}
+                {% if postExtra %}<p>{{ postExtra }}</p>{% endif %}
             </div>
 
             {{ include('feed/_media.html.twig', {media: media, class: 'x-media'}, with_context: false) }}

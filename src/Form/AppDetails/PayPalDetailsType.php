@@ -2,6 +2,7 @@
 
 namespace App\Form\AppDetails;
 
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Validator\Constraints\NotBlank;
@@ -31,6 +32,17 @@ class PayPalDetailsType extends AbstractAppDetailsType
             ->add('fee', TextType::class, [
                 'label' => 'Frais affichés',
                 'required' => false,
+            ])
+            ->add('label', TextType::class, [
+                'label' => 'Libellé du paiement',
+                'help' => 'Le gros titre de l\'en-tête. Vide : reprend le titre de la notification.',
+                'required' => false,
+            ])
+            ->add('details', TextareaType::class, [
+                'label' => 'Détails',
+                'help' => 'Vide : reprend la description de la notification.',
+                'required' => false,
+                'attr' => ['rows' => 3],
             ]);
     }
 
@@ -41,6 +53,8 @@ class PayPalDetailsType extends AbstractAppDetailsType
             'note' => 'pour le lore, merci de ne pas en parler 🤫',
             'transactionId' => '2015-CANON-EVENT-4H12',
             'fee' => 'Aucuns frais',
+            'label' => '',
+            'details' => '',
         ];
     }
 }

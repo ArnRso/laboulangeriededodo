@@ -3,6 +3,7 @@
 namespace App\Form\AppDetails;
 
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Validator\Constraints\NotBlank;
@@ -27,7 +28,18 @@ class HingeDetailsType extends AbstractAppDetailsType
             ])
             ->add('prompt', TextType::class, [
                 'label' => 'Question du prompt',
-                'help' => 'La description de la notification devient la réponse à ce prompt.',
+                'help' => 'La petite ligne au-dessus de la réponse.',
+                'required' => false,
+            ])
+            ->add('answer', TextareaType::class, [
+                'label' => 'Réponse au prompt',
+                'help' => 'Vide : reprend la description de la notification, à défaut son titre.',
+                'required' => false,
+                'attr' => ['rows' => 3],
+            ])
+            ->add('photoCaption', TextType::class, [
+                'label' => 'Légende de la photo',
+                'help' => 'Sous le souvenir. Vide : reprend le titre de la notification.',
                 'required' => false,
             ])
             ->add('likedBy', TextType::class, [
@@ -47,6 +59,8 @@ class HingeDetailsType extends AbstractAppDetailsType
             'name' => '',
             'age' => 19,
             'prompt' => 'Ce qui me rend heureux',
+            'answer' => '',
+            'photoCaption' => '',
             'likedBy' => '',
             'comment' => 'hear me out 👀',
         ];

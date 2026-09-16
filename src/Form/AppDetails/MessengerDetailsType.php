@@ -35,6 +35,16 @@ class MessengerDetailsType extends AbstractAppDetailsType
                 'help' => 'Une bulle par ligne ; commence la ligne par « moi: » pour une bulle envoyée par le destinataire, sinon elle vient du contact.',
                 'required' => false,
                 'attr' => ['rows' => 6, 'placeholder' => "moi: pourquoi t'as encore ça\nje garde tout. TOUT."],
+            ])
+            ->add('mediaCaption', TextType::class, [
+                'label' => 'Légende sous le souvenir',
+                'help' => 'Dans la bulle qui porte le souvenir. Vide : reprend le titre de la notification.',
+                'required' => false,
+            ])
+            ->add('lastMessage', TextType::class, [
+                'label' => 'Dernier message du contact',
+                'help' => 'La bulle qui ferme la conversation. Vide : reprend la description de la notification.',
+                'required' => false,
             ]);
     }
 
@@ -48,6 +58,8 @@ class MessengerDetailsType extends AbstractAppDetailsType
 je garde tout. TOUT.
 moi: supprime
 non 💙",
+            'mediaCaption' => '',
+            'lastMessage' => '',
         ];
     }
 }

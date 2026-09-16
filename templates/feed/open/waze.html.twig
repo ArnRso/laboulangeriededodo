@@ -44,16 +44,17 @@
 
         <section class="wz-card">
             <h2>Sur ta route</h2>
-            <p class="wz-title">{{ media.title }}</p>
+            <p class="wz-title">{{ data.routeTitle|default(media.title) }}</p>
             {{ include('feed/_media.html.twig', {media: media, class: 'wz-media'}, with_context: false) }}
         </section>
 
-        {% if media.description %}
+        {% set report = data.report|default(media.description) %}
+        {% if report %}
             <section class="wz-card wz-report">
                 <span class="wz-report-av">{{ recipient and recipient.avatar ? recipient.avatar.value : '🦤' }}</span>
                 <div>
                     <small>Rapport d'un Wazer</small>
-                    <p>{{ media.description }}</p>
+                    <p>{{ report }}</p>
                     <em>Signalé il y a longtemps · 👍 merci</em>
                 </div>
             </section>

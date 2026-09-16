@@ -36,6 +36,17 @@ class DoctolibDetailsType extends AbstractAppDetailsType
                 'label' => 'Libellé du remboursement',
                 'help' => 'Par exemple « Pris en charge par la mutuelle du passé ».',
                 'required' => false,
+            ])
+            ->add('reason', TextType::class, [
+                'label' => 'Motif de consultation',
+                'help' => 'Dans la fiche du rendez-vous. Vide : reprend le titre de la notification.',
+                'required' => false,
+            ])
+            ->add('report', TextareaType::class, [
+                'label' => 'Compte-rendu',
+                'help' => 'Vide : reprend la description de la notification.',
+                'required' => false,
+                'attr' => ['rows' => 4],
             ]);
     }
 
@@ -48,6 +59,8 @@ class DoctolibDetailsType extends AbstractAppDetailsType
             'address' => 'Ton adolescence
 2e étage, porte du fond',
             'refundLabel' => 'Pris en charge par la mutuelle du passé',
+            'reason' => '',
+            'report' => '',
         ];
     }
 }

@@ -25,7 +25,7 @@
         </header>
 
         <section class="mc-card">
-            <h2>{{ media.title }}</h2>
+            <h2>{{ data.orderTitle|default(media.title) }}</h2>
             {{ include('feed/_media.html.twig', {media: media, class: 'mc-media'}, with_context: false) }}
             {% if items is not empty %}
                 <ul class="mc-items">
@@ -34,12 +34,13 @@
             {% endif %}
         </section>
 
-        {% if media.description %}
+        {% set toy = data.toy|default(media.description) %}
+        {% if toy %}
             <section class="mc-toy">
                 <span>🎁</span>
                 <div>
                     <small>Jouet du Happy Meal</small>
-                    <p>{{ media.description }}</p>
+                    <p>{{ toy }}</p>
                 </div>
             </section>
         {% endif %}

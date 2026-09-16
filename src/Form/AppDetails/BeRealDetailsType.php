@@ -30,6 +30,17 @@ class BeRealDetailsType extends AbstractAppDetailsType
                 'label' => 'Lieu',
                 'required' => false,
             ])
+            ->add('caption', TextType::class, [
+                'label' => 'Légende sous la photo',
+                'help' => 'Vide : reprend le titre.',
+                'required' => false,
+            ])
+            ->add('captionText', TextareaType::class, [
+                'label' => 'Suite de la légende',
+                'help' => 'Vide : reprend la description.',
+                'required' => false,
+                'attr' => ['rows' => 3],
+            ])
             ->add('realmojis', TextareaType::class, [
                 'label' => 'RealMojis',
                 'help' => 'Un par ligne, sous la forme « emoji pseudo ».',
@@ -48,6 +59,8 @@ class BeRealDetailsType extends AbstractAppDetailsType
             'username' => 'dodo.du.passe',
             'lateBy' => '11 ans',
             'location' => 'Quelque part dans ton adolescence',
+            'caption' => '',
+            'captionText' => '',
             'realmojis' => "💀 ta.mere\n😭 marie\n👀 un.ex",
             'retakes' => 14,
         ];

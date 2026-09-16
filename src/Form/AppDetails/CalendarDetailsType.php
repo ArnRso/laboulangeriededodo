@@ -41,6 +41,17 @@ class CalendarDetailsType extends AbstractAppDetailsType
             ->add('calendarName', TextType::class, [
                 'label' => 'Nom du calendrier',
                 'required' => false,
+            ])
+            ->add('eventTitle', TextType::class, [
+                'label' => 'Titre de l\'événement',
+                'help' => 'Le gros titre en haut de la fiche. Vide : reprend le titre de la notification.',
+                'required' => false,
+            ])
+            ->add('notes', TextareaType::class, [
+                'label' => 'Notes',
+                'help' => 'Vide : reprend la description de la notification.',
+                'required' => false,
+                'attr' => ['rows' => 4],
             ]);
     }
 
@@ -55,6 +66,8 @@ Ta dignité (a décliné)
 Le drama (a accepté)',
             'alert' => 'Il y a 11 ans',
             'calendarName' => 'Canon events',
+            'eventTitle' => '',
+            'notes' => '',
         ];
     }
 }

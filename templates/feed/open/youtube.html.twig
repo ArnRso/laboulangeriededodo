@@ -37,7 +37,7 @@
             </div>
         </div>
 
-        <h1 class="yt-title">{{ media.title }}</h1>
+        <h1 class="yt-title">{{ data.videoTitle|default(media.title) }}</h1>
         <div class="yt-meta">{{ data.views|default('1,2 M de vues') }} · il y a {{ data.uploadedAgo|default('11 ans') }}</div>
 
         <div class="yt-channel">
@@ -58,7 +58,8 @@
 
         <div class="yt-desc">
             <b>{{ data.views|default('1,2 M de vues') }} · il y a {{ data.uploadedAgo|default('11 ans') }}</b>
-            {% if media.description %}<p>{{ media.description }}</p>{% endif %}
+            {% set videoDescription = data.videoDescription|default(media.description) %}
+            {% if videoDescription %}<p>{{ videoDescription }}</p>{% endif %}
             <small>… plus</small>
         </div>
 

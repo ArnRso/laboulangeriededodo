@@ -45,6 +45,17 @@ class MeteoDetailsType extends AbstractAppDetailsType
             ->add('dramaIndex', IntegerType::class, [
                 'label' => 'Indice drama (%)',
                 'constraints' => [new Range(min: 0, max: 100)],
+            ])
+            ->add('photoTitle', TextType::class, [
+                'label' => 'Titre de la photo du jour',
+                'help' => 'Au-dessus du souvenir. Vide : reprend le titre de la notification.',
+                'required' => false,
+            ])
+            ->add('bulletin', TextareaType::class, [
+                'label' => 'Bulletin',
+                'help' => 'Vide : reprend la description de la notification.',
+                'required' => false,
+                'attr' => ['rows' => 4],
             ]);
     }
 
@@ -61,6 +72,8 @@ class MeteoDetailsType extends AbstractAppDetailsType
 01h 🌪️ 31°
 04h 💀 12°',
             'dramaIndex' => 87,
+            'photoTitle' => '',
+            'bulletin' => '',
         ];
     }
 }

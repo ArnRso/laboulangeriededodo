@@ -2,6 +2,8 @@
 
 {% set data = media.appData %}
 {% set streakDays = data.streakDays|default(11) %}
+{% set exercise = data.exercise|default('') ?: media.title %}
+{% set answer = data.answer|default('') ?: media.description %}
 
 {% block title %}{{ media.title }} · Duolingo{% endblock %}
 {% block body_class %}f-open f-open-du{% endblock %}
@@ -49,14 +51,14 @@
 
             <div class="du-ex">
                 <small>Exercice</small>
-                <h1>{{ media.title }}</h1>
+                <h1>{{ exercise }}</h1>
 
                 {{ include('feed/_media.html.twig', {media: media, class: 'du-media'}, with_context: false) }}
 
-                {% if media.description %}
+                {% if answer %}
                     <div class="du-answer">
                         <span class="du-answer-tag">✓ Bonne réponse</span>
-                        <p>{{ media.description }}</p>
+                        <p>{{ answer }}</p>
                     </div>
                 {% endif %}
             </div>

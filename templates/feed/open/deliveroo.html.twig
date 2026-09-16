@@ -44,8 +44,8 @@
             <h2>Ta commande</h2>
             {{ include('feed/_media.html.twig', {media: media, class: 'dv-media'}, with_context: false) }}
             <div class="dv-dish">
-                <b>{{ media.title }}</b>
-                <small>{{ restaurant }}</small>
+                <b>{{ data.dishName|default(media.title) }}</b>
+                <small>{{ data.dishRestaurant|default(restaurant) }}</small>
             </div>
             {% if items is not empty %}
                 <ul class="dv-items">
@@ -54,10 +54,11 @@
             {% endif %}
         </section>
 
-        {% if media.description %}
+        {% set instructions = data.instructions|default(media.description) %}
+        {% if instructions %}
             <section class="dv-card">
                 <h2>Instructions de livraison</h2>
-                <p class="dv-instr">{{ media.description }}</p>
+                <p class="dv-instr">{{ instructions }}</p>
             </section>
         {% endif %}
     </main>

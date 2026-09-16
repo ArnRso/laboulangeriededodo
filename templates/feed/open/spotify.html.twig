@@ -32,7 +32,7 @@
 
         <div class="sp-track">
             <div>
-                <h1>{{ media.title }}</h1>
+                <h1>{{ data.trackTitle|default(media.title) }}</h1>
                 <small>{{ artist }}{% if data.album|default('') %} · {{ data.album }}{% endif %}</small>
             </div>
             <span class="sp-heart" aria-hidden="true">♥</span>
@@ -55,7 +55,8 @@
 
         <div class="sp-lyrics">
             <small>Paroles</small>
-            {% if media.description %}<p>{{ media.description }}</p>{% endif %}
+            {% set lyrics = data.lyrics|default(media.description) %}
+            {% if lyrics %}<p>{{ lyrics }}</p>{% endif %}
             {% if not inCover %}
                 {{ include('feed/_media.html.twig', {media: media, class: 'sp-media'}, with_context: false) }}
             {% endif %}

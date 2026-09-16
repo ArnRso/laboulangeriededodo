@@ -39,6 +39,12 @@ class TinderDetailsType extends AbstractAppDetailsType
                 'label' => 'Drama level (%)',
                 'constraints' => [new Range(min: 0, max: 100)],
             ])
+            ->add('bio', TextareaType::class, [
+                'label' => 'Bio du profil',
+                'help' => 'Le texte sous la photo, dans la carte. Vide : reprend la description de la notification.',
+                'required' => false,
+                'attr' => ['rows' => 3],
+            ])
             ->add('chips', TextareaType::class, [
                 'label' => 'Étiquettes',
                 'help' => 'Une par ligne. La première est mise en rouge.',
@@ -55,6 +61,7 @@ class TinderDetailsType extends AbstractAppDetailsType
             'matchEmoji' => '💘',
             'locationLine' => '📍 À 11 ans de toi · Encore en ligne, malheureusement',
             'dramaLevel' => 87,
+            'bio' => '',
             'chips' => '🚩 Red flag
 🎭 Canon event',
         ];

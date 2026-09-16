@@ -17,6 +17,8 @@
     {% set icon = '⛅' %}
 {% endif %}
 {% set dramaIndex = data.dramaIndex|default(87) %}
+{% set photoTitle = data.photoTitle|default('') ?: media.title %}
+{% set bulletin = data.bulletin|default('') ?: media.description %}
 
 {% block title %}{{ media.title }} · Météo{% endblock %}
 {% block body_class %}f-open f-open-mt{% endblock %}
@@ -70,14 +72,14 @@
 
         <section class="mt-card">
             <small class="mt-h2">📸 Photo du jour</small>
-            <h2 class="mt-title">{{ media.title }}</h2>
+            <h2 class="mt-title">{{ photoTitle }}</h2>
             {{ include('feed/_media.html.twig', {media: media, class: 'mt-media'}, with_context: false) }}
         </section>
 
-        {% if media.description %}
+        {% if bulletin %}
             <section class="mt-card">
                 <small class="mt-h2">📝 Bulletin</small>
-                <p class="mt-text">{{ media.description }}</p>
+                <p class="mt-text">{{ bulletin }}</p>
             </section>
         {% endif %}
     </main>

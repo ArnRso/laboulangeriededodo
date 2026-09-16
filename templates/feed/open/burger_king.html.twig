@@ -1,11 +1,12 @@
 {% extends 'base_feed.html.twig' %}
 
 {% set data = media.appData %}
+{% set ticketTitle = data.ticketTitle|default(media.title) %}
 {% set items = [] %}
 {% for line in data.items|default('')|split('\n') %}
     {% if line|trim %}{% set items = items|merge([line|trim]) %}{% endif %}
 {% endfor %}
-{% if items is empty %}{% set items = [media.title] %}{% endif %}
+{% if items is empty %}{% set items = [ticketTitle] %}{% endif %}
 
 {% block title %}{{ media.title }} · Burger King{% endblock %}
 {% block body_class %}f-open f-open-bk{% endblock %}
@@ -25,7 +26,7 @@
         </header>
 
         <section class="bk-ticket">
-            <h2>{{ media.title }}</h2>
+            <h2>{{ ticketTitle }}</h2>
             {{ include('feed/_media.html.twig', {media: media, class: 'bk-media'}, with_context: false) }}
 
             <ul class="bk-items">
@@ -44,10 +45,11 @@
             </div>
         </section>
 
-        {% if media.description %}
+        {% set cookNote = data.cookNote|default(media.description) %}
+        {% if cookNote %}
             <section class="bk-note">
                 <small>Note du cuisinier</small>
-                <p>{{ media.description }}</p>
+                <p>{{ cookNote }}</p>
             </section>
         {% endif %}
     </main>

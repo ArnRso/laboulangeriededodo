@@ -33,6 +33,17 @@ class McDonaldsDetailsType extends AbstractAppDetailsType
             ->add('slogan', TextType::class, [
                 'label' => 'Slogan en bas de l\'écran',
                 'required' => false,
+            ])
+            ->add('orderTitle', TextType::class, [
+                'label' => 'Titre de la commande',
+                'help' => 'En tête de la carte, au-dessus des articles. Vide : reprend le titre de la notification.',
+                'required' => false,
+            ])
+            ->add('toy', TextareaType::class, [
+                'label' => 'Jouet du Happy Meal',
+                'help' => 'Vide : reprend la description de la notification.',
+                'required' => false,
+                'attr' => ['rows' => 3],
             ]);
     }
 
@@ -43,6 +54,8 @@ class McDonaldsDetailsType extends AbstractAppDetailsType
             'restaurant' => 'McDonald\'s · Ton adolescence',
             'items' => '',
             'slogan' => 'C\'est tout ce que j\'aime',
+            'orderTitle' => '',
+            'toy' => '',
         ];
     }
 }

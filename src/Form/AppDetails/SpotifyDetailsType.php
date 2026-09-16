@@ -3,6 +3,7 @@
 namespace App\Form\AppDetails;
 
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Validator\Constraints\NotBlank;
@@ -18,8 +19,19 @@ class SpotifyDetailsType extends AbstractAppDetailsType
         $builder
             ->add('artist', TextType::class, [
                 'label' => 'Artiste',
-                'help' => 'Le titre de la notification est le nom du morceau.',
+                'help' => 'Affiché sous le titre du morceau et dans la carte « À propos de l\'artiste ».',
                 'constraints' => [new NotBlank()],
+            ])
+            ->add('trackTitle', TextType::class, [
+                'label' => 'Titre du morceau sous la pochette',
+                'help' => 'Vide : reprend le titre.',
+                'required' => false,
+            ])
+            ->add('lyrics', TextareaType::class, [
+                'label' => 'Paroles',
+                'help' => 'Le texte de la carte Paroles. Vide : reprend la description.',
+                'required' => false,
+                'attr' => ['rows' => 4],
             ])
             ->add('album', TextType::class, [
                 'label' => 'Album',
@@ -50,6 +62,8 @@ class SpotifyDetailsType extends AbstractAppDetailsType
     {
         return [
             'artist' => 'Dodo du passé',
+            'trackTitle' => '',
+            'lyrics' => '',
             'album' => 'Lost Media (Deluxe)',
             'playlist' => 'Tes années lycée',
             'duration' => '3:47',
