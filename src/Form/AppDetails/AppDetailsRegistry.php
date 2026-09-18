@@ -47,6 +47,7 @@ final class AppDetailsRegistry
             AppKind::HOROSCOPE => HoroscopeDetailsType::class,
             AppKind::QUIZ => QuizDetailsType::class,
             AppKind::PORNHUB => PornhubDetailsType::class,
+            AppKind::TAROT => TarotDetailsType::class,
         };
     }
 

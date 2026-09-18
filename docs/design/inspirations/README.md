@@ -48,5 +48,5 @@ de dessiner.
 | Streaming | Spotify, Netflix | lecture en cours, fiche avec % de correspondance et Top 10 |
 | Livraison et transport | Uber Eats, Deliveroo, Burger King, McDonald's, Uber, Waze | commande livrée, suivi par étapes, commande prête, course terminée, itinéraire et alertes |
 | Argent | Revolut, PayPal, Lydia | transaction avec le montant en aura |
-| Quotidien | Doctolib, Duolingo, Météo, Calendrier, Horoscope | rendez-vous honoré, rappel du hibou, bulletin, événement, thème du jour |
+| Quotidien | Doctolib, Duolingo, Météo, Calendrier, Horoscope, Tarot | rendez-vous honoré, rappel du hibou, bulletin, événement, thème du jour, tirage du jour (les 22 arcanes sont dessinés en CSS, aucune image) |
 | Divertissement | Quiz, Pornhub | question à choix multiples et résultat, page de vidéo (habillage seul, contenu sage) |

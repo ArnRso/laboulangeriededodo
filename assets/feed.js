@@ -28,3 +28,4 @@ import './styles/apps/calendar.css';
 import './styles/apps/horoscope.css';
 import './styles/apps/quiz.css';
 import './styles/apps/pornhub.css';
+import './styles/apps/tarot.css';

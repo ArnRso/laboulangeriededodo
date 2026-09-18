@@ -1,0 +1,67 @@
+{% extends 'base_feed.html.twig' %}
+
+{% set data = media.appData %}
+{% set card = tarot_card(data.card|default('arcane_sans_nom')) %}
+{% set cardName = data.cardName|default('') ?: card.label %}
+{% set heading = data.heading|default('') ?: media.title %}
+{% set reading = data.reading|default('') ?: media.description %}
+
+{% set readings = [
+    {icon: '💘', label: 'Amour', text: data.love|default('')},
+    {icon: '💰', label: 'Argent', text: data.money|default('')},
+    {icon: '🎭', label: 'Social', text: data.social|default('')},
+    {icon: '⚠️', label: 'Danger du jour', text: data.danger|default(''), danger: true},
+] %}
+
+{% block title %}{{ media.title }} · Tarot{% endblock %}
+{% block body_class %}f-open f-open-ta{% endblock %}
+
+{% block body %}
+    <main class="f-wrap f-wrap-open">
+        <div class="f-bar f-bar-inverse">
+            <a class="f-back" href="{{ path('app_feed') }}" aria-label="Retour">‹</a>
+            <b>Ton tirage du jour</b>
+            <span class="f-bar-spacer"></span>
+        </div>
+
+        <header class="ta-hero">
+            {# La carte est dessinée, pas chargée : cadre, chiffre, symbole, nom. #}
+            <div class="ta-card" aria-label="{{ cardName }}">
+                <span class="ta-card-numeral">{{ card.numeral }}</span>
+                <span class="ta-card-symbol" aria-hidden="true">{{ card.symbol }}</span>
+                <span class="ta-card-name">{{ cardName }}</span>
+            </div>
+            <p class="ta-meaning">{{ card.meaning }}</p>
+        </header>
+
+        <section class="ta-card-box">
+            <small class="ta-h2">🔮 Ce que disent les cartes</small>
+            <h1 class="ta-title">{{ heading }}</h1>
+            {% if reading %}<p class="ta-text">{{ reading }}</p>{% endif %}
+
+            {{ include('feed/_media.html.twig', {media: media, class: 'ta-media'}, with_context: false) }}
+        </section>
+
+        <section class="ta-readings">
+            {% for reading in readings %}
+                {% if reading.text %}
+                    <div class="ta-reading{{ reading.danger|default(false) ? ' ta-reading-danger' : '' }}">
+                        <b><span aria-hidden="true">{{ reading.icon }}</span> {{ reading.label }}</b>
+                        <p>{{ reading.text }}</p>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </section>
+
+        {% if data.message|default('') %}
+            <section class="ta-card-box ta-message">
+                <small class="ta-h2">🌙 Le message des cartes</small>
+                <p class="ta-text">{{ data.message }}</p>
+            </section>
+        {% endif %}
+    </main>
+
+    {% if not preview %}
+        <div class="f-cta"><a href="{{ path('app_feed') }}">Retour aux notifications</a></div>
+    {% endif %}
+{% endblock %}

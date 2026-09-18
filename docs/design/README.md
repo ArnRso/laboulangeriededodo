@@ -17,7 +17,7 @@ docs/design/
   Plus Jakarta Sans. Voir `maquettes/g5.html` et les `maquettes/open-*.html`.
 - **Implémenté** dans `templates/feed/`, `assets/styles/feed.css` (socle et
   quatre premières apps) et `assets/styles/apps/` (une feuille par app).
-  La liste des 30 apps imitées est dans `inspirations/README.md`.
+  La liste des 31 apps imitées est dans `inspirations/README.md`.
 - **Brouillons et habillage** (septembre 2026) : une notification peut
   naître sans application. On remplit ce qu'on a — titre, description,
   souvenir, et des *fragments* de texte étiquetés — puis on l'**habille** :

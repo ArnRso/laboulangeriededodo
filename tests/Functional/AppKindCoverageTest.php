@@ -5,6 +5,7 @@ namespace App\Tests\Functional;
 use App\Enum\AppFieldKind;
 use App\Enum\AppKind;
 use App\Enum\MediaType;
+use App\Enum\TarotCard;
 use App\Form\AppDetails\AppDetailsRegistry;
 use App\Repository\MediaRepository;
 use App\Service\Dressing\AppFieldCatalog;
@@ -86,6 +87,7 @@ class AppKindCoverageTest extends WebTestCase
             'horoscope' => '🔮 Ton Balance du jour est arrivé',
             'quiz' => 'Nouveau quiz : À quel point tu connais ton passé ?',
             'pornhub' => 'DodoDuPasse a mis en ligne une vidéo',
+            'tarot' => '🔮 Ta carte du jour : L\'Arcane sans nom',
         ];
 
         foreach (AppKind::cases() as $appKind) {
@@ -265,7 +267,7 @@ class AppKindCoverageTest extends WebTestCase
      * Les entiers rendus sous forme graphique — étoiles allumées, largeur d'une
      * barre — plutôt qu'écrits en toutes lettres à l'écran.
      */
-    private const array GRAPHIC_FIELDS = ['stars', 'rating', 'progress', 'love', 'work', 'mood'];
+    private const array GRAPHIC_FIELDS = ['stars', 'rating', 'progress', 'love', 'work', 'mood', 'card'];
 
     /**
      * Rien de ce que l'admin saisit ne doit rester invisible : chaque champ de
@@ -290,15 +292,18 @@ class AppKindCoverageTest extends WebTestCase
                 continue;
             }
 
-            // Certains entiers ne se lisent pas en chiffres : une note de 3
-            // allume trois étoiles, une progression de 73 % fixe une largeur.
-            // On les vérifie sur ce qu'ils produisent, pas sur leur valeur.
+            // Un champ dessiné ne s'écrit jamais : une note de 3 allume trois
+            // étoiles, un arcane choisit une carte. On les vérifie sur ce
+            // qu'ils produisent, pas sur leur valeur.
+            if (\in_array($field, self::GRAPHIC_FIELDS, true)) {
+                $appData[$field] = \is_int($default) ? 73 : $default;
+
+                continue;
+            }
+
             if (\is_int($default)) {
                 $appData[$field] = 73;
-
-                if (!\in_array($field, self::GRAPHIC_FIELDS, true)) {
-                    $markers[$field] = '73';
-                }
+                $markers[$field] = '73';
 
                 continue;
             }
@@ -332,16 +337,20 @@ class AppKindCoverageTest extends WebTestCase
     }
 
     /**
-     * @return iterable<string, array{AppKind, string, string}>
+     * Chaque champ graphique avec deux valeurs à comparer : un entier pour
+     * une jauge, un nom d'arcane pour une carte.
+     *
+     * @return iterable<string, array{AppKind, string, string, int|string, int|string}>
      */
     public static function graphicFields(): iterable
     {
-        yield 'uber_eats stars' => [AppKind::UBER_EATS, 'stars', '.ue-stars'];
-        yield 'uber rating' => [AppKind::UBER, 'rating', '.ub-stars'];
-        yield 'spotify progress' => [AppKind::SPOTIFY, 'progress', '.sp-progress-bar'];
-        yield 'horoscope love' => [AppKind::HOROSCOPE, 'love', '.ho-gauges'];
-        yield 'horoscope work' => [AppKind::HOROSCOPE, 'work', '.ho-gauges'];
-        yield 'horoscope mood' => [AppKind::HOROSCOPE, 'mood', '.ho-gauges'];
+        yield 'uber_eats stars' => [AppKind::UBER_EATS, 'stars', '.ue-stars', 1, 4];
+        yield 'uber rating' => [AppKind::UBER, 'rating', '.ub-stars', 1, 4];
+        yield 'spotify progress' => [AppKind::SPOTIFY, 'progress', '.sp-progress-bar', 1, 4];
+        yield 'horoscope love' => [AppKind::HOROSCOPE, 'love', '.ho-gauges', 1, 4];
+        yield 'horoscope work' => [AppKind::HOROSCOPE, 'work', '.ho-gauges', 1, 4];
+        yield 'horoscope mood' => [AppKind::HOROSCOPE, 'mood', '.ho-gauges', 1, 4];
+        yield 'tarot card' => [AppKind::TAROT, 'card', '.ta-card', TarotCard::SOLEIL->value, TarotCard::DIABLE->value];
     }
 
     /**
@@ -349,14 +358,14 @@ class AppKindCoverageTest extends WebTestCase
      * étoiles allumées sur cinq, une barre remplie au tiers.
      */
     #[DataProvider('graphicFields')]
-    public function testAGraphicFieldChangesWhatIsDrawn(AppKind $appKind, string $field, string $selector): void
+    public function testAGraphicFieldChangesWhatIsDrawn(AppKind $appKind, string $field, string $selector, int|string $first, int|string $second): void
     {
         $this->client->loginUser($this->userFactory->createAdmin());
 
         $registry = self::getContainer()->get(AppDetailsRegistry::class);
         $rendered = [];
 
-        foreach ([1, 4] as $value) {
+        foreach ([$first, $second] as $value) {
             $crawler = $this->client->request('POST', sprintf('/admin/notifications/nouveau/%s/apercu', $appKind->value), [
                 'media' => [
                     'title' => 'Titre',
@@ -370,7 +379,7 @@ class AppKindCoverageTest extends WebTestCase
             $rendered[$value] = $crawler->filter($selector)->html();
         }
 
-        self::assertNotSame($rendered[1], $rendered[4], sprintf('Changer « %s » ne change rien à ce qui est dessiné.', $field));
+        self::assertNotSame($rendered[$first], $rendered[$second], sprintf('Changer « %s » ne change rien à ce qui est dessiné.', $field));
     }
 
     /**

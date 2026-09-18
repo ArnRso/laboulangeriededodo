@@ -39,6 +39,7 @@ enum AppKind: string
     case HOROSCOPE = 'horoscope';
     case QUIZ = 'quiz';
     case PORNHUB = 'pornhub';
+    case TAROT = 'tarot';
 
     public function label(): string
     {
@@ -73,6 +74,7 @@ enum AppKind: string
             self::HOROSCOPE => 'Horoscope',
             self::QUIZ => 'Quiz',
             self::PORNHUB => 'Pornhub',
+            self::TAROT => 'Tarot',
         };
     }
 
@@ -112,6 +114,7 @@ enum AppKind: string
             self::HOROSCOPE => 'Le thème du jour : signe, ascendant, prédiction, compatibilités et chiffre porte-bonheur.',
             self::QUIZ => 'Un quiz sur lui : une question, quatre réponses, et un résultat qui tombe toujours juste.',
             self::PORNHUB => 'Une vidéo « recommandée pour toi » : titre racoleur, chaîne, vues et commentaires. Rien d\'explicite, juste le habillage.',
+            self::TAROT => 'Le tirage du jour : une carte du tarot de Marseille, et ce qu\'elle annonce côté cœur, argent, social et danger.',
         };
     }
 
@@ -148,6 +151,7 @@ enum AppKind: string
             self::HOROSCOPE => '🔮',
             self::QUIZ => '🧠',
             self::PORNHUB => '🔞',
+            self::TAROT => '🃏',
         };
     }
 
@@ -187,6 +191,7 @@ enum AppKind: string
             self::HOROSCOPE => 'linear-gradient(160deg, #2B1B54, #7A5AF8 60%, #F5B0FF)',
             self::QUIZ => 'linear-gradient(140deg, #6C5CE7, #00B894)',
             self::PORNHUB => '#FF9000',
+            self::TAROT => 'linear-gradient(160deg, #1B1035, #4C1D95 55%, #C9A227)',
         };
     }
 
@@ -202,7 +207,7 @@ enum AppKind: string
             self::SPOTIFY, self::NETFLIX => 'Streaming',
             self::UBER_EATS, self::DELIVEROO, self::BURGER_KING, self::MCDONALDS, self::UBER, self::WAZE => 'Livraison et transport',
             self::REVOLUT, self::PAYPAL, self::LYDIA => 'Argent',
-            self::DOCTOLIB, self::DUOLINGO, self::METEO, self::CALENDAR, self::HOROSCOPE => 'Quotidien',
+            self::DOCTOLIB, self::DUOLINGO, self::METEO, self::CALENDAR, self::HOROSCOPE, self::TAROT => 'Quotidien',
             self::QUIZ, self::PORNHUB => 'Divertissement',
         };
     }
@@ -259,6 +264,7 @@ enum AppKind: string
             self::HOROSCOPE => sprintf('🔮 Ton %s du jour est arrivé', self::text($data, 'sign', 'Balance')),
             self::QUIZ => sprintf('Nouveau quiz : %s', self::text($data, 'quizName', 'À quel point tu te connais ?')),
             self::PORNHUB => sprintf('%s a mis en ligne une vidéo', self::text($data, 'channel', 'DodoDuPasse')),
+            self::TAROT => sprintf('🔮 Ta carte du jour : %s', self::text($data, 'cardName', 'L\'Arcane sans nom')),
         };
     }
 
@@ -292,6 +298,7 @@ enum AppKind: string
             self::HOROSCOPE => 'Lire mon thème',
             self::QUIZ => 'Passer le quiz',
             self::PORNHUB => 'Regarder la vidéo',
+            self::TAROT => 'Voir mon tirage',
         };
     }
 
