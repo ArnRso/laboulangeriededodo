@@ -265,7 +265,7 @@ class AppKindCoverageTest extends WebTestCase
      * Les entiers rendus sous forme graphique — étoiles allumées, largeur d'une
      * barre — plutôt qu'écrits en toutes lettres à l'écran.
      */
-    private const array GRAPHIC_FIELDS = ['stars', 'rating', 'progress'];
+    private const array GRAPHIC_FIELDS = ['stars', 'rating', 'progress', 'love', 'work', 'mood'];
 
     /**
      * Rien de ce que l'admin saisit ne doit rester invisible : chaque champ de
@@ -339,6 +339,9 @@ class AppKindCoverageTest extends WebTestCase
         yield 'uber_eats stars' => [AppKind::UBER_EATS, 'stars', '.ue-stars'];
         yield 'uber rating' => [AppKind::UBER, 'rating', '.ub-stars'];
         yield 'spotify progress' => [AppKind::SPOTIFY, 'progress', '.sp-progress-bar'];
+        yield 'horoscope love' => [AppKind::HOROSCOPE, 'love', '.ho-gauges'];
+        yield 'horoscope work' => [AppKind::HOROSCOPE, 'work', '.ho-gauges'];
+        yield 'horoscope mood' => [AppKind::HOROSCOPE, 'mood', '.ho-gauges'];
     }
 
     /**

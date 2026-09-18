@@ -55,13 +55,6 @@ class HoroscopeDetailsType extends AbstractAppDetailsType
                 'label' => 'Humeur (sur 5)',
                 'constraints' => [new Range(min: 0, max: 5)],
             ])
-            ->add('luckyNumber', IntegerType::class, [
-                'label' => 'Chiffre porte-bonheur',
-            ])
-            ->add('luckyColor', TextType::class, [
-                'label' => 'Couleur porte-bonheur',
-                'required' => false,
-            ])
             ->add('compatibility', TextareaType::class, [
                 'label' => 'Signes compatibles',
                 'help' => 'Un par ligne, affichés en pastilles.',
@@ -86,8 +79,6 @@ class HoroscopeDetailsType extends AbstractAppDetailsType
             'love' => 4,
             'work' => 2,
             'mood' => 5,
-            'luckyNumber' => 7,
-            'luckyColor' => 'Rose fluo',
             'compatibility' => 'Gémeaux
 Lion
 Verseau',

@@ -102,17 +102,6 @@
             </section>
         {% endif %}
 
-        <section class="ho-card ho-lucky">
-            <div class="ho-lucky-cell">
-                <small>Chiffre porte-bonheur</small>
-                <b>{{ data.luckyNumber|default(7) }}</b>
-            </div>
-            <div class="ho-lucky-cell">
-                <small>Couleur</small>
-                <b>{{ data.luckyColor|default('Rose fluo') }}</b>
-            </div>
-        </section>
-
         {% if data.advice|default('') %}
             <section class="ho-card ho-advice">
                 <small class="ho-h2">🌙 Le conseil du jour</small>
