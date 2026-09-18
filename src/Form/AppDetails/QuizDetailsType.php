@@ -7,9 +7,12 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Component\Validator\Constraints\Positive;
 use Symfony\Component\Validator\Constraints\Range;
 
+/**
+ * Un quiz d'une seule question : pas de pagination, autant de réponses que
+ * l'admin en écrit.
+ */
 class QuizDetailsType extends AbstractAppDetailsType
 {
     /**
@@ -22,16 +25,6 @@ class QuizDetailsType extends AbstractAppDetailsType
                 'label' => 'Nom du quiz',
                 'help' => 'Annoncé dans le fil et affiché en haut de l\'écran.',
                 'constraints' => [new NotBlank()],
-            ])
-            ->add('questionNumber', IntegerType::class, [
-                'label' => 'Numéro de la question',
-                'help' => 'Le premier chiffre de « Question 4 / 10 ».',
-                'constraints' => [new Positive()],
-            ])
-            ->add('questionTotal', IntegerType::class, [
-                'label' => 'Nombre total de questions',
-                'help' => 'Le second chiffre, qui remplit aussi la barre de progression.',
-                'constraints' => [new Positive()],
             ])
             ->add('question', TextType::class, [
                 'label' => 'Intitulé de la question',
@@ -71,8 +64,6 @@ class QuizDetailsType extends AbstractAppDetailsType
     {
         return [
             'quizName' => 'À quel point tu connais ton passé ?',
-            'questionNumber' => 4,
-            'questionTotal' => 10,
             'question' => '',
             'answers' => "à l'arrache, comme toujours\n*en mode canon event\nen niant tout en bloc\nje préfère ne pas répondre",
             'resultTitle' => 'Tu es à 87 % un canon event',

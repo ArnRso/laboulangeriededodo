@@ -3,8 +3,6 @@
 {% set data = media.appData %}
 {% set question = data.question|default('') ?: media.title %}
 {% set resultText = data.resultText|default('') ?: media.description %}
-{% set questionNumber = data.questionNumber|default(4) %}
-{% set questionTotal = data.questionTotal|default(10) %}
 {% set score = data.score|default(0) %}
 
 {% block title %}{{ media.title }} · Quiz{% endblock %}
@@ -17,16 +15,6 @@
             <b>{{ data.quizName|default('À quel point tu connais ton passé ?') }}</b>
             <span class="f-bar-spacer"></span>
         </div>
-
-        <header class="qz-top">
-            <div class="qz-count">
-                <small>Question</small>
-                <b>{{ questionNumber }}<i>/{{ questionTotal }}</i></b>
-            </div>
-            <div class="qz-track">
-                <i style="width: {{ questionTotal > 0 ? (questionNumber / questionTotal * 100)|round : 0 }}%"></i>
-            </div>
-        </header>
 
         <section class="qz-card">
             <h1 class="qz-q">{{ question }}</h1>
