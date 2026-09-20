@@ -5,6 +5,7 @@ namespace App\Tests\Functional\Controller\Admin;
 use App\Entity\User;
 use App\Enum\Avatar;
 use App\Repository\UserRepository;
+use App\Tests\Factory\MediaFactory;
 use App\Tests\Factory\UserFactory;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
@@ -35,14 +36,14 @@ class RecipientControllerTest extends WebTestCase
 
     public function testInvitesRecipient(): void
     {
-        $this->client->request('GET', '/admin/destinataire');
+        $this->client->request('GET', '/admin/destinataires');
         $this->client->submitForm('Envoyer l\'invitation', [
             'invite_recipient[email]' => 'dorian@example.com',
             'invite_recipient[displayName]' => 'Dodo',
             'invite_recipient[avatar]' => '🦤',
         ]);
 
-        self::assertResponseRedirects('/admin/destinataire');
+        self::assertResponseRedirects('/admin/destinataires');
 
         $recipient = $this->userRepository->findOneByEmail('dorian@example.com');
         self::assertNotNull($recipient);
@@ -55,7 +56,7 @@ class RecipientControllerTest extends WebTestCase
 
     public function testDisplayNameIsRequired(): void
     {
-        $this->client->request('GET', '/admin/destinataire');
+        $this->client->request('GET', '/admin/destinataires');
         $this->client->submitForm('Envoyer l\'invitation', [
             'invite_recipient[email]' => 'dorian@example.com',
             'invite_recipient[displayName]' => '',
@@ -68,7 +69,7 @@ class RecipientControllerTest extends WebTestCase
 
     public function testInvitationEmailIsSentToTheRecipient(): void
     {
-        $this->client->request('GET', '/admin/destinataire');
+        $this->client->request('GET', '/admin/destinataires');
         $this->client->submitForm('Envoyer l\'invitation', [
             'invite_recipient[email]' => 'dorian@example.com',
             'invite_recipient[displayName]' => 'Dodo',
@@ -83,46 +84,154 @@ class RecipientControllerTest extends WebTestCase
 
     public function testResendingReplacesThePreviousToken(): void
     {
-        $this->client->request('GET', '/admin/destinataire');
-        $this->client->submitForm('Envoyer l\'invitation', [
-            'invite_recipient[email]' => 'dorian@example.com',
-            'invite_recipient[displayName]' => 'Dodo',
-            'invite_recipient[avatar]' => '🦤',
-        ]);
-
+        $this->invite('dorian@example.com', 'Dodo');
         $firstToken = $this->readTokenFromDatabase('dorian@example.com');
 
-        $crawler = $this->client->request('GET', '/admin/destinataire');
-        self::assertSelectorTextContains('button[type="submit"]', 'Renvoyer');
-        $this->client->submit($crawler->filter('form')->form([
-            'invite_recipient[email]' => 'dorian@example.com',
-        ]));
+        $this->invite('dorian@example.com', 'Dodo le retour');
         self::assertResponseRedirects();
 
         $secondToken = $this->readTokenFromDatabase('dorian@example.com');
 
         self::assertNotSame($firstToken, $secondToken, 'Le renvoi génère un lien neuf.');
+        $recipient = $this->userRepository->findOneByEmail('dorian@example.com');
+        self::assertNotNull($recipient);
+        self::assertSame('Dodo le retour', $recipient->getDisplayName(), 'Le renvoi corrige aussi le prénom.');
     }
 
-    public function testActivatedRecipientCannotBeReinvited(): void
+    public function testSeveralRecipientsCanBeInvited(): void
+    {
+        $this->invite('dorian@example.com', 'Dodo');
+        $this->invite('marie@example.com', 'Marie');
+
+        $crawler = $this->client->request('GET', '/admin/destinataires');
+
+        self::assertResponseIsSuccessful();
+        self::assertCount(2, $crawler->filter('.list-group-item'));
+        self::assertSelectorTextContains('body', 'Dodo');
+        self::assertSelectorTextContains('body', 'Marie');
+        self::assertCount(2, $this->userRepository->findByRole(User::ROLE_RECIPIENT));
+    }
+
+    public function testAnActivatedRecipientIsListedAndCannotBeReinvited(): void
     {
         $this->userFactory->createRecipient('dorian@example.com');
 
-        $this->client->request('GET', '/admin/destinataire');
-
+        $this->client->request('GET', '/admin/destinataires');
         self::assertResponseIsSuccessful();
-        self::assertSelectorTextContains('body', 'a activé son compte');
-        self::assertSelectorNotExists('button[type="submit"]');
+        self::assertSelectorTextContains('.list-group-item', 'dorian@example.com');
+
+        $this->invite('dorian@example.com', 'Dodo');
+        $this->client->followRedirect();
+        self::assertSelectorTextContains('.alert-danger', 'déjà activé son compte');
+    }
+
+    public function testAnAdminAddressIsRefused(): void
+    {
+        $this->invite('admin@example.com', 'Marie');
+
+        $this->client->followRedirect();
+        self::assertSelectorTextContains('.alert-danger', 'administrateur');
+        self::assertCount(0, $this->userRepository->findByRole(User::ROLE_RECIPIENT));
     }
 
     public function testInvalidEmailIsRejected(): void
     {
-        $this->client->request('GET', '/admin/destinataire');
+        $this->client->request('GET', '/admin/destinataires');
         $this->client->submitForm('Envoyer l\'invitation', [
             'invite_recipient[email]' => 'pas-un-email',
         ]);
 
-        self::assertNull($this->userRepository->findOneByRole(User::ROLE_RECIPIENT));
+        self::assertCount(0, $this->userRepository->findByRole(User::ROLE_RECIPIENT));
+    }
+
+    public function testEachRecipientWalksTheSameFeedAtTheirOwnPace(): void
+    {
+        $dorian = $this->userFactory->createRecipient('dorian@example.com');
+        $marie = $this->userFactory->createRecipient('marie@example.com');
+
+        $entityManager = self::getContainer()->get(EntityManagerInterface::class);
+        $medias = new MediaFactory($entityManager)->createFeed(3, delayMinutes: 0);
+
+        // Dorian en ouvre deux, Marie aucune.
+        $this->client->loginUser($dorian);
+        foreach ([$medias[0], $medias[1]] as $media) {
+            $this->client->request('GET', sprintf('/mon-espace/notifications/%d', (int) $media->getId()));
+            self::assertResponseIsSuccessful();
+        }
+
+        $this->client->loginUser($marie);
+        $crawler = $this->client->request('GET', '/mon-espace');
+
+        self::assertResponseIsSuccessful();
+        self::assertCount(0, $crawler->filter('.f-n-seen'), 'Marie n\'hérite pas des ouvertures de Dorian.');
+        self::assertSelectorTextContains('.f-n-fresh .f-m', 'Notification 1', 'Elle commence au début du même fil.');
+
+        $this->client->loginUser($dorian);
+        $crawler = $this->client->request('GET', '/mon-espace');
+        self::assertCount(2, $crawler->filter('.f-n-seen'), 'Dorian garde les siennes.');
+    }
+
+    public function testResettingSendsSomeoneBackToTheStartOfTheFeed(): void
+    {
+        $dorian = $this->userFactory->createRecipient('dorian@example.com');
+        $marie = $this->userFactory->createRecipient('marie@example.com');
+
+        $entityManager = self::getContainer()->get(EntityManagerInterface::class);
+        $medias = new MediaFactory($entityManager)->createFeed(2, delayMinutes: 0);
+
+        foreach ([$dorian, $marie] as $recipient) {
+            $this->client->loginUser($recipient);
+            $this->client->request('GET', sprintf('/mon-espace/notifications/%d', (int) $medias[0]->getId()));
+        }
+
+        $this->client->loginUser($this->userFactory->createAdmin('autre-admin@example.com'));
+        $crawler = $this->client->request('GET', '/admin/destinataires');
+        $this->client->submit($crawler->filter(sprintf('form[action="/admin/destinataires/%d/reinitialiser"]', (int) $dorian->getId()))->form());
+
+        self::assertResponseRedirects('/admin/destinataires');
+        $this->client->followRedirect();
+        self::assertSelectorTextContains('.alert-success', 'repart du début');
+
+        $this->client->loginUser($dorian);
+        $crawler = $this->client->request('GET', '/mon-espace');
+        self::assertCount(0, $crawler->filter('.f-n-seen'), 'Dorian repart de zéro.');
+
+        $this->client->loginUser($marie);
+        $crawler = $this->client->request('GET', '/mon-espace');
+        self::assertCount(1, $crawler->filter('.f-n-seen'), 'La progression de Marie est intacte.');
+    }
+
+    public function testResettingRefusesAForgedToken(): void
+    {
+        $dorian = $this->userFactory->createRecipient('dorian@example.com');
+        $medias = new MediaFactory(self::getContainer()->get(EntityManagerInterface::class))->createFeed(1, delayMinutes: 0);
+
+        $this->client->loginUser($dorian);
+        $this->client->request('GET', sprintf('/mon-espace/notifications/%d', (int) $medias[0]->getId()));
+
+        $this->client->loginUser($this->userFactory->createAdmin('autre-admin@example.com'));
+        $this->client->request('POST', sprintf('/admin/destinataires/%d/reinitialiser', (int) $dorian->getId()), ['_token' => 'jeton-invalide']);
+
+        // Un jeton invalide invalide la session : le firewall renvoie vers la
+        // connexion plutôt que de servir un 403.
+        self::assertResponseRedirects();
+
+        $this->client->loginUser($dorian);
+        $crawler = $this->client->request('GET', '/mon-espace');
+        self::assertCount(1, $crawler->filter('.f-n-seen'), 'Rien n\'a été remis à zéro.');
+    }
+
+    /**
+     * @param array<string, string> $extra
+     */
+    private function invite(string $email, string $displayName, array $extra = []): void
+    {
+        $this->client->request('GET', '/admin/destinataires');
+        $this->client->submitForm('Envoyer l\'invitation', array_merge([
+            'invite_recipient[email]' => $email,
+            'invite_recipient[displayName]' => $displayName,
+            'invite_recipient[avatar]' => '🦤',
+        ], $extra));
     }
 
     /**

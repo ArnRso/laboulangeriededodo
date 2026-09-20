@@ -4,13 +4,17 @@ namespace App\Service;
 
 use App\Entity\User;
 use App\Enum\Avatar;
+use App\Repository\FeedSkipRepository;
+use App\Repository\MediaAccessRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Random\RandomException;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 
 /**
- * Invite le destinataire du cadeau, ou lui renvoie son lien.
+ * Les destinataires du cadeau : les inviter, leur renvoyer un lien, et les
+ * remettre au début du fil. Ils partagent le même fil mais chacun le
+ * parcourt à son rythme.
  */
 readonly class RecipientInviter
 {
@@ -18,25 +22,31 @@ readonly class RecipientInviter
         private UserRepository $userRepository,
         private InvitationService $invitationService,
         private InvitationMailer $invitationMailer,
+        private MediaAccessRepository $mediaAccessRepository,
+        private FeedSkipRepository $feedSkipRepository,
         private EntityManagerInterface $entityManager,
     ) {
     }
 
-    public function findRecipient(): ?User
+    /**
+     * @return list<User>
+     */
+    public function findRecipients(): array
     {
-        return $this->userRepository->findOneByRole(User::ROLE_RECIPIENT);
+        return $this->userRepository->findByRole(User::ROLE_RECIPIENT);
     }
 
     /**
-     * Invite le destinataire s'il n'existe pas encore, sinon lui renvoie un lien neuf.
+     * Invite une personne de plus, ou renvoie son lien si elle n'a pas encore
+     * activé son compte.
      *
      * @throws \DateMalformedIntervalStringException
      * @throws RandomException
      * @throws TransportExceptionInterface
      */
-    public function invite(string $email, ?string $displayName = null, ?Avatar $avatar = null): User
+    public function invite(string $email, string $displayName, Avatar $avatar): User
     {
-        $existing = $this->findRecipient();
+        $existing = $this->userRepository->findOneByEmail($email);
 
         if (null === $existing) {
             $user = $this->invitationService->invite($email, [User::ROLE_RECIPIENT]);
@@ -54,13 +64,16 @@ readonly class RecipientInviter
             return $user;
         }
 
+        if ($existing->isAdmin()) {
+            throw new \LogicException('Cette adresse est déjà celle d\'un administrateur.');
+        }
+
         if (null !== $existing->getPassword()) {
-            throw new \LogicException('Le destinataire a déjà activé son compte.');
+            throw new \LogicException(sprintf('%s a déjà activé son compte.', $existing->getPublicName()));
         }
 
         // Un renvoi permet aussi de corriger le prénom ou l'avatar.
-        $existing->setDisplayName($displayName ?? $existing->getDisplayName())
-            ->setAvatar($avatar ?? $existing->getAvatar());
+        $existing->setDisplayName($displayName)->setAvatar($avatar);
 
         $token = $this->invitationService->refreshInvitationToken($existing);
         $this->entityManager->flush();
@@ -68,5 +81,22 @@ readonly class RecipientInviter
         $this->invitationMailer->sendRecipientInvitation($existing, $token);
 
         return $existing;
+    }
+
+    /**
+     * Remet une personne au début du fil : ses ouvertures et ses coups de
+     * pouce disparaissent, son compte reste.
+     */
+    public function resetProgress(User $recipient): void
+    {
+        foreach ($this->mediaAccessRepository->findForUser($recipient) as $access) {
+            $this->entityManager->remove($access);
+        }
+
+        foreach ($this->feedSkipRepository->findForUser($recipient) as $skip) {
+            $this->entityManager->remove($skip);
+        }
+
+        $this->entityManager->flush();
     }
 }

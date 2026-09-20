@@ -36,6 +36,15 @@ class AppFixtures extends Fixture
             ->setPassword($this->passwordHasher->hashPassword($dorian, 'Dorian'));
         $manager->persist($dorian);
 
+        // Un second destinataire : même fil, progression à part.
+        $lea = new User();
+        $lea->setEmail('lea@test.com')
+            ->setRoles([User::ROLE_RECIPIENT])
+            ->setDisplayName('Léa')
+            ->setAvatar(Avatar::UNICORN)
+            ->setPassword($this->passwordHasher->hashPassword($lea, 'Lea'));
+        $manager->persist($lea);
+
         foreach ($this->notifications() as $position => $definition) {
             $media = new Media();
             $media->setPosition($position)

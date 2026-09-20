@@ -1,54 +1,83 @@
 {% extends 'admin/_layout.html.twig' %}
 
-{% block title %}Destinataire{% endblock %}
+{% block title %}Destinataires{% endblock %}
 
 {% block admin_body %}
-    <h1 class="h3 mb-4">Destinataire</h1>
+    <h1 class="h3 mb-1">Destinataires</h1>
+    <p class="text-body-secondary mb-4">Tout le monde reçoit le même fil, chacun à son rythme : les délais courent à partir de ses propres ouvertures.</p>
 
-    <div class="row">
-        <div class="col-12 col-lg-6">
-            {% if recipient %}
-                <div class="alert {{ recipient.password ? 'alert-success' : 'alert-warning' }}">
-                    {% if recipient.password %}
-                        {{ recipient.avatar ? recipient.avatar.value ~ ' ' : '' }}<strong>{{ recipient.publicName }}</strong>
-                        ({{ recipient.email }}) a activé son compte.
-                    {% elseif hasPendingInvitation %}
-                        Une invitation est en attente pour <strong>{{ recipient.email }}</strong>.
-                        Vous pouvez la renvoyer ci-dessous.
-                    {% else %}
-                        L'invitation de <strong>{{ recipient.email }}</strong> a expiré.
-                        Renvoyez-la pour lui donner un nouveau lien.
-                    {% endif %}
-                </div>
+    <div class="row g-4">
+        <div class="col-12 col-lg-7">
+            {% if recipients is empty %}
+                <p class="text-body-secondary">Personne pour l'instant. Invite quelqu'un avec le formulaire.</p>
             {% else %}
-                <p class="text-body-secondary">
-                    Aucun destinataire pour le moment. Saisissez son adresse pour lui envoyer l'invitation.
-                </p>
+                <ul class="list-group">
+                    {% for row in recipients %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center gap-3">
+                            <div class="d-flex align-items-center gap-3 min-w-0">
+                                <span class="fs-3">{{ row.user.avatar ? row.user.avatar.value : '🙂' }}</span>
+                                <div class="min-w-0">
+                                    <div class="fw-semibold text-truncate">
+                                        {{ row.user.publicName }}
+                                        {% if not row.user.password %}
+                                            {% if row.hasPendingInvitation %}
+                                                <span class="badge text-bg-warning ms-1">Invitation en attente</span>
+                                            {% else %}
+                                                <span class="badge text-bg-danger ms-1">Invitation expirée</span>
+                                            {% endif %}
+                                        {% endif %}
+                                    </div>
+                                    <small class="text-body-secondary text-truncate d-block">
+                                        {{ row.user.email }} ·
+                                        {% if row.user.password %}
+                                            {{ row.opened }} / {{ feedLength }} ouverte{{ row.opened > 1 ? 's' : '' }}
+                                        {% else %}
+                                            compte pas encore activé
+                                        {% endif %}
+                                    </small>
+                                </div>
+                            </div>
+
+                            {% if row.opened > 0 %}
+                                <form method="post" action="{{ path('app_admin_recipient_reset', {id: row.user.id}) }}"
+                                      onsubmit="return confirm('Remettre {{ row.user.publicName }} au début du fil ?');">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('reset_recipient_' ~ row.user.id) }}">
+                                    <button type="submit" class="btn btn-sm btn-outline-secondary flex-shrink-0">Remettre au début</button>
+                                </form>
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                </ul>
             {% endif %}
+        </div>
 
-            {% if not recipient or not recipient.password %}
-                {{ form_start(form) }}
-                    {{ form_row(form.email) }}
-                    {{ form_row(form.displayName) }}
+        <div class="col-12 col-lg-5">
+            <div class="card">
+                <div class="card-body">
+                    <h2 class="h6 card-title mb-3">Inviter quelqu'un</h2>
+                    <p class="form-text mt-0 mb-3">Une adresse déjà invitée mais pas encore activée reçoit un lien neuf, et son prénom ou son avatar sont mis à jour.</p>
 
-                    <div class="mb-3">
-                        {{ form_label(form.avatar) }}
-                        <div class="d-flex flex-wrap gap-2">
-                            {% for choice in form.avatar %}
-                                <label class="btn btn-outline-secondary fs-4 px-3" for="{{ choice.vars.id }}" title="{{ choice.vars.label|split('  ')|last }}">
-                                    {{ form_widget(choice, {attr: {class: 'visually-hidden'}}) }}
-                                    {{ choice.vars.label|split('  ')|first }}
-                                </label>
-                            {% endfor %}
+                    {{ form_start(form) }}
+                        {{ form_row(form.email) }}
+                        {{ form_row(form.displayName) }}
+
+                        <div class="mb-3">
+                            {{ form_label(form.avatar) }}
+                            <div class="d-flex flex-wrap gap-2">
+                                {% for choice in form.avatar %}
+                                    <label class="btn btn-outline-secondary fs-4 px-3" for="{{ choice.vars.id }}" title="{{ choice.vars.label|split('  ')|last }}">
+                                        {{ form_widget(choice, {attr: {class: 'visually-hidden'}}) }}
+                                        {{ choice.vars.label|split('  ')|first }}
+                                    </label>
+                                {% endfor %}
+                            </div>
+                            {{ form_errors(form.avatar) }}
                         </div>
-                        {{ form_errors(form.avatar) }}
-                    </div>
 
-                    <button type="submit" class="btn btn-primary mt-2">
-                        {{ recipient ? 'Renvoyer l\'invitation' : 'Envoyer l\'invitation' }}
-                    </button>
-                {{ form_end(form) }}
-            {% endif %}
+                        <button type="submit" class="btn btn-primary mt-2">Envoyer l'invitation</button>
+                    {{ form_end(form) }}
+                </div>
+            </div>
         </div>
     </div>
 {% endblock %}

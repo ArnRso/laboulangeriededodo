@@ -38,15 +38,23 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
      * Le rôle est stocké en JSON, que Postgres ne sait pas filtrer avec LIKE :
      * le tri se fait en PHP, ce que le très faible nombre de comptes autorise.
      */
-    public function findOneByRole(string $role): ?User
+    /**
+     * Les rôles vivent dans une colonne JSON : plutôt qu'un LIKE fragile, on
+     * les relit en PHP, le nombre de comptes restant modeste.
+     *
+     * @return list<User>
+     */
+    public function findByRole(string $role): array
     {
+        $users = [];
+
         foreach ($this->findBy([], ['id' => 'ASC']) as $user) {
             if (\in_array($role, $user->getRoles(), true)) {
-                return $user;
+                $users[] = $user;
             }
         }
 
-        return null;
+        return $users;
     }
 
     public function findOneByValidInvitationToken(string $token): ?User
