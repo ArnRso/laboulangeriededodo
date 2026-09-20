@@ -42,7 +42,7 @@ class InviteRecipientType extends AbstractType
             ->add('avatar', EnumType::class, [
                 'label' => 'Avatar',
                 'class' => Avatar::class,
-                'choice_label' => static fn (Avatar $avatar): string => $avatar->value.'  '.$avatar->label(),
+                'choice_label' => static fn (Avatar $avatar): string => $avatar->label(),
                 'expanded' => true,
                 'constraints' => [
                     new NotBlank(message: 'Merci de choisir un avatar.'),

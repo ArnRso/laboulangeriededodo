@@ -63,11 +63,20 @@
 
                         <div class="mb-3">
                             {{ form_label(form.avatar) }}
-                            <div class="d-flex flex-wrap gap-2">
+                            {# Le radio est écrit à la main : le thème Bootstrap
+                               l'envelopperait dans un form-check avec son propre
+                               label, qui doublerait le nom et casserait la grille. #}
+                            <div class="avatar-grid">
                                 {% for choice in form.avatar %}
-                                    <label class="btn btn-outline-secondary fs-4 px-3" for="{{ choice.vars.id }}" title="{{ choice.vars.label|split('  ')|last }}">
-                                        {{ form_widget(choice, {attr: {class: 'visually-hidden'}}) }}
-                                        {{ choice.vars.label|split('  ')|first }}
+                                    <input type="radio"
+                                           class="visually-hidden"
+                                           id="{{ choice.vars.id }}"
+                                           name="{{ choice.vars.full_name }}"
+                                           value="{{ choice.vars.value }}"
+                                           {{ choice.vars.checked ? 'checked' : '' }}>
+                                    <label class="avatar-choice" for="{{ choice.vars.id }}">
+                                        <span class="avatar-choice-emoji" aria-hidden="true">{{ choice.vars.value }}</span>
+                                        <span class="avatar-choice-name">{{ choice.vars.label }}</span>
                                     </label>
                                 {% endfor %}
                             </div>
