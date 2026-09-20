@@ -3,6 +3,7 @@
 namespace App\Tests\Functional\Controller\Admin;
 
 use App\Entity\Media;
+use App\Entity\Tag;
 use App\Enum\AppKind;
 use App\Enum\MediaType;
 use App\Repository\MediaRepository;
@@ -145,34 +146,45 @@ class NotificationControllerTest extends WebTestCase
         self::assertSame([['label' => 'Gardée', 'text' => 'un vrai texte']], $draft->getFragments());
     }
 
-    public function testTagsAreStoredFromTheForm(): void
+    public function testTagsAreAttachedFromTheForm(): void
     {
+        $voyage = $this->mediaFactory->createTag('Voyage');
+        $cadeau = $this->mediaFactory->createTag('Cadeau');
+
         $this->submitDraft([
             'title' => 'Rangé',
             'type' => MediaType::TEXT->value,
-            'tags' => 'Souvenirs, voyage , , souvenirs',
+            'tags' => [(string) $voyage->getId(), (string) $cadeau->getId()],
         ]);
+
+        self::assertResponseRedirects('/admin/notifications');
 
         $draft = $this->mediaRepository->findOneBy(['title' => 'Rangé']);
         self::assertNotNull($draft);
-        self::assertSame(['Souvenirs', 'voyage'], $draft->getTags(), 'Les vides et les doublons sont écartés.');
+        self::assertSame(
+            ['Cadeau', 'Voyage'],
+            $draft->getTags()->map(static fn (Tag $tag): string => $tag->getName())->toArray(),
+        );
     }
 
-    public function testATagLongerThanTheLimitIsRejected(): void
+    public function testAnUnknownTagIsRefused(): void
     {
         $this->submitDraft([
-            'title' => 'Étiquette bavarde',
+            'title' => 'Étiquette inventée',
             'type' => MediaType::TEXT->value,
-            'tags' => str_repeat('a', Media::MAX_TAG_LENGTH + 1),
+            'tags' => ['999999'],
         ]);
 
         self::assertResponseIsUnprocessable();
-        self::assertNull($this->mediaRepository->findOneBy(['title' => 'Étiquette bavarde']));
+        self::assertNull($this->mediaRepository->findOneBy(['title' => 'Étiquette inventée']));
     }
 
     public function testTagsAreListedOnTheNotification(): void
     {
-        $this->mediaFactory->createNotification(0, 'Avec étiquettes', tags: ['Voyage', 'Cadeau']);
+        $this->mediaFactory->createNotification(0, 'Avec étiquettes', tags: [
+            $this->mediaFactory->createTag('Voyage'),
+            $this->mediaFactory->createTag('Cadeau'),
+        ]);
 
         $crawler = $this->client->request('GET', '/admin/notifications');
 
@@ -183,46 +195,36 @@ class NotificationControllerTest extends WebTestCase
 
     public function testTheFeedCanBeFilteredByTag(): void
     {
-        $this->mediaFactory->createNotification(0, 'Un voyage', tags: ['Voyage']);
-        $this->mediaFactory->createNotification(1, 'Un cadeau', tags: ['Cadeau']);
+        $voyage = $this->mediaFactory->createTag('Voyage');
+        $this->mediaFactory->createNotification(0, 'Un voyage', tags: [$voyage]);
+        $this->mediaFactory->createNotification(1, 'Un cadeau', tags: [$this->mediaFactory->createTag('Cadeau')]);
         $this->mediaFactory->createNotification(2, 'Sans étiquette');
 
-        $crawler = $this->client->request('GET', '/admin/notifications?tag=Voyage');
+        $crawler = $this->client->request('GET', sprintf('/admin/notifications?tag=%d', (int) $voyage->getId()));
 
         self::assertResponseIsSuccessful();
         self::assertCount(1, $crawler->filter('.list-group-item'));
         self::assertStringContainsString('Un voyage', $crawler->filter('.list-group-item')->text());
     }
 
-    public function testFilteringIgnoresTheCaseOfTheTag(): void
+    public function testFilteringOnAnUnknownTagListsEverything(): void
     {
-        $this->mediaFactory->createNotification(0, 'Un voyage', tags: ['Voyage']);
+        $this->mediaFactory->createNotification(0, 'Un voyage', tags: [$this->mediaFactory->createTag('Voyage')]);
 
-        $crawler = $this->client->request('GET', '/admin/notifications?tag=voyage');
-
-        self::assertCount(1, $crawler->filter('.list-group-item'));
-    }
-
-    public function testFilteringOnAnUnusedTagListsNothing(): void
-    {
-        $this->mediaFactory->createNotification(0, 'Un voyage', tags: ['Voyage']);
-
-        $crawler = $this->client->request('GET', '/admin/notifications?tag=inconnue');
+        $crawler = $this->client->request('GET', '/admin/notifications?tag=999999');
 
         self::assertResponseIsSuccessful();
-        self::assertCount(0, $crawler->filter('.list-group-item'));
-        self::assertStringContainsString('Aucune notification', $crawler->filter('.alert')->text());
+        self::assertCount(1, $crawler->filter('.list-group-item'), 'Une étiquette disparue ne masque pas le fil.');
     }
 
-    public function testTheFormSuggestsTheTagsAlreadyUsed(): void
+    public function testTheFormOffersEveryTag(): void
     {
-        $this->mediaFactory->createNotification(0, 'Un voyage', tags: ['Voyage']);
-        $this->mediaFactory->createNotification(1, 'Un cadeau', tags: ['Cadeau']);
+        $this->mediaFactory->createTag('Voyage');
+        $this->mediaFactory->createTag('Cadeau');
 
         $crawler = $this->client->request('GET', '/admin/notifications/brouillon');
 
-        $suggestions = $crawler->filter('#known-tags option')->extract(['value']);
-        self::assertSame(['Cadeau', 'Voyage'], $suggestions);
+        self::assertCount(2, $crawler->filter('input[name="media[tags][]"]'));
     }
 
     public function testADraftIsListedWithItsBadgeAndWithoutPreview(): void

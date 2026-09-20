@@ -48,49 +48,6 @@ class MediaRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    /**
-     * Les étiquettes déjà posées, sans doublon et par ordre alphabétique :
-     * de quoi les suggérer à la saisie et proposer un tri.
-     *
-     * @return list<string>
-     */
-    public function findUsedTags(): array
-    {
-        $rows = $this->createQueryBuilder('m')
-            ->select('m.tags')
-            ->getQuery()
-            ->getScalarResult();
-
-        $tags = [];
-
-        foreach ($rows as $row) {
-            if (!\is_array($row)) {
-                continue;
-            }
-
-            $stored = $row['tags'] ?? [];
-
-            // Selon le pilote, la colonne JSON revient décodée ou brute.
-            if (\is_string($stored)) {
-                $stored = json_decode($stored, true);
-            }
-
-            if (!\is_array($stored)) {
-                continue;
-            }
-
-            foreach ($stored as $tag) {
-                if (\is_string($tag) && '' !== $tag) {
-                    $tags[mb_strtolower($tag)] = $tag;
-                }
-            }
-        }
-
-        ksort($tags);
-
-        return array_values($tags);
-    }
-
     public function findMaxPosition(): int
     {
         return (int) $this->createQueryBuilder('m')

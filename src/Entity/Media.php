@@ -5,6 +5,8 @@ namespace App\Entity;
 use App\Enum\AppKind;
 use App\Enum\MediaType;
 use App\Repository\MediaRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -23,11 +25,6 @@ class Media
      * Un mois d'attente : au-delà, la valeur relève de la faute de frappe.
      */
     public const int MAX_DELAY_MINUTES = 720 * 60;
-
-    /**
-     * Au-delà, l'étiquette n'aide plus à s'y retrouver.
-     */
-    public const int MAX_TAG_LENGTH = 32;
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -100,10 +97,11 @@ class Media
      * Étiquettes de rangement, pour retrouver ses notifications dans le
      * back-office. Le destinataire ne les voit jamais.
      *
-     * @var list<string>
+     * @var Collection<int, Tag>
      */
-    #[ORM\Column(type: 'json')]
-    private array $tags = [];
+    #[ORM\ManyToMany(targetEntity: Tag::class, inversedBy: 'medias')]
+    #[ORM\OrderBy(['name' => 'ASC'])]
+    private Collection $tags;
 
     #[ORM\Column]
     private bool $published = true;
@@ -117,6 +115,7 @@ class Media
     public function __construct()
     {
         $this->updatedAt = new \DateTimeImmutable();
+        $this->tags = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -361,61 +360,40 @@ class Media
     }
 
     /**
-     * @return list<string>
+     * @return Collection<int, Tag>
      */
-    public function getTags(): array
+    public function getTags(): Collection
     {
         return $this->tags;
     }
 
     /**
-     * @param list<mixed> $tags
+     * Les deux côtés sont tenus à jour : Doctrine n'écoute que celui-ci pour
+     * écrire, mais l'étiquette doit connaître ses notifications sans attendre
+     * un rechargement.
      */
-    public function setTags(array $tags): static
+    public function addTag(Tag $tag): static
     {
-        $this->tags = [];
-
-        foreach ($tags as $tag) {
-            if (\is_string($tag)) {
-                $this->addTag($tag);
-            }
+        if (!$this->tags->contains($tag)) {
+            $this->tags->add($tag);
+            $tag->getMedias()->add($this);
         }
 
         return $this;
     }
 
-    /**
-     * Une étiquette déjà posée ne se répète pas, quelle que soit la casse
-     * employée pour la ressaisir.
-     */
-    public function addTag(string $tag): static
+    public function removeTag(Tag $tag): static
     {
-        $tag = trim(preg_replace('/\s+/u', ' ', $tag) ?? '');
-
-        if ('' === $tag) {
-            return $this;
+        if ($this->tags->removeElement($tag)) {
+            $tag->getMedias()->removeElement($this);
         }
-
-        foreach ($this->tags as $existing) {
-            if (0 === strcasecmp($existing, $tag)) {
-                return $this;
-            }
-        }
-
-        $this->tags[] = $tag;
 
         return $this;
     }
 
-    public function hasTag(string $tag): bool
+    public function hasTag(Tag $tag): bool
     {
-        foreach ($this->tags as $existing) {
-            if (0 === strcasecmp($existing, $tag)) {
-                return true;
-            }
-        }
-
-        return false;
+        return $this->tags->contains($tag);
     }
 
     public function isPublished(): bool
@@ -475,23 +453,6 @@ class Media
         }
 
         $this->validateFileMatchesType($context);
-    }
-
-    /**
-     * Les étiquettes sont saisies à la main : une valeur trop longue est une
-     * phrase collée par erreur, pas un rangement.
-     */
-    #[Assert\Callback]
-    public function validateTags(ExecutionContextInterface $context): void
-    {
-        foreach ($this->tags as $index => $tag) {
-            if (mb_strlen($tag) > self::MAX_TAG_LENGTH) {
-                $context->buildViolation('Une étiquette ne peut pas dépasser {{ limit }} caractères.')
-                    ->setParameter('{{ limit }}', (string) self::MAX_TAG_LENGTH)
-                    ->atPath(sprintf('tags[%d]', $index))
-                    ->addViolation();
-            }
-        }
     }
 
     /**

@@ -3,6 +3,7 @@
 namespace App\Tests\Factory;
 
 use App\Entity\Media;
+use App\Entity\Tag;
 use App\Enum\AppKind;
 use App\Enum\MediaType;
 use Doctrine\ORM\EntityManagerInterface;
@@ -18,7 +19,7 @@ final readonly class MediaFactory
     }
 
     /**
-     * @param list<string> $tags
+     * @param list<Tag> $tags
      */
     public function createNotification(
         int $position = 0,
@@ -35,8 +36,11 @@ final readonly class MediaFactory
             ->setAppKind($appKind)
             ->setDelayMinutes($delayMinutes)
             ->setPublished($published)
-            ->setType($type)
-            ->setTags($tags);
+            ->setType($type);
+
+        foreach ($tags as $tag) {
+            $media->addTag($tag);
+        }
 
         if (MediaType::TEXT === $type) {
             $media->setTextContent('Contenu de test');
@@ -55,7 +59,7 @@ final readonly class MediaFactory
      * habillée plus tard.
      *
      * @param list<array{label: string, text: string}> $fragments
-     * @param list<string> $tags
+     * @param list<Tag> $tags
      */
     public function createDraft(
         int $position = 0,
@@ -69,13 +73,27 @@ final readonly class MediaFactory
             ->setTitle($title)
             ->setDescription($description)
             ->setFragments($fragments)
-            ->setTags($tags)
             ->setPublished(false);
+
+        foreach ($tags as $tag) {
+            $media->addTag($tag);
+        }
 
         $this->entityManager->persist($media);
         $this->entityManager->flush();
 
         return $media;
+    }
+
+    public function createTag(string $name): Tag
+    {
+        $tag = new Tag();
+        $tag->setName($name);
+
+        $this->entityManager->persist($tag);
+        $this->entityManager->flush();
+
+        return $tag;
     }
 
     /**

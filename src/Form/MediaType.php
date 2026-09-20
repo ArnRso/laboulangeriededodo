@@ -3,9 +3,12 @@
 namespace App\Form;
 
 use App\Entity\Media;
+use App\Entity\Tag;
 use App\Enum\AppKind;
 use App\Enum\MediaType as MediaTypeEnum;
 use App\Form\AppDetails\AppDetailsRegistry;
+use App\Repository\TagRepository;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
@@ -92,8 +95,15 @@ class MediaType extends AbstractType
                 'by_reference' => false,
                 'label' => false,
             ])
-            ->add('tags', TagsType::class, [
+            ->add('tags', EntityType::class, [
+                'class' => Tag::class,
                 'label' => 'Étiquettes',
+                'choice_label' => 'name',
+                'query_builder' => static fn (TagRepository $repository) => $repository->createQueryBuilder('t')->orderBy('LOWER(t.name)', 'ASC'),
+                'multiple' => true,
+                'expanded' => true,
+                'required' => false,
+                'help' => 'Pour ton rangement : le destinataire ne les voit jamais.',
             ])
             ->add('delayMinutes', DelayType::class, [
                 'label' => 'Délai d\'arrivée',

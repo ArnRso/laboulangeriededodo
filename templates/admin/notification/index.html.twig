@@ -11,21 +11,22 @@
         <a class="btn btn-primary" href="{{ path('app_admin_notification_choose') }}">Nouvelle notification</a>
     </div>
 
-    {% if knownTags is not empty %}
+    {% if tags is not empty %}
         <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
             <span class="text-body-secondary small">Étiquettes :</span>
             <a class="btn btn-sm {{ activeTag ? 'btn-outline-secondary' : 'btn-secondary' }}"
                href="{{ path('app_admin_notification_index') }}">Toutes</a>
-            {% for tag in knownTags %}
+            {% for tag in tags %}
                 <a class="btn btn-sm {{ activeTag == tag ? 'btn-secondary' : 'btn-outline-secondary' }}"
-                   href="{{ path('app_admin_notification_index', {tag: tag}) }}">{{ tag }}</a>
+                   href="{{ path('app_admin_notification_index', {tag: tag.id}) }}">{{ tag.name }}</a>
             {% endfor %}
+            <a class="btn btn-sm btn-link" href="{{ path('app_admin_tag_index') }}">Gérer</a>
         </div>
     {% endif %}
 
     {% if medias is empty %}
         {% if activeTag %}
-            <div class="alert alert-info">Aucune notification avec l'étiquette « {{ activeTag }} ».</div>
+            <div class="alert alert-info">Aucune notification avec l'étiquette « {{ activeTag.name }} ».</div>
         {% else %}
             <div class="alert alert-info">Le fil est vide. Ajoute une première notification : elle sera disponible dès l'activation du compte.</div>
         {% endif %}
@@ -53,7 +54,7 @@
                                 <div class="d-flex flex-wrap gap-1 mt-1">
                                     {% for tag in media.tags %}
                                         <a class="badge text-bg-light text-decoration-none"
-                                           href="{{ path('app_admin_notification_index', {tag: tag}) }}">{{ tag }}</a>
+                                           href="{{ path('app_admin_notification_index', {tag: tag.id}) }}">{{ tag.name }}</a>
                                     {% endfor %}
                                 </div>
                             {% endif %}

@@ -1,0 +1,54 @@
+{% extends 'admin/_layout.html.twig' %}
+
+{% block title %}Étiquettes{% endblock %}
+
+{% block admin_body %}
+    <h1 class="h3 mb-1">Étiquettes</h1>
+    <p class="text-body-secondary mb-4">Pour ranger tes notifications et les retrouver. Le destinataire ne les voit jamais.</p>
+
+    <div class="row g-4">
+        <div class="col-12 col-lg-7">
+            {% if tags is empty %}
+                <p class="text-body-secondary">Aucune étiquette pour l'instant. Crée la première avec le formulaire.</p>
+            {% else %}
+                <ul class="list-group">
+                    {% for tag in tags %}
+                        {% set used = tag.medias|length %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center gap-3">
+                            <div class="min-w-0">
+                                <a class="fw-semibold text-truncate d-block text-decoration-none"
+                                   href="{{ path('app_admin_notification_index', {tag: tag.id}) }}">{{ tag.name }}</a>
+                                <small class="text-body-secondary">
+                                    {% if used %}{{ used }} notification{{ used > 1 ? 's' : '' }}{% else %}pas encore utilisée{% endif %}
+                                </small>
+                            </div>
+
+                            <div class="d-flex gap-1 flex-shrink-0">
+                                <a class="btn btn-sm btn-outline-secondary" href="{{ path('app_admin_tag_edit', {id: tag.id}) }}">Renommer</a>
+                                <form method="post" action="{{ path('app_admin_tag_delete', {id: tag.id}) }}"
+                                      onsubmit="return confirm({{ (used
+                                          ? 'Retirer « ' ~ tag.name ~ ' » de ' ~ used ~ ' notification' ~ (used > 1 ? 's' : '') ~ ' et la supprimer ?'
+                                          : 'Supprimer « ' ~ tag.name ~ ' » ?')|json_encode }});">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('delete_tag_' ~ tag.id) }}">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">Supprimer</button>
+                                </form>
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+
+        <div class="col-12 col-lg-5">
+            <div class="card">
+                <div class="card-body">
+                    <h2 class="h6 card-title mb-3">Nouvelle étiquette</h2>
+                    {{ form_start(form) }}
+                        {{ form_row(form.name) }}
+                        <button type="submit" class="btn btn-primary mt-2">Créer</button>
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

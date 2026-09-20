@@ -1,0 +1,23 @@
+{% extends 'admin/_layout.html.twig' %}
+
+{% block title %}Renommer {{ tag.name }}{% endblock %}
+
+{% block admin_body %}
+    <h1 class="h3 mb-1">Renommer une étiquette</h1>
+    {% set used = tag.medias|length %}
+    <p class="text-body-secondary mb-4">
+        {% if used %}Portée par {{ used }} notification{{ used > 1 ? 's' : '' }}, qui suivront le nouveau nom.{% else %}Pas encore utilisée.{% endif %}
+    </p>
+
+    <div class="row">
+        <div class="col-12 col-lg-6">
+            {{ form_start(form) }}
+                {{ form_row(form.name) }}
+                <div class="d-flex gap-2 mt-3">
+                    <button type="submit" class="btn btn-primary">Enregistrer</button>
+                    <a class="btn btn-outline-secondary" href="{{ path('app_admin_tag_index') }}">Annuler</a>
+                </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock %}

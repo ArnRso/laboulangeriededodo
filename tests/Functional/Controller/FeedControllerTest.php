@@ -209,7 +209,10 @@ class FeedControllerTest extends WebTestCase
 
     public function testTagsNeverReachTheRecipient(): void
     {
-        $media = $this->mediaFactory->createNotification(0, 'Notification rangée', tags: ['RangementInterne', 'ÀRetravailler']);
+        $media = $this->mediaFactory->createNotification(0, 'Notification rangée', tags: [
+            $this->mediaFactory->createTag('RangementInterne'),
+            $this->mediaFactory->createTag('ÀRetravailler'),
+        ]);
 
         $this->client->request('GET', '/mon-espace');
 

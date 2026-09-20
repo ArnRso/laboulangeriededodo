@@ -3,6 +3,7 @@
 namespace App\Tests\Unit\Entity;
 
 use App\Entity\Media;
+use App\Entity\Tag;
 use App\Enum\AppKind;
 use PHPUnit\Framework\TestCase;
 
@@ -34,38 +35,29 @@ class MediaTest extends TestCase
         self::assertSame('Deliveroo · Nom du plat', $media->getFragments()[0]['label']);
     }
 
-    public function testTagsAreNormalised(): void
+    public function testATagIsNotAttachedTwice(): void
     {
         $media = new Media();
-        $media->setTags(['  Souvenirs ', '', "Voyage\n  Italie", '   ']);
+        $tag = new Tag();
+        $tag->setName('Voyage');
 
-        self::assertSame(['Souvenirs', 'Voyage Italie'], $media->getTags());
+        $media->addTag($tag)->addTag($tag);
+
+        self::assertCount(1, $media->getTags());
+        self::assertTrue($media->hasTag($tag));
     }
 
-    public function testTheSameTagIsNotKeptTwiceWhateverTheCase(): void
+    public function testATagCanBeDetached(): void
     {
         $media = new Media();
-        $media->setTags(['Voyage', 'voyage', 'VOYAGE', 'Cadeau']);
+        $tag = new Tag();
+        $tag->setName('Voyage');
+        $media->addTag($tag);
 
-        self::assertSame(['Voyage', 'Cadeau'], $media->getTags());
-    }
+        $media->removeTag($tag);
 
-    public function testATagIsFoundWhateverTheCase(): void
-    {
-        $media = new Media();
-        $media->setTags(['Voyage']);
-
-        self::assertTrue($media->hasTag('voyage'));
-        self::assertTrue($media->hasTag('VOYAGE'));
-        self::assertFalse($media->hasTag('voyages'));
-    }
-
-    public function testNonStringTagsAreDropped(): void
-    {
-        $media = new Media();
-        $media->setTags(['Voyage', 42, null, ['imbriqué'], 'Cadeau']);
-
-        self::assertSame(['Voyage', 'Cadeau'], $media->getTags());
+        self::assertCount(0, $media->getTags());
+        self::assertFalse($media->hasTag($tag));
     }
 
     public function testADraftHasNoAppToRequire(): void

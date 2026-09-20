@@ -41,12 +41,20 @@
 
     {{ include('admin/notification/_fragments.html.twig', {collection: form.fragments}, with_context: false) }}
 
-    {{ form_row(form.tags, {attr: {list: 'known-tags'}}) }}
-    {# Les étiquettes déjà posées ailleurs, pour éviter d'en inventer une
-       variante à chaque saisie. #}
-    <datalist id="known-tags">
-        {% for tag in knownTags %}<option value="{{ tag }}"></option>{% endfor %}
-    </datalist>
+    <fieldset class="border rounded p-3 mb-3">
+        <legend class="fs-6 fw-semibold mb-1">Étiquettes</legend>
+        {% if form.tags|length %}
+            <div class="d-flex flex-wrap gap-3">
+                {% for choice in form.tags %}
+                    {{ form_row(choice) }}
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="form-text mt-0 mb-0">Aucune étiquette pour l'instant. <a href="{{ path('app_admin_tag_index') }}">Crée-en une</a> pour ranger tes notifications.</p>
+        {% endif %}
+        {{ form_help(form.tags) }}
+        {{ form_errors(form.tags) }}
+    </fieldset>
 
     {# Un brouillon n'a pas encore d'application, donc pas de détails. #}
     {% if form.appData is defined %}
