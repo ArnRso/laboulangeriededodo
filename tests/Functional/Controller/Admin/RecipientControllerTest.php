@@ -221,6 +221,20 @@ class RecipientControllerTest extends WebTestCase
         self::assertCount(1, $crawler->filter('.f-n-seen'), 'Rien n\'a été remis à zéro.');
     }
 
+    public function testTheAvatarPickerIsDrawnOnlyOnce(): void
+    {
+        $crawler = $this->client->request('GET', '/admin/destinataires');
+
+        self::assertResponseIsSuccessful();
+        self::assertCount(\count(Avatar::cases()), $crawler->filter('.avatar-grid .avatar-choice'));
+        self::assertCount(
+            \count(Avatar::cases()),
+            $crawler->filter('input[name="invite_recipient[avatar]"]'),
+            'Un radio par avatar : sans setRendered, form_end les redessinerait en liste sous le bouton.',
+        );
+        self::assertCount(0, $crawler->filter('.form-check'));
+    }
+
     /**
      * @param array<string, string> $extra
      */

@@ -81,6 +81,11 @@
                                 {% endfor %}
                             </div>
                             {{ form_errors(form.avatar) }}
+
+                            {# Les radios sont écrits à la main plus haut : sans
+                               ce passage, form_end() les rendrait une seconde
+                               fois, en liste, sous le bouton d'envoi. #}
+                            {% do form.avatar.setRendered %}
                         </div>
 
                         <button type="submit" class="btn btn-primary mt-2">Envoyer l'invitation</button>
