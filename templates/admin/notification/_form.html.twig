@@ -41,6 +41,13 @@
 
     {{ include('admin/notification/_fragments.html.twig', {collection: form.fragments}, with_context: false) }}
 
+    {{ form_row(form.tags, {attr: {list: 'known-tags'}}) }}
+    {# Les étiquettes déjà posées ailleurs, pour éviter d'en inventer une
+       variante à chaque saisie. #}
+    <datalist id="known-tags">
+        {% for tag in knownTags %}<option value="{{ tag }}"></option>{% endfor %}
+    </datalist>
+
     {# Un brouillon n'a pas encore d'application, donc pas de détails. #}
     {% if form.appData is defined %}
         <fieldset class="border rounded p-3 mb-3">

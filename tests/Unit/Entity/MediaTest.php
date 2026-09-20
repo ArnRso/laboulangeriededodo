@@ -34,6 +34,40 @@ class MediaTest extends TestCase
         self::assertSame('Deliveroo · Nom du plat', $media->getFragments()[0]['label']);
     }
 
+    public function testTagsAreNormalised(): void
+    {
+        $media = new Media();
+        $media->setTags(['  Souvenirs ', '', "Voyage\n  Italie", '   ']);
+
+        self::assertSame(['Souvenirs', 'Voyage Italie'], $media->getTags());
+    }
+
+    public function testTheSameTagIsNotKeptTwiceWhateverTheCase(): void
+    {
+        $media = new Media();
+        $media->setTags(['Voyage', 'voyage', 'VOYAGE', 'Cadeau']);
+
+        self::assertSame(['Voyage', 'Cadeau'], $media->getTags());
+    }
+
+    public function testATagIsFoundWhateverTheCase(): void
+    {
+        $media = new Media();
+        $media->setTags(['Voyage']);
+
+        self::assertTrue($media->hasTag('voyage'));
+        self::assertTrue($media->hasTag('VOYAGE'));
+        self::assertFalse($media->hasTag('voyages'));
+    }
+
+    public function testNonStringTagsAreDropped(): void
+    {
+        $media = new Media();
+        $media->setTags(['Voyage', 42, null, ['imbriqué'], 'Cadeau']);
+
+        self::assertSame(['Voyage', 'Cadeau'], $media->getTags());
+    }
+
     public function testADraftHasNoAppToRequire(): void
     {
         $draft = new Media();

@@ -21,7 +21,8 @@ use Symfony\Component\Validator\Constraints\File;
 /**
  * Une notification du fil. L'application imitée est fixée en amont, ou pas
  * encore : un brouillon n'a ni détails d'app ni case « Dans le fil », mais
- * déjà ses fragments de texte à placer plus tard.
+ * déjà ses fragments de texte à placer plus tard, et ses étiquettes de
+ * rangement.
  *
  * @extends AbstractType<Media>
  */
@@ -90,6 +91,9 @@ class MediaType extends AbstractType
                 'allow_delete' => true,
                 'by_reference' => false,
                 'label' => false,
+            ])
+            ->add('tags', TagsType::class, [
+                'label' => 'Étiquettes',
             ])
             ->add('delayMinutes', DelayType::class, [
                 'label' => 'Délai d\'arrivée',

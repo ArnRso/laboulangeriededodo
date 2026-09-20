@@ -207,6 +207,23 @@ class FeedControllerTest extends WebTestCase
         self::assertSelectorTextContains('.f-n-fresh', 'Visible');
     }
 
+    public function testTagsNeverReachTheRecipient(): void
+    {
+        $media = $this->mediaFactory->createNotification(0, 'Notification rangée', tags: ['RangementInterne', 'ÀRetravailler']);
+
+        $this->client->request('GET', '/mon-espace');
+
+        self::assertResponseIsSuccessful();
+        self::assertStringNotContainsString('RangementInterne', (string) $this->client->getResponse()->getContent());
+        self::assertStringNotContainsString('ÀRetravailler', (string) $this->client->getResponse()->getContent());
+
+        $this->client->request('GET', sprintf('/mon-espace/notifications/%d', (int) $media->getId()));
+
+        self::assertResponseIsSuccessful();
+        self::assertStringNotContainsString('RangementInterne', (string) $this->client->getResponse()->getContent());
+        self::assertStringNotContainsString('ÀRetravailler', (string) $this->client->getResponse()->getContent());
+    }
+
     public function testAdminPreviewDoesNotRecordAnAccess(): void
     {
         $media = $this->mediaFactory->createNotification(0, 'À prévisualiser', AppKind::DOCTOLIB);

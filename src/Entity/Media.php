@@ -24,6 +24,11 @@ class Media
      */
     public const int MAX_DELAY_MINUTES = 720 * 60;
 
+    /**
+     * Au-delà, l'étiquette n'aide plus à s'y retrouver.
+     */
+    public const int MAX_TAG_LENGTH = 32;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -90,6 +95,15 @@ class Media
      */
     #[ORM\Column(type: 'json')]
     private array $fragments = [];
+
+    /**
+     * Étiquettes de rangement, pour retrouver ses notifications dans le
+     * back-office. Le destinataire ne les voit jamais.
+     *
+     * @var list<string>
+     */
+    #[ORM\Column(type: 'json')]
+    private array $tags = [];
 
     #[ORM\Column]
     private bool $published = true;
@@ -346,6 +360,64 @@ class Media
         return $this;
     }
 
+    /**
+     * @return list<string>
+     */
+    public function getTags(): array
+    {
+        return $this->tags;
+    }
+
+    /**
+     * @param list<mixed> $tags
+     */
+    public function setTags(array $tags): static
+    {
+        $this->tags = [];
+
+        foreach ($tags as $tag) {
+            if (\is_string($tag)) {
+                $this->addTag($tag);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * Une étiquette déjà posée ne se répète pas, quelle que soit la casse
+     * employée pour la ressaisir.
+     */
+    public function addTag(string $tag): static
+    {
+        $tag = trim(preg_replace('/\s+/u', ' ', $tag) ?? '');
+
+        if ('' === $tag) {
+            return $this;
+        }
+
+        foreach ($this->tags as $existing) {
+            if (0 === strcasecmp($existing, $tag)) {
+                return $this;
+            }
+        }
+
+        $this->tags[] = $tag;
+
+        return $this;
+    }
+
+    public function hasTag(string $tag): bool
+    {
+        foreach ($this->tags as $existing) {
+            if (0 === strcasecmp($existing, $tag)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public function isPublished(): bool
     {
         return $this->published;
@@ -403,6 +475,23 @@ class Media
         }
 
         $this->validateFileMatchesType($context);
+    }
+
+    /**
+     * Les étiquettes sont saisies à la main : une valeur trop longue est une
+     * phrase collée par erreur, pas un rangement.
+     */
+    #[Assert\Callback]
+    public function validateTags(ExecutionContextInterface $context): void
+    {
+        foreach ($this->tags as $index => $tag) {
+            if (mb_strlen($tag) > self::MAX_TAG_LENGTH) {
+                $context->buildViolation('Une étiquette ne peut pas dépasser {{ limit }} caractères.')
+                    ->setParameter('{{ limit }}', (string) self::MAX_TAG_LENGTH)
+                    ->atPath(sprintf('tags[%d]', $index))
+                    ->addViolation();
+            }
+        }
     }
 
     /**

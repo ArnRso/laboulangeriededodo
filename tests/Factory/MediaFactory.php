@@ -17,6 +17,9 @@ final readonly class MediaFactory
     ) {
     }
 
+    /**
+     * @param list<string> $tags
+     */
     public function createNotification(
         int $position = 0,
         string $title = 'Notification de test',
@@ -24,6 +27,7 @@ final readonly class MediaFactory
         int $delayMinutes = 1440,
         bool $published = true,
         MediaType $type = MediaType::TEXT,
+        array $tags = [],
     ): Media {
         $media = new Media();
         $media->setPosition($position)
@@ -31,7 +35,8 @@ final readonly class MediaFactory
             ->setAppKind($appKind)
             ->setDelayMinutes($delayMinutes)
             ->setPublished($published)
-            ->setType($type);
+            ->setType($type)
+            ->setTags($tags);
 
         if (MediaType::TEXT === $type) {
             $media->setTextContent('Contenu de test');
@@ -50,18 +55,21 @@ final readonly class MediaFactory
      * habillée plus tard.
      *
      * @param list<array{label: string, text: string}> $fragments
+     * @param list<string> $tags
      */
     public function createDraft(
         int $position = 0,
         string $title = 'Brouillon',
         ?string $description = null,
         array $fragments = [],
+        array $tags = [],
     ): Media {
         $media = new Media();
         $media->setPosition($position)
             ->setTitle($title)
             ->setDescription($description)
             ->setFragments($fragments)
+            ->setTags($tags)
             ->setPublished(false);
 
         $this->entityManager->persist($media);

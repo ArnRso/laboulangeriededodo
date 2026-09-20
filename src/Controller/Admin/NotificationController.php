@@ -31,10 +31,22 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class NotificationController extends AbstractController
 {
     #[Route('', name: 'app_admin_notification_index', methods: ['GET'])]
-    public function index(MediaRepository $mediaRepository): Response
+    public function index(Request $request, MediaRepository $mediaRepository): Response
     {
+        $tag = trim((string) $request->query->get('tag'));
+        $medias = $mediaRepository->findAllOrdered();
+
+        if ('' !== $tag) {
+            $medias = array_values(array_filter(
+                $medias,
+                static fn (Media $media): bool => $media->hasTag($tag),
+            ));
+        }
+
         return $this->render('admin/notification/index.html.twig', [
-            'medias' => $mediaRepository->findAllOrdered(),
+            'medias' => $medias,
+            'knownTags' => $mediaRepository->findUsedTags(),
+            'activeTag' => $tag,
         ]);
     }
 
@@ -113,7 +125,7 @@ class NotificationController extends AbstractController
      * plus tard.
      */
     #[Route('/brouillon', name: 'app_admin_notification_draft_new', methods: ['GET', 'POST'])]
-    public function draft(Request $request, FeedManager $feedManager): Response
+    public function draft(Request $request, FeedManager $feedManager, MediaRepository $mediaRepository): Response
     {
         $media = new Media();
         $media->setPublished(false);
@@ -130,11 +142,12 @@ class NotificationController extends AbstractController
 
         return $this->render('admin/notification/draft.html.twig', [
             'form' => $form,
+            'knownTags' => $mediaRepository->findUsedTags(),
         ]);
     }
 
     #[Route('/nouveau/{app}', name: 'app_admin_notification_new', requirements: ['app' => new EnumRequirement(AppKind::class)], methods: ['GET', 'POST'])]
-    public function new(Request $request, AppKind $app, FeedManager $feedManager, AppDetailsRegistry $registry): Response
+    public function new(Request $request, AppKind $app, FeedManager $feedManager, AppDetailsRegistry $registry, MediaRepository $mediaRepository): Response
     {
         $media = new Media();
         $media->setAppKind($app)->setAppData($registry->defaultsFor($app));
@@ -152,11 +165,12 @@ class NotificationController extends AbstractController
         return $this->render('admin/notification/new.html.twig', [
             'form' => $form,
             'appKind' => $app,
+            'knownTags' => $mediaRepository->findUsedTags(),
         ]);
     }
 
     #[Route('/{id}/modifier', name: 'app_admin_notification_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
-    public function edit(Request $request, Media $media, FeedManager $feedManager, NotificationDresser $dresser): Response
+    public function edit(Request $request, Media $media, FeedManager $feedManager, NotificationDresser $dresser, MediaRepository $mediaRepository): Response
     {
         $form = $this->createForm(MediaType::class, $media, ['app_kind' => $media->getAppKind()]);
         $form->handleRequest($request);
@@ -172,6 +186,7 @@ class NotificationController extends AbstractController
             'form' => $form,
             'media' => $media,
             'canDress' => $dresser->canDress($media),
+            'knownTags' => $mediaRepository->findUsedTags(),
         ]);
     }
 
