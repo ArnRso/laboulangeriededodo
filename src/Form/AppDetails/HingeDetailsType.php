@@ -44,7 +44,7 @@ class HingeDetailsType extends AbstractAppDetailsType
             ])
             ->add('likedBy', TextType::class, [
                 'label' => 'Qui a aimé la réponse',
-                'help' => 'Affiché dans le bandeau « … a aimé ta réponse ». Vide : le nom du profil.',
+                'help' => 'Affiché dans le bandeau « … a aimé ta réponse », et signe le petit mot.',
                 'required' => false,
             ])
             ->add('comment', TextType::class, [
@@ -61,7 +61,7 @@ class HingeDetailsType extends AbstractAppDetailsType
             'prompt' => 'Ce qui me rend heureux',
             'answer' => '',
             'photoCaption' => '',
-            'likedBy' => '',
+            'likedBy' => 'Dodo',
             'comment' => 'hear me out 👀',
         ];
     }

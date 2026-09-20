@@ -56,7 +56,7 @@
         <div class="sp-lyrics">
             <small>Paroles</small>
             {% set lyrics = data.lyrics|default(media.description) %}
-            {% if lyrics %}<p>{{ lyrics }}</p>{% endif %}
+            {% if lyrics %}<p>{{ lyrics|nl2br }}</p>{% endif %}
             {% if not inCover %}
                 {{ include('feed/_media.html.twig', {media: media, class: 'sp-media'}, with_context: false) }}
             {% endif %}
@@ -73,6 +73,9 @@
                 </div>
                 <span class="sp-follow">Suivre</span>
             </div>
+            {% if data.artistBio|default('') %}
+                <p class="sp-artist-bio">{{ data.artistBio|nl2br }}</p>
+            {% endif %}
         </div>
     </main>
 

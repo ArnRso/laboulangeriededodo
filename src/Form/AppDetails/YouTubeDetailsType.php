@@ -55,6 +55,12 @@ class YouTubeDetailsType extends AbstractAppDetailsType
                 'label' => 'Durée',
                 'help' => 'Affichée dans le lecteur, comme « 4:12 ».',
                 'required' => false,
+            ])
+            ->add('comments', TextareaType::class, [
+                'label' => 'Commentaires',
+                'help' => 'Un par ligne, sous la forme « pseudo: texte ».',
+                'required' => false,
+                'attr' => ['rows' => 4, 'placeholder' => "marie83: je me souviens de ce jour\nta.mere: qui a filmé ça"],
             ]);
     }
 
@@ -69,6 +75,7 @@ class YouTubeDetailsType extends AbstractAppDetailsType
             'likes' => 42000,
             'subscribers' => '42 k abonnés',
             'duration' => '4:12',
+            'comments' => '',
         ];
     }
 }

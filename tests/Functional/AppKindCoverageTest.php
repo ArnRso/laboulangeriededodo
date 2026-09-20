@@ -452,6 +452,95 @@ class AppKindCoverageTest extends WebTestCase
     }
 
     /**
+     * Sur Hinge, celui qui aime la réponse n'est pas celui dont on lit le
+     * profil : les deux champs vivent leur vie.
+     */
+    public function testHingeSeparatesTheProfileFromWhoLikedTheAnswer(): void
+    {
+        $this->client->loginUser($this->userFactory->createAdmin());
+
+        $crawler = $this->client->request('POST', '/admin/notifications/nouveau/hinge/apercu', [
+            'media' => [
+                'title' => 'Une réponse',
+                'type' => MediaType::TEXT->value,
+                'textContent' => 'Un souvenir',
+                'appData' => ['name' => 'Camille', 'age' => 19, 'likedBy' => 'Dodo', 'comment' => 'hear me out'],
+            ],
+        ]);
+
+        self::assertResponseIsSuccessful();
+        self::assertStringContainsString('Dodo a aimé ta réponse', $crawler->filter('.hg-banner')->text());
+        self::assertStringContainsString('Camille', $crawler->filter('.hg-name')->text());
+        self::assertStringNotContainsString('Camille', $crawler->filter('.hg-banner')->text());
+    }
+
+    public function testHingeSaysSomeoneWhenNobodyIsNamed(): void
+    {
+        $this->client->loginUser($this->userFactory->createAdmin());
+
+        $crawler = $this->client->request('POST', '/admin/notifications/nouveau/hinge/apercu', [
+            'media' => [
+                'title' => 'Une réponse',
+                'type' => MediaType::TEXT->value,
+                'textContent' => 'Un souvenir',
+                'appData' => ['name' => 'Camille', 'age' => 19, 'likedBy' => ''],
+            ],
+        ]);
+
+        // Sans ce découplage, le bandeau reprendrait le nom du profil.
+        self::assertStringContainsString('Quelqu\'un a aimé ta réponse', $crawler->filter('.hg-banner')->text());
+        self::assertStringNotContainsString('Camille', $crawler->filter('.hg-banner')->text());
+    }
+
+    public function testYouTubeShowsItsComments(): void
+    {
+        $this->client->loginUser($this->userFactory->createAdmin());
+
+        $crawler = $this->client->request('POST', '/admin/notifications/nouveau/youtube/apercu', [
+            'media' => [
+                'title' => 'Une vidéo',
+                'type' => MediaType::TEXT->value,
+                'textContent' => 'Un souvenir',
+                'appData' => [
+                    'channel' => 'le.pot.agé',
+                    'likes' => 42,
+                    'comments' => "marie83: je me souviens de ce jour\nta.mere: qui a filmé ça",
+                ],
+            ],
+        ]);
+
+        self::assertResponseIsSuccessful();
+        $comments = $crawler->filter('.yt-comment');
+        self::assertCount(2, $comments);
+        self::assertStringContainsString('@marie83', $comments->first()->text());
+        self::assertStringContainsString('je me souviens de ce jour', $comments->first()->text());
+        self::assertStringContainsString('qui a filmé ça', $comments->last()->text());
+    }
+
+    public function testSpotifyKeepsTheLineBreaksOfItsLyrics(): void
+    {
+        $this->client->loginUser($this->userFactory->createAdmin());
+
+        $crawler = $this->client->request('POST', '/admin/notifications/nouveau/spotify/apercu', [
+            'media' => [
+                'title' => 'Un titre',
+                'type' => MediaType::TEXT->value,
+                'textContent' => 'Un souvenir',
+                'appData' => [
+                    'artist' => 'le.pot.agé',
+                    'progress' => 42,
+                    'lyrics' => "Premier vers\nDeuxième vers",
+                    'artistBio' => 'Né dans un bus, en 2015.',
+                ],
+            ],
+        ]);
+
+        self::assertResponseIsSuccessful();
+        self::assertCount(1, $crawler->filter('.sp-lyrics p br'), 'Les vers sont séparés, pas collés.');
+        self::assertStringContainsString('Né dans un bus, en 2015.', $crawler->filter('.sp-artist')->text());
+    }
+
+    /**
      * Une vidéo démarre seule sur tous les écrans. Les navigateurs refusant
      * de lancer du son sans geste de l'utilisateur, elle part en sourdine —
      * sans « muted », « autoplay » resterait lettre morte.

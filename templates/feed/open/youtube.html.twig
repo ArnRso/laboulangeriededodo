@@ -63,8 +63,29 @@
             <small>… plus</small>
         </div>
 
+        {% set comments = [] %}
+        {% for line in data.comments|default('')|split('\n') %}
+            {% if line|trim %}{% set comments = comments|merge([line|trim]) %}{% endif %}
+        {% endfor %}
+
         <section class="yt-comments">
             <div class="yt-comments-head"><b>Commentaires</b><small>{{ yt.short((data.likes|default(0)) // 30) }}</small></div>
+
+            {% for comment in comments %}
+                {% set parts = comment|split(':', 2) %}
+                <div class="yt-comment">
+                    <span class="yt-av yt-av-s">{{ avatar }}</span>
+                    <div>
+                        {% if parts|length == 2 %}
+                            <b>@{{ parts[0]|trim }}</b>
+                            <p>{{ parts[1]|trim }}</p>
+                        {% else %}
+                            <p>{{ comment }}</p>
+                        {% endif %}
+                        <span class="yt-comment-acts" aria-hidden="true">👍 <i>{{ loop.revindex * 7 }}</i> 👎 Répondre</span>
+                    </div>
+                </div>
+            {% endfor %}
 
             <div class="yt-comment-add" aria-hidden="true">
                 <span class="yt-av yt-av-s">{{ avatar }}</span>

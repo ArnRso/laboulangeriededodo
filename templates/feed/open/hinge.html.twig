@@ -2,7 +2,7 @@
 
 {% set data = media.appData %}
 {% set name = data.name|default(media.title) %}
-{% set likedBy = data.likedBy|default(name) %}
+{% set likedBy = data.likedBy|default('') %}
 {% set photoCaption = data.photoCaption|default('') ?: media.title %}
 {% set answer = data.answer|default('') ?: (media.description|default(media.title)) %}
 
@@ -20,7 +20,7 @@
         <div class="hg-banner">
             <span class="hg-banner-av">{{ recipient and recipient.avatar ? recipient.avatar.value : '🦤' }}</span>
             <div>
-                <b>{{ likedBy }} a aimé ta réponse</b>
+                <b>{% if likedBy %}{{ likedBy }} a aimé ta réponse{% else %}Quelqu'un a aimé ta réponse{% endif %}</b>
             </div>
             <span class="hg-banner-heart" aria-hidden="true">♥</span>
         </div>
@@ -38,7 +38,7 @@
             <p>{{ answer }}</p>
             {% if data.comment|default('') %}
                 <div class="hg-comment">
-                    <span>{{ likedBy }}</span>
+                    {% if likedBy %}<span>{{ likedBy }}</span>{% endif %}
                     {{ data.comment }}
                 </div>
             {% endif %}

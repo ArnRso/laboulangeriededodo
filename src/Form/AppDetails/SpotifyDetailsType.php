@@ -29,9 +29,9 @@ class SpotifyDetailsType extends AbstractAppDetailsType
             ])
             ->add('lyrics', TextareaType::class, [
                 'label' => 'Paroles',
-                'help' => 'Le texte de la carte Paroles. Vide : reprend la description.',
+                'help' => 'Le texte de la carte Paroles, un vers par ligne. Vide : reprend la description.',
                 'required' => false,
-                'attr' => ['rows' => 4],
+                'attr' => ['rows' => 6],
             ])
             ->add('album', TextType::class, [
                 'label' => 'Album',
@@ -55,6 +55,12 @@ class SpotifyDetailsType extends AbstractAppDetailsType
             ->add('progress', IntegerType::class, [
                 'label' => 'Position de la barre (%)',
                 'constraints' => [new Range(min: 0, max: 100)],
+            ])
+            ->add('artistBio', TextareaType::class, [
+                'label' => 'À propos de l\'artiste',
+                'help' => 'Le texte sous le nom, dans la carte « À propos de l\'artiste ».',
+                'required' => false,
+                'attr' => ['rows' => 3],
             ]);
     }
 
@@ -69,6 +75,7 @@ class SpotifyDetailsType extends AbstractAppDetailsType
             'duration' => '3:47',
             'plays' => '1 240 écoutes',
             'progress' => 42,
+            'artistBio' => '',
         ];
     }
 }

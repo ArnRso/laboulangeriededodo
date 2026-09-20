@@ -229,6 +229,13 @@
     padding: 12px;
 }
 
+.sp-artist-bio {
+    margin: 14px 0 0;
+    font-size: 14px;
+    line-height: 1.5;
+    color: #b3b3b3;
+}
+
 .sp-lyrics-source {
     display: block;
     margin-top: 14px;
