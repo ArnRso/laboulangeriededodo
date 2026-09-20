@@ -14,7 +14,7 @@
     <span class="f-b">
         <span class="f-h">
             <b>{{ app.label }}</b>
-            <small>🔒 verrouillée</small>
+            <small>verrouillée</small>
         </span>
 
         <span class="f-t f-t-hidden">Notification masquée</span>
@@ -23,10 +23,10 @@
             <span class="f-slot"
                   data-controller="countdown"
                   data-countdown-available-at-value="{{ state.availableAt|date('c') }}">
-                ⏳ Dans <b data-countdown-target="output">{{ state.availableAt|date('H:i:s') }}</b>
+                Dans <b data-countdown-target="output">{{ state.availableAt|date('H:i:s') }}</b>
             </span>
         {% else %}
-            <span class="f-slot">⏳ {{ state.media.delayLabel }} après ouverture</span>
+            <span class="f-slot">{{ state.media.delayLabel }} après ouverture</span>
         {% endif %}
     </span>
 </div>

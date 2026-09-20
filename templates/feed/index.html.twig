@@ -2,15 +2,18 @@
 
 {% block title %}Notifications{% endblock %}
 
+{% block body_class %}f-body-lock{% endblock %}
+
 {% block body %}
-    <main class="f-wrap" data-controller="clock cheat-code">
+    <main class="f-wrap f-wrap-lock" data-controller="clock cheat-code">
         <header class="f-clock">
+            {# Comme sur un écran verrouillé : la date coiffe l'heure. #}
+            <div class="f-clock-date" data-clock-target="date">{{ dateLabel }}</div>
             {# Coup de pouce de démonstration : « dodo » au clavier, ou l'horloge
                gardée appuyée deux secondes sur mobile. #}
             <div class="f-clock-time"
                  data-clock-target="time"
                  data-action="pointerdown->cheat-code#holdStart pointerup->cheat-code#holdEnd pointerleave->cheat-code#holdEnd pointercancel->cheat-code#holdEnd contextmenu->cheat-code#holdEnd">{{ now|date('H:i') }}</div>
-            <div class="f-clock-date" data-clock-target="date">{{ dateLabel }}</div>
         </header>
 
         {% if overview.next %}
@@ -80,5 +83,12 @@
                 </div>
             {% endif %}
         {% endif %}
+
+        {# Les deux raccourcis d'un écran verrouillé. Ils ne mènent nulle part :
+           ils sont là pour le décor. #}
+        <div class="f-dock" aria-hidden="true">
+            <span class="f-dock-key">🔦</span>
+            <span class="f-dock-key">📷</span>
+        </div>
     </main>
 {% endblock %}

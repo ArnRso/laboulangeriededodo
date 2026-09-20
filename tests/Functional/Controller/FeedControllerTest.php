@@ -163,6 +163,19 @@ class FeedControllerTest extends WebTestCase
         self::assertSelectorTextContains('.f-n-seen', 'Notification 1');
     }
 
+    public function testTheLockScreenThemeStaysOnTheFeed(): void
+    {
+        $media = $this->mediaFactory->createFeed(1)[0];
+
+        $this->client->request('GET', '/mon-espace');
+        self::assertSelectorExists('body.f-body-lock', 'Le fil porte le thème sombre.');
+
+        // Les écrans d'app sont clairs : le thème du fil les rendrait
+        // illisibles, texte blanc sur fond blanc.
+        $this->client->request('GET', sprintf('/mon-espace/notifications/%d', (int) $media->getId()));
+        self::assertSelectorNotExists('body.f-body-lock');
+    }
+
     public function testTheNextNotificationShowsItsAppAndNothingElse(): void
     {
         $this->mediaFactory->createNotification(0, 'Première', AppKind::UBER_EATS);

@@ -11,8 +11,39 @@
     --f-blue: #1d7bff;
     --f-glass: rgba(255, 255, 255, 0.82);
     --f-glass-soft: rgba(255, 255, 255, 0.92);
+    --f-hairline: rgba(23, 21, 43, 0.08);
     --f-shadow: 0 10px 30px rgba(23, 21, 43, 0.1);
     --f-radius: 20px;
+    --f-app-name: rgba(23, 21, 43, 0.78);
+    --f-stamp: rgba(23, 21, 43, 0.45);
+    --f-body-text: #3e3b55;
+    --f-slot-bg: #eef5fc;
+    --f-slot-ink: #0d5fa0;
+    --f-layer: rgba(255, 255, 255, 0.55);
+    --f-layer-soft: rgba(255, 255, 255, 0.35);
+    --f-icon-ring: #fff;
+}
+
+/* L'écran verrouillé, et lui seul : le papier peint est sombre, donc tout
+   ce qui se pose dessus s'inverse. Les écrans d'app gardent le thème clair. */
+.f-body-lock {
+    --f-ink: #fff;
+    --f-muted: rgba(255, 255, 255, 0.62);
+    --f-seen: #4ade80;
+    /* Le verre laisse passer la teinte du papier peint. */
+    --f-glass: rgba(255, 255, 255, 0.14);
+    --f-glass-soft: rgba(255, 255, 255, 0.09);
+    --f-hairline: rgba(255, 255, 255, 0.16);
+    --f-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+    --f-radius: 22px;
+    --f-app-name: rgba(255, 255, 255, 0.88);
+    --f-stamp: rgba(255, 255, 255, 0.5);
+    --f-body-text: rgba(255, 255, 255, 0.82);
+    --f-slot-bg: rgba(255, 255, 255, 0.12);
+    --f-slot-ink: #fff;
+    --f-layer: rgba(255, 255, 255, 0.12);
+    --f-layer-soft: rgba(255, 255, 255, 0.07);
+    --f-icon-ring: rgba(255, 255, 255, 0.25);
 }
 
 * {
@@ -33,10 +64,35 @@ body {
     -webkit-font-smoothing: antialiased;
 }
 
+/* Papier peint : des voiles colorés sur un fond profond, pour que le verre
+   des notifications ait quelque chose à laisser passer. */
+.f-body-lock {
+    background:
+        radial-gradient(ellipse 58% 44% at 68% 14%, rgba(126, 170, 214, 0.85), transparent 64%),
+        radial-gradient(ellipse 46% 38% at 22% 30%, rgba(92, 150, 132, 0.7), transparent 68%),
+        radial-gradient(ellipse 66% 40% at 38% 66%, rgba(72, 98, 142, 0.6), transparent 70%),
+        radial-gradient(ellipse 80% 50% at 50% 104%, rgba(26, 36, 52, 0.9), transparent 72%),
+        linear-gradient(168deg, #1d2836 0%, #2a3b4d 44%, #223230 100%);
+    background-attachment: fixed;
+    -webkit-font-smoothing: antialiased;
+}
+
 .f-wrap {
     max-width: 430px;
     margin: 0 auto;
-    padding: 0 14px 40px;
+    padding: 0 14px 20px;
+}
+
+/* L'écran verrouillé tient dans la hauteur : les raccourcis se posent en
+   bas, et les notifications occupent ce qui reste. */
+.f-wrap-lock {
+    display: flex;
+    flex-direction: column;
+    min-height: calc(100svh - 44px);
+}
+
+.f-wrap-lock .f-dock {
+    margin-top: auto;
 }
 
 /* Barre d'état : pas d'heure, juste le réseau — et la roue pour les options. */
@@ -87,32 +143,50 @@ body {
 /* En-tête : horloge et date (G3A, sans la saison). */
 .f-clock {
     text-align: center;
-    margin: 4px 0 18px;
-}
-
-.f-clock-time {
-    font-size: 52px;
-    font-weight: 800;
-    letter-spacing: -2px;
-    line-height: 1;
-    font-variant-numeric: tabular-nums;
+    margin: 34px 0 52px;
 }
 
 .f-clock-date {
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--f-muted);
-    margin-top: 4px;
-    text-transform: lowercase;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--f-ink);
+    margin-bottom: 2px;
+}
+
+.f-clock-time {
+    font-size: 78px;
+    font-weight: 500;
+    letter-spacing: -2px;
+    line-height: 1.02;
+    font-variant-numeric: tabular-nums;
+    text-shadow: 0 2px 18px rgba(0, 0, 0, 0.22);
+}
+
+/* Les raccourcis du bas : deux pastilles, sans action. */
+.f-dock {
+    display: flex;
+    justify-content: space-between;
+    padding: 30px 22px calc(10px + env(safe-area-inset-bottom));
+}
+
+.f-dock-key {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    font-size: 21px;
+    background: rgba(0, 0, 0, 0.28);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
 }
 
 .f-grp {
-    font-size: 11px;
-    font-weight: 800;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    color: rgba(23, 21, 43, 0.55);
-    margin: 14px 6px 8px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0;
+    color: var(--f-stamp);
+    margin: 18px 10px 8px;
     display: flex;
     justify-content: space-between;
     align-items: baseline;
@@ -131,11 +205,12 @@ body {
     gap: 12px;
     align-items: flex-start;
     background: var(--f-glass);
-    backdrop-filter: blur(18px);
-    -webkit-backdrop-filter: blur(18px);
+    border: 1px solid var(--f-hairline);
+    backdrop-filter: blur(22px) saturate(140%);
+    -webkit-backdrop-filter: blur(22px) saturate(140%);
     border-radius: var(--f-radius);
-    padding: 12px 14px;
-    margin-bottom: 10px;
+    padding: 13px 15px;
+    margin-bottom: 9px;
     box-shadow: var(--f-shadow);
     text-decoration: none;
     color: var(--f-ink);
@@ -177,29 +252,28 @@ body {
 }
 
 .f-h b {
-    font-size: 11px;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 0.4px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--f-app-name);
 }
 
 .f-h small {
-    font-size: 11px;
-    color: var(--f-muted);
-    font-weight: 700;
+    font-size: 12px;
+    color: var(--f-stamp);
+    font-weight: 500;
     white-space: nowrap;
 }
 
 .f-t {
     font-size: 15px;
-    font-weight: 800;
-    line-height: 1.2;
-    margin-top: 2px;
+    font-weight: 700;
+    line-height: 1.25;
+    margin-top: 1px;
 }
 
 .f-m {
     font-size: 13px;
-    color: #3e3b55;
+    color: var(--f-body-text);
     line-height: 1.35;
     margin-top: 3px;
 }
@@ -226,16 +300,17 @@ body {
     background: var(--f-ink);
 }
 
+/* Le point des non lues, posé dans la carte : dehors, il se détachait du
+   verre et flottait sur le papier peint. */
 .f-dot {
     position: absolute;
-    left: -2px;
+    left: 7px;
     top: 50%;
-    width: 8px;
-    height: 8px;
+    width: 7px;
+    height: 7px;
     border-radius: 50%;
     background: var(--f-blue);
     transform: translateY(-50%);
-    box-shadow: 0 0 0 3px rgba(29, 123, 255, 0.2);
 }
 
 /* Fraîche : entourée de la couleur de l'app. */
@@ -290,12 +365,12 @@ body {
     gap: 8px;
     align-items: center;
     margin-top: 8px;
-    background: #eef5fc;
-    border-radius: 12px;
-    padding: 8px 10px;
+    background: var(--f-slot-bg);
+    border-radius: 13px;
+    padding: 8px 11px;
     font-size: 13px;
     font-weight: 700;
-    color: #0d5fa0;
+    color: var(--f-slot-ink);
 }
 
 .f-slot b {
@@ -314,17 +389,16 @@ body {
 }
 
 .f-n-locked .f-slot {
-    background: rgba(23, 21, 43, 0.06);
-    color: var(--f-ink);
+    background: rgba(0, 0, 0, 0.22);
 }
 
 /* Consultée : compacte, pleine couleur, coche verte. */
 .f-n-seen {
-    padding: 10px 12px;
+    padding: 11px 13px;
     margin-bottom: 8px;
     align-items: center;
     background: var(--f-glass-soft);
-    box-shadow: 0 4px 14px rgba(23, 21, 43, 0.07);
+    box-shadow: none;
 }
 
 .f-n-seen .f-app {
@@ -355,10 +429,12 @@ body {
     align-items: center;
     gap: 12px;
     background: var(--f-glass-soft);
-    border: 0;
+    border: 1px solid var(--f-hairline);
+    backdrop-filter: blur(22px) saturate(140%);
+    -webkit-backdrop-filter: blur(22px) saturate(140%);
     border-radius: var(--f-radius);
     padding: 12px 14px;
-    box-shadow: 0 4px 14px rgba(23, 21, 43, 0.07);
+    box-shadow: none;
     font: inherit;
     color: var(--f-ink);
     text-align: left;
@@ -374,7 +450,7 @@ body {
     right: 10px;
     bottom: -5px;
     height: 12px;
-    background: rgba(255, 255, 255, 0.55);
+    background: var(--f-layer);
     border-radius: 0 0 18px 18px;
     z-index: -1;
 }
@@ -383,7 +459,7 @@ body {
     left: 18px;
     right: 18px;
     bottom: -9px;
-    background: rgba(255, 255, 255, 0.35);
+    background: var(--f-layer-soft);
 }
 
 .f-stack-icons {
@@ -394,7 +470,7 @@ body {
     width: 26px;
     height: 26px;
     border-radius: 8px;
-    border: 2px solid #fff;
+    border: 2px solid var(--f-icon-ring);
     margin-left: -6px;
     display: grid;
     place-items: center;
