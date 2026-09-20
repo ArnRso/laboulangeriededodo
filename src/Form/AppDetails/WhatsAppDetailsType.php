@@ -51,7 +51,7 @@ class WhatsAppDetailsType extends AbstractAppDetailsType
     public static function defaults(): array
     {
         return [
-            'contact' => 'Dodo du passé',
+            'contact' => 'le.pot.agé',
             'contactEmoji' => '👶',
             'statusLine' => 'vu il y a 11 ans',
             'conversation' => "moi: c'est qui ???

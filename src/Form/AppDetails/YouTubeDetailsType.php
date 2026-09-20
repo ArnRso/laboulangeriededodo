@@ -61,7 +61,7 @@ class YouTubeDetailsType extends AbstractAppDetailsType
     public static function defaults(): array
     {
         return [
-            'channel' => 'Dodo du passé',
+            'channel' => 'le.pot.agé',
             'videoTitle' => '',
             'videoDescription' => '',
             'views' => '1,2 M de vues',

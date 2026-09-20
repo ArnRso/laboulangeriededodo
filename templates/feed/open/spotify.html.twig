@@ -1,7 +1,7 @@
 {% extends 'base_feed.html.twig' %}
 
 {% set data = media.appData %}
-{% set artist = data.artist|default('Dodo du passé') %}
+{% set artist = data.artist|default('le.pot.agé') %}
 {% set duration = data.duration|default('3:47') %}
 {% set progress = data.progress|default(42) %}
 {% set parts = duration matches '/^\\d+:\\d{1,2}$/' ? duration|split(':') : [0, 0] %}
@@ -60,7 +60,7 @@
             {% if not inCover %}
                 {{ include('feed/_media.html.twig', {media: media, class: 'sp-media'}, with_context: false) }}
             {% endif %}
-            <span class="sp-lyrics-source">Paroles fournies par Dodo du passé</span>
+            <span class="sp-lyrics-source">Paroles fournies par le.pot.agé</span>
         </div>
 
         <div class="sp-artist">

@@ -69,7 +69,7 @@ class XDetailsType extends AbstractAppDetailsType
     public static function defaults(): array
     {
         return [
-            'displayName' => 'Dodo du passé',
+            'displayName' => 'le.pot.agé',
             'handle' => 'dodo.du.passe',
             'verified' => true,
             'postText' => '',

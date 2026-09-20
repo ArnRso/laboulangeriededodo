@@ -1,7 +1,7 @@
 {% extends 'base_feed.html.twig' %}
 
 {% set data = media.appData %}
-{% set contact = data.contact|default('Dodo du passé') %}
+{% set contact = data.contact|default('le.pot.agé') %}
 
 {% block title %}{{ media.title }} · Messenger{% endblock %}
 {% block body_class %}f-open f-open-ms{% endblock %}

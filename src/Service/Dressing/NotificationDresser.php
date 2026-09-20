@@ -46,7 +46,7 @@ final class NotificationDresser
 
     /**
      * Seules les valeurs saisies comptent — pas les défauts de l'app, qui
-     * rempliraient les fragments de « Dodo du passé » à chaque changement.
+     * rempliraient les fragments de « le.pot.agé » à chaque changement.
      */
     private function archiveAbandonedValues(Media $media, DressMapping $mapping): void
     {

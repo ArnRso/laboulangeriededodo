@@ -52,7 +52,7 @@ class SnapchatDetailsType extends AbstractAppDetailsType
     public static function defaults(): array
     {
         return [
-            'sender' => 'Dodo du passé',
+            'sender' => 'le.pot.agé',
             'streak' => 4015,
             'caption' => 'leaked footage 👀',
             'chatTitle' => '',

@@ -315,7 +315,7 @@ class NotificationControllerTest extends WebTestCase
             'media[textContent]' => 'Tu te souviens ?',
             'media[delayMinutes][hours]' => 24,
             'media[delayMinutes][minutes]' => 0,
-            'media[appData][courier]' => 'Dodo du passé',
+            'media[appData][courier]' => 'le.pot.agé',
             'media[appData][trip]' => 'Hier → Aujourd\'hui',
             'media[appData][stars]' => 4,
         ]);
@@ -327,7 +327,7 @@ class NotificationControllerTest extends WebTestCase
         self::assertSame(AppKind::UBER_EATS, $media->getAppKind());
         self::assertSame(1440, $media->getDelayMinutes());
         self::assertSame(0, $media->getPosition(), 'La première est en tête du fil.');
-        self::assertSame('Dodo du passé', $media->getAppData()['courier']);
+        self::assertSame('le.pot.agé', $media->getAppData()['courier']);
         self::assertSame(4, $media->getAppData()['stars']);
         self::assertTrue($media->isPublished());
     }

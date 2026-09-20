@@ -27,7 +27,7 @@
             <span class="f-t">{{ app.headline(data) }}</span>
             <span class="f-m">
                 1 × <b>{{ media.title }}</b>
-                {% if app.value == 'uber_eats' %} · livrée par {{ data.courier|default('Dodo du passé') }}{% endif %}
+                {% if app.value == 'uber_eats' %} · livrée par {{ data.courier|default('le.pot.agé') }}{% endif %}
             </span>
             {% if app.value == 'uber_eats' %}
                 <span class="f-track" aria-hidden="true"><i></i><i></i><i></i><i></i></span>

@@ -51,7 +51,7 @@ class LydiaDetailsType extends AbstractAppDetailsType
     public static function defaults(): array
     {
         return [
-            'counterparty' => 'Dodo du passé',
+            'counterparty' => 'le.pot.agé',
             'message' => 'pour la pizza de 2015 🍕',
             'emoji' => '💸',
             'label' => '',

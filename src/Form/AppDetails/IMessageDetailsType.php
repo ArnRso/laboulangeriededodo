@@ -56,7 +56,7 @@ class IMessageDetailsType extends AbstractAppDetailsType
     public static function defaults(): array
     {
         return [
-            'contact' => 'Dodo du passé',
+            'contact' => 'le.pot.agé',
             'contactEmoji' => '👶',
             'statusLine' => 'Il y a 11 ans, 23:41',
             'conversation' => 'moi: explique

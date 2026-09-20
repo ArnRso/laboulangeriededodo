@@ -14,7 +14,7 @@
 {% endmacro %}
 
 {% set data = media.appData %}
-{% set displayName = data.displayName|default('Dodo du passé') %}
+{% set displayName = data.displayName|default('le.pot.agé') %}
 {% set handle = data.handle|default('dodo.du.passe') %}
 {% set avatar = recipient and recipient.avatar ? recipient.avatar.value : '🦤' %}
 

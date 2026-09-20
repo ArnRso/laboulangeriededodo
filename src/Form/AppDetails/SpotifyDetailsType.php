@@ -61,7 +61,7 @@ class SpotifyDetailsType extends AbstractAppDetailsType
     public static function defaults(): array
     {
         return [
-            'artist' => 'Dodo du passé',
+            'artist' => 'le.pot.agé',
             'trackTitle' => '',
             'lyrics' => '',
             'album' => 'Lost Media (Deluxe)',

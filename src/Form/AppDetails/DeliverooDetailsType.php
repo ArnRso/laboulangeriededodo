@@ -56,7 +56,7 @@ class DeliverooDetailsType extends AbstractAppDetailsType
     {
         return [
             'restaurant' => 'Chez Dodo',
-            'rider' => 'Dodo du passé',
+            'rider' => 'le.pot.agé',
             'eta' => '11 ans',
             'items' => '',
             'dishName' => '',

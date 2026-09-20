@@ -1,7 +1,7 @@
 {% extends 'base_feed.html.twig' %}
 
 {% set data = media.appData %}
-{% set counterparty = data.counterparty|default('Dodo du passé') %}
+{% set counterparty = data.counterparty|default('le.pot.agé') %}
 {% set label = data.label|default('') ?: media.title %}
 {% set comment = data.comment|default('') ?: media.description %}
 {% set commentAuthor = data.commentAuthor|default('') ?: counterparty %}

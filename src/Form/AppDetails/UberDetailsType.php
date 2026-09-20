@@ -64,7 +64,7 @@ class UberDetailsType extends AbstractAppDetailsType
     public static function defaults(): array
     {
         return [
-            'driver' => 'Dodo du passé',
+            'driver' => 'le.pot.agé',
             'car' => 'Peugeot 206 · AB-123-CD',
             'fromPlace' => 'Ton adolescence',
             'toPlace' => 'Aujourd\'hui',

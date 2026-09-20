@@ -55,7 +55,7 @@ class UberEatsDetailsType extends AbstractAppDetailsType
     public static function defaults(): array
     {
         return [
-            'courier' => 'Dodo du passé',
+            'courier' => 'le.pot.agé',
             'trip' => 'Ton adolescence → Aujourd\'hui · 11 ans de trajet',
             'orderTitle' => '',
             'itemName' => '',

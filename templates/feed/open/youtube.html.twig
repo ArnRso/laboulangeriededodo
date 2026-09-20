@@ -14,7 +14,7 @@
 {% endmacro %}
 
 {% set data = media.appData %}
-{% set channel = data.channel|default('Dodo du passé') %}
+{% set channel = data.channel|default('le.pot.agé') %}
 {% set avatar = recipient and recipient.avatar ? recipient.avatar.value : '🦤' %}
 
 {% block title %}{{ media.title }} · YouTube{% endblock %}

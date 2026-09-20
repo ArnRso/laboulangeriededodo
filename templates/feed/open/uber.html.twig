@@ -1,7 +1,7 @@
 {% extends 'base_feed.html.twig' %}
 
 {% set data = media.appData %}
-{% set driver = data.driver|default('Dodo du passé') %}
+{% set driver = data.driver|default('le.pot.agé') %}
 {% set rating = data.rating|default(5) %}
 
 {% block title %}{{ media.title }} · Uber{% endblock %}

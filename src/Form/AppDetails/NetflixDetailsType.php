@@ -73,7 +73,7 @@ class NetflixDetailsType extends AbstractAppDetailsType
             'seasons' => '1 saison',
             'genres' => 'Drame · Comédie · Documentaire',
             'topTen' => true,
-            'cast' => 'Dodo du passé, ta mère, le groupe WhatsApp',
+            'cast' => 'le.pot.agé, ta mère, le groupe WhatsApp',
         ];
     }
 }

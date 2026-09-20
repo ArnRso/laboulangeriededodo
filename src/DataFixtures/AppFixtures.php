@@ -94,7 +94,7 @@ class AppFixtures extends Fixture
                 'content' => 'Tu te souviens de ce jour de septembre ? Moi oui. Toi tu avais dit « je reste une heure ». Il était 4 h 12.',
                 'delay' => 0,
                 'appData' => [
-                    'courier' => 'Dodo du passé',
+                    'courier' => 'le.pot.agé',
                     'trip' => 'Ton adolescence → Aujourd\'hui · 11 ans de trajet',
                     'stars' => 4,
                 ],
@@ -156,7 +156,7 @@ class AppFixtures extends Fixture
                 'content' => 'Tu conduisais. Personne ne sait encore comment on est arrivés.',
                 'delay' => 1440,
                 'appData' => [
-                    'courier' => 'Dodo du passé',
+                    'courier' => 'le.pot.agé',
                     'trip' => 'Quelque part → Ailleurs · 3 détours',
                     'stars' => 5,
                 ],
@@ -169,7 +169,7 @@ class AppFixtures extends Fixture
                 'content' => 'jsuis dehors depuis 20 min vous êtes où',
                 'delay' => 30,
                 'appData' => [
-                    'contact' => 'Dodo du passé',
+                    'contact' => 'le.pot.agé',
                     'contactEmoji' => '👶',
                     'statusLine' => 'vu il y a 11 ans',
                     'conversation' => "moi: c'est qui ???\ntoi, en 2015. tu avais dit « je reste une heure »\nmoi: et ?\nil était 4h12.",
@@ -199,7 +199,7 @@ class AppFixtures extends Fixture
                 'content' => 'https://open.spotify.com/',
                 'delay' => 720,
                 'appData' => [
-                    'artist' => 'Dodo du passé',
+                    'artist' => 'le.pot.agé',
                     'album' => 'Lost Media (Deluxe)',
                     'playlist' => 'Tes années lycée',
                     'duration' => '3:47',
@@ -250,7 +250,7 @@ class AppFixtures extends Fixture
                     'date' => 'Samedi 23 août 2015',
                     'timeRange' => '21:00 – 04:12',
                     'location' => 'Chez quelqu\'un dont tu as oublié le nom',
-                    'attendees' => "Dodo du passé\nMarie\nTa mère (par téléphone)",
+                    'attendees' => "le.pot.agé\nMarie\nTa mère (par téléphone)",
                     'alert' => 'Il y a 11 ans',
                     'calendarName' => 'Canon events',
                 ],

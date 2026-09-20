@@ -51,7 +51,7 @@ class MessengerDetailsType extends AbstractAppDetailsType
     public static function defaults(): array
     {
         return [
-            'contact' => 'Dodo du passé',
+            'contact' => 'le.pot.agé',
             'contactEmoji' => '👶',
             'statusLine' => 'Actif(ve) maintenant',
             'conversation' => "moi: pourquoi t'as encore ça

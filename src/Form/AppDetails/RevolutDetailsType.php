@@ -61,7 +61,7 @@ class RevolutDetailsType extends AbstractAppDetailsType
     public static function defaults(): array
     {
         return [
-            'counterparty' => 'Dodo du passé',
+            'counterparty' => 'le.pot.agé',
             'reference' => 'CB 2015 SOIRÉE DONT ON NE PARLE PLUS',
             'cardLast4' => '2015',
             'category' => 'Décisions',

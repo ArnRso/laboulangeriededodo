@@ -1,7 +1,7 @@
 {% extends 'base_feed.html.twig' %}
 
 {% set data = media.appData %}
-{% set counterparty = data.counterparty|default('Dodo du passé') %}
+{% set counterparty = data.counterparty|default('le.pot.agé') %}
 {% set label = data.label|default('') ?: media.title %}
 {% set details = data.details|default('') ?: media.description %}
 {% set email = counterparty|lower|replace({' ': '.', '\'': '', é: 'e', è: 'e', ê: 'e', à: 'a', ç: 'c', ô: 'o', î: 'i', ï: 'i', ù: 'u', û: 'u'}) ~ '@passe.fr' %}

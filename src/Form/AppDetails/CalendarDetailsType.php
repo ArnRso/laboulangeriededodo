@@ -32,7 +32,7 @@ class CalendarDetailsType extends AbstractAppDetailsType
                 'label' => 'Participants',
                 'help' => 'Un par ligne. Les initiales servent d\'avatar.',
                 'required' => false,
-                'attr' => ['rows' => 4, 'placeholder' => "Dodo du passé\nTa dignité (a décliné)"],
+                'attr' => ['rows' => 4, 'placeholder' => "le.pot.agé\nTa dignité (a décliné)"],
             ])
             ->add('alert', TextType::class, [
                 'label' => 'Alerte',
@@ -61,7 +61,7 @@ class CalendarDetailsType extends AbstractAppDetailsType
             'date' => 'Samedi 23 août 2015',
             'timeRange' => '21:00 – 04:12',
             'location' => 'Chez quelqu\'un dont tu as oublié le nom',
-            'attendees' => 'Dodo du passé
+            'attendees' => 'le.pot.agé
 Ta dignité (a décliné)
 Le drama (a accepté)',
             'alert' => 'Il y a 11 ans',

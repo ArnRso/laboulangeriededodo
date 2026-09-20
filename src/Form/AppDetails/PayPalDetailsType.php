@@ -49,7 +49,7 @@ class PayPalDetailsType extends AbstractAppDetailsType
     public static function defaults(): array
     {
         return [
-            'counterparty' => 'Dodo du passé',
+            'counterparty' => 'le.pot.agé',
             'note' => 'pour le lore, merci de ne pas en parler 🤫',
             'transactionId' => '2015-CANON-EVENT-4H12',
             'fee' => 'Aucuns frais',
