@@ -43,24 +43,8 @@
                     <span>{% if overview.fresh %}part quand tu auras ouvert celle-ci{% else %}elle arrive{% endif %}</span>
                 </div>
 
-                <div class="f-n f-n-doctolib f-n-static">
-                    <span class="f-app" style="background: #107ACA">🩺</span>
-                    <span class="f-b">
-                        <span class="f-h"><b>Doctolib</b><small>rappel</small></span>
-                        <span class="f-t">Rappel de rendez-vous · Dr Passé</span>
-                        <span class="f-m">Spécialiste des décisions catastrophiques</span>
-                        {% if overview.next.availableAt %}
-                            <span class="f-slot"
-                                  data-controller="countdown"
-                                  data-countdown-available-at-value="{{ overview.next.availableAt|date('c') }}">
-                                📅 Dans <b data-countdown-target="output">{{ overview.next.availableAt|date('H:i:s') }}</b>
-                            </span>
-                        {% else %}
-                            <span class="f-slot">📅 {{ overview.next.media.delayLabel }} après ouverture</span>
-                        {% endif %}
-                        <span class="f-m">Canon event. Cette journée était inévitable.</span>
-                    </span>
-                </div>
+                {{ include('feed/_locked.html.twig', {state: overview.next}, with_context: false) }}
+
             {% elseif overview.isFinished %}
                 <div class="f-grp">Fin de saison</div>
                 <div class="f-n f-n-static">

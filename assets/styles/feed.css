@@ -305,6 +305,19 @@ body {
     letter-spacing: -0.5px;
 }
 
+/* En route : l'app se montre, son contenu attend l'ouverture, comme un
+   écran verrouillé dont les aperçus sont coupés. */
+.f-t-hidden {
+    font-weight: 700;
+    color: var(--f-muted);
+    font-style: italic;
+}
+
+.f-n-locked .f-slot {
+    background: rgba(23, 21, 43, 0.06);
+    color: var(--f-ink);
+}
+
 /* Consultée : compacte, pleine couleur, coche verte. */
 .f-n-seen {
     padding: 10px 12px;

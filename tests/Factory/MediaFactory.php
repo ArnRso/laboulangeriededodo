@@ -29,6 +29,7 @@ final readonly class MediaFactory
         bool $published = true,
         MediaType $type = MediaType::TEXT,
         array $tags = [],
+        ?string $description = null,
     ): Media {
         $media = new Media();
         $media->setPosition($position)
@@ -36,7 +37,8 @@ final readonly class MediaFactory
             ->setAppKind($appKind)
             ->setDelayMinutes($delayMinutes)
             ->setPublished($published)
-            ->setType($type);
+            ->setType($type)
+            ->setDescription($description);
 
         foreach ($tags as $tag) {
             $media->addTag($tag);

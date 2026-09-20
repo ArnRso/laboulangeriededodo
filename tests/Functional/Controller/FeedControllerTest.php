@@ -163,6 +163,57 @@ class FeedControllerTest extends WebTestCase
         self::assertSelectorTextContains('.f-n-seen', 'Notification 1');
     }
 
+    public function testTheNextNotificationShowsItsAppAndNothingElse(): void
+    {
+        $this->mediaFactory->createNotification(0, 'Première', AppKind::UBER_EATS);
+        $this->mediaFactory->createNotification(1, 'Le secret de 2015', AppKind::TINDER, description: 'Ce que personne ne devait savoir.');
+
+        $this->client->request('GET', '/mon-espace');
+        $crawler = $this->client->request('GET', '/mon-espace');
+
+        $locked = $crawler->filter('.f-n-locked');
+        self::assertCount(1, $locked);
+        self::assertStringContainsString('Tinder', $locked->text(), 'L\'application se montre, comme sur un écran verrouillé.');
+        self::assertStringNotContainsString('Le secret de 2015', $locked->text(), 'Le titre reste caché.');
+        self::assertStringNotContainsString('Ce que personne ne devait savoir.', $locked->text(), 'La description reste cachée.');
+    }
+
+    public function testTheNextNotificationNeverLeaksItsContentAnywhereInThePage(): void
+    {
+        $medias = $this->mediaFactory->createFeed(1);
+        $this->mediaFactory->createNotification(1, 'Titre confidentiel', AppKind::TINDER, description: 'Description confidentielle');
+
+        $this->client->request('GET', sprintf('/mon-espace/notifications/%d', (int) $medias[0]->getId()));
+        $this->client->request('GET', '/mon-espace');
+
+        $html = (string) $this->client->getResponse()->getContent();
+        self::assertStringNotContainsString('Titre confidentiel', $html);
+        self::assertStringNotContainsString('Description confidentielle', $html);
+        self::assertStringContainsString('Notification masquée', $html);
+    }
+
+    public function testTheCountdownStaysVisibleOnTheLockedNotification(): void
+    {
+        $medias = $this->mediaFactory->createFeed(2);
+
+        $this->client->request('GET', sprintf('/mon-espace/notifications/%d', (int) $medias[0]->getId()));
+        $crawler = $this->client->request('GET', '/mon-espace');
+
+        self::assertCount(1, $crawler->filter('.f-n-locked [data-controller="countdown"]'));
+    }
+
+    public function testAnOpenedNotificationStillShowsItsDetails(): void
+    {
+        $media = $this->mediaFactory->createNotification(0, 'Déjà lue', AppKind::UBER_EATS, description: 'Son contenu peut s\'afficher.');
+
+        $this->client->request('GET', sprintf('/mon-espace/notifications/%d', (int) $media->getId()));
+        $crawler = $this->client->request('GET', '/mon-espace');
+
+        $seen = $crawler->filter('.f-n-seen');
+        self::assertStringContainsString('Déjà lue', $seen->text());
+        self::assertStringContainsString('Son contenu peut s\'afficher.', $seen->text());
+    }
+
     public function testSecondOpensOnceTheDelayHasElapsed(): void
     {
         $medias = $this->mediaFactory->createFeed(3);

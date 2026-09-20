@@ -1,0 +1,32 @@
+{#
+    La notification en route, à la manière d'un écran verrouillé dont les
+    aperçus sont coupés : l'application se montre, son contenu attend
+    l'ouverture.
+
+    Paramètres :
+      - state : NotificationState
+#}
+{% set app = state.media.appKind %}
+
+<div class="f-n f-n-{{ app.value }} f-n-locked f-n-static">
+    <span class="f-app" style="background: {{ app.color }}">{{ app.icon }}</span>
+
+    <span class="f-b">
+        <span class="f-h">
+            <b>{{ app.label }}</b>
+            <small>🔒 verrouillée</small>
+        </span>
+
+        <span class="f-t f-t-hidden">Notification masquée</span>
+
+        {% if state.availableAt %}
+            <span class="f-slot"
+                  data-controller="countdown"
+                  data-countdown-available-at-value="{{ state.availableAt|date('c') }}">
+                ⏳ Dans <b data-countdown-target="output">{{ state.availableAt|date('H:i:s') }}</b>
+            </span>
+        {% else %}
+            <span class="f-slot">⏳ {{ state.media.delayLabel }} après ouverture</span>
+        {% endif %}
+    </span>
+</div>
