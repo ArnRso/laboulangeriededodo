@@ -11,7 +11,10 @@
     {% if media.type.value == 'image' %}
         <img src="{{ fileUrl }}" alt="{{ media.title }}">
     {% elseif media.type.value == 'video' %}
-        <video controls playsinline preload="metadata" src="{{ fileUrl }}">
+        {# Les navigateurs refusent de démarrer seuls une vidéo qui a du son :
+           elle part donc en sourdine, et les contrôles permettent de le
+           remettre. En boucle, comme sur les apps imitées. #}
+        <video controls playsinline autoplay muted loop preload="auto" src="{{ fileUrl }}">
             Votre navigateur ne peut pas lire cette vidéo.
         </video>
     {% elseif media.type.value == 'audio' %}

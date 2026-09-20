@@ -450,4 +450,28 @@ class AppKindCoverageTest extends WebTestCase
         $this->client->followRedirect();
         self::assertResponseIsSuccessful();
     }
+
+    /**
+     * Une vidéo démarre seule sur tous les écrans. Les navigateurs refusant
+     * de lancer du son sans geste de l'utilisateur, elle part en sourdine —
+     * sans « muted », « autoplay » resterait lettre morte.
+     */
+    #[DataProvider('appKinds')]
+    public function testAVideoPlaysByItself(AppKind $appKind): void
+    {
+        $this->client->loginUser($this->userFactory->createAdmin());
+
+        $crawler = $this->client->request('POST', sprintf('/admin/notifications/nouveau/%s/apercu', $appKind->value), [
+            'media' => ['title' => 'Une vidéo', 'type' => MediaType::VIDEO->value],
+        ]);
+
+        self::assertResponseIsSuccessful();
+
+        $video = $crawler->filter('video');
+        self::assertCount(1, $video, sprintf('%s doit rendre la vidéo du souvenir.', $appKind->label()));
+        self::assertNotNull($video->attr('autoplay'));
+        self::assertNotNull($video->attr('muted'), 'Sans le son coupé, le navigateur refuse de démarrer.');
+        self::assertNotNull($video->attr('playsinline'), 'Sur iPhone, sans cet attribut la vidéo passe en plein écran.');
+        self::assertNotNull($video->attr('controls'), 'Les contrôles laissent remettre le son.');
+    }
 }
