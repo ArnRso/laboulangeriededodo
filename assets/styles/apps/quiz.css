@@ -26,8 +26,10 @@
 }
 
 .qz-sheet {
+    display: flex;
+    flex-direction: column;
     margin-top: 6px;
-    padding: 14px 14px 130px;
+    padding: 14px 14px 0;
     border-radius: 28px 28px 0 0;
     background: #fff;
     min-height: calc(100svh - 62px);
@@ -54,81 +56,101 @@
     line-height: 1.5;
 }
 
-/* La question : un encart gris clair, comme les réponses mais sans pastille. */
+/* La question ne porte pas de cadre : elle est le titre de l'écran, posée
+   sur la feuille. */
 .qz-q {
-    margin: 14px 0 0;
-    padding: 16px 18px;
-    border-radius: 16px;
-    background: #f2f2f5;
-    font-size: 15px;
-    font-weight: 700;
-    line-height: 1.45;
+    margin: 22px 2px 4px;
+    font-size: 23px;
+    font-weight: 800;
+    line-height: 1.25;
+    letter-spacing: -0.4px;
 }
 
+/* Les propositions : une liste serrée, séparée par des filets. Le cadre
+   n'apparaît que sur celle qui compte. */
 .qz-answers {
     list-style: none;
     margin: 12px 0 0;
     padding: 0;
-    display: grid;
-    gap: 10px;
 }
 
 .qz-a {
     display: flex;
     align-items: center;
     gap: 14px;
-    padding: 14px 18px;
-    border-radius: 16px;
-    background: #f2f2f5;
-    font-size: 14px;
-    font-weight: 700;
+    padding: 15px 4px;
+    border-top: 1px solid #ebebf0;
+    font-size: 15px;
+    color: #6a6a7a;
+}
+
+.qz-a:last-child {
+    border-bottom: 1px solid #ebebf0;
 }
 
 .qz-bullet {
     flex: none;
     display: grid;
     place-items: center;
-    width: 26px;
-    height: 26px;
+    width: 24px;
+    height: 24px;
     border-radius: 50%;
-    background: #e0e0e6;
+    border: 1.5px solid #d8d8e0;
     color: #fff;
 }
 
 .qz-bullet svg {
-    width: 17px;
-    height: 17px;
+    width: 16px;
+    height: 16px;
 }
 
-/* La bonne réponse : vert plein, pastille cochée. */
+/* La bonne réponse sort de la liste : elle seule a un fond, et elle est la
+   seule en noir. */
 .qz-a-good {
-    background: #8ceeb0;
+    margin: 0 -10px;
+    padding: 15px 14px;
+    border: 0;
+    border-radius: 14px;
+    background: #d8f8e4;
     color: #0b3d24;
+    font-weight: 700;
+}
+
+.qz-a-good + .qz-a {
+    border-top: 0;
+}
+
+.qz-a-good:last-child {
+    border-bottom: 0;
 }
 
 .qz-a-good .qz-bullet {
+    border-color: #12a150;
     background: #12a150;
 }
 
-/* Le résultat : une seule case, aux couleurs de l'app. */
-.qz-result {
-    margin-top: 20px;
-    padding: 16px 18px;
-    border-radius: 16px;
-    background: #7c4dff;
+/* L'analyse : une carte sombre, franchement détachée du reste. */
+.qz-verdict {
+    /* Elle ferme l'écran : marge basse pour le bouton fixe, et elle prend
+       ce qui reste de hauteur plutôt que de laisser du blanc dessous. */
+    margin: 30px -14px 0;
+    padding: 24px 20px calc(26px + 110px);
+    background: #1d1836;
     color: #fff;
-    font-size: 16px;
-    font-weight: 800;
-    line-height: 1.35;
-    text-align: center;
+    flex: 1;
 }
 
-/* Et un encart de texte, qui le commente. */
-.qz-text {
+.qz-verdict-title {
+    display: block;
+    font-size: 19px;
+    font-weight: 800;
+    line-height: 1.3;
+    letter-spacing: -0.3px;
+}
+
+.qz-verdict-text {
     margin: 10px 0 0;
-    padding: 16px 18px;
-    border-radius: 16px;
-    background: #f2f2f5;
-    font-size: 14px;
-    line-height: 1.55;
+    font-size: 15px;
+    line-height: 1.6;
+    color: #c8c4da;
 }

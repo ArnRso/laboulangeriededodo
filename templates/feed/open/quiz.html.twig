@@ -2,7 +2,8 @@
 
 {% set data = media.appData %}
 {% set question = data.question|default('') ?: media.title %}
-{% set resultText = data.resultText|default('') ?: media.description %}
+{# Rien d'autre ne remplit l'analyse : vide, elle ne s'affiche pas. #}
+{% set resultText = data.resultText|default('') %}
 
 {% block title %}{{ media.title }} · Quiz{% endblock %}
 {% block body_class %}f-open f-open-qz{% endblock %}
@@ -18,7 +19,7 @@
         <div class="qz-sheet">
             {{ include('feed/_media.html.twig', {media: media, class: 'qz-media'}, with_context: false) }}
 
-            <p class="qz-q">{{ question }}</p>
+            <h1 class="qz-q">{{ question }}</h1>
 
             {% set answers = [] %}
             {% for line in data.answers|default('')|split('\n') %}
@@ -44,12 +45,15 @@
                 </ul>
             {% endif %}
 
-            {% if data.resultTitle|default('') %}
-                <div class="qz-result">{{ data.resultTitle }}</div>
-            {% endif %}
-
-            {% if resultText %}
-                <p class="qz-text">{{ resultText }}</p>
+            {% if data.resultTitle|default('') or resultText %}
+                <section class="qz-verdict">
+                    {% if data.resultTitle|default('') %}
+                        <b class="qz-verdict-title">{{ data.resultTitle }}</b>
+                    {% endif %}
+                    {% if resultText %}
+                        <p class="qz-verdict-text">{{ resultText }}</p>
+                    {% endif %}
+                </section>
             {% endif %}
         </div>
     </main>

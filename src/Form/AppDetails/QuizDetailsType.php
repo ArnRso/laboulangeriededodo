@@ -42,7 +42,7 @@ class QuizDetailsType extends AbstractAppDetailsType
             ])
             ->add('resultText', TextareaType::class, [
                 'label' => 'Texte sous le résultat',
-                'help' => 'Vide : reprend la description de la notification.',
+                'help' => 'Vide : rien ne s\'affiche sous le verdict.',
                 'required' => false,
                 'attr' => ['rows' => 3],
             ]);

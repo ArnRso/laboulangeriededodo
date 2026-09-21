@@ -231,7 +231,13 @@ class AppKindCoverageTest extends WebTestCase
         self::assertResponseIsSuccessful();
         self::assertSelectorExists('body.f-open');
         self::assertSelectorTextContains('main', 'Souvenir '.$appKind->value);
-        self::assertSelectorTextContains('main', 'Une description qui doit apparaître quelque part.');
+
+        // Le quiz met la description de côté : son analyse ne vient que de son
+        // propre champ, pour qu'on puisse la laisser vide.
+        if (AppKind::QUIZ !== $appKind) {
+            self::assertSelectorTextContains('main', 'Une description qui doit apparaître quelque part.');
+        }
+
         self::assertSelectorExists('.f-media-text', 'Le souvenir lui-même passe par feed/_media.html.twig.');
     }
 
@@ -577,10 +583,10 @@ class AppKindCoverageTest extends WebTestCase
     }
 
     /**
-     * Le quiz n'a qu'une case de résultat et un encart de texte : plus de
-     * score en gros, de barre ni de badge.
+     * Le quiz distingue trois zones : la question en titre, les propositions
+     * en liste, et l'analyse dans sa carte.
      */
-    public function testTheQuizShowsOneResultBoxAndOneTextBox(): void
+    public function testTheQuizSeparatesItsThreeZones(): void
     {
         $this->client->loginUser($this->userFactory->createAdmin());
 
@@ -595,17 +601,19 @@ class AppKindCoverageTest extends WebTestCase
                     'question' => 'Comment tu as géré ça ?',
                     'answers' => "à l'arrache\n*en mode canon event\nen niant tout",
                     'resultTitle' => 'Tu es à 87 % un canon event',
-                    'resultText' => '',
+                    'resultText' => 'Le commentaire du résultat.',
                 ],
             ],
         ]);
 
         self::assertResponseIsSuccessful();
 
-        self::assertCount(1, $crawler->filter('.qz-result'));
-        self::assertStringContainsString('Tu es à 87 % un canon event', $crawler->filter('.qz-result')->text());
-        self::assertCount(1, $crawler->filter('.qz-text'));
-        self::assertStringContainsString('Le commentaire du résultat.', $crawler->filter('.qz-text')->text());
+        self::assertCount(1, $crawler->filter('h1.qz-q'), 'La question est le titre de l\'écran.');
+        self::assertStringContainsString('Comment tu as géré ça ?', $crawler->filter('.qz-q')->text());
+
+        self::assertCount(1, $crawler->filter('.qz-verdict'));
+        self::assertStringContainsString('Tu es à 87 % un canon event', $crawler->filter('.qz-verdict-title')->text());
+        self::assertStringContainsString('Le commentaire du résultat.', $crawler->filter('.qz-verdict-text')->text());
 
         self::assertCount(3, $crawler->filter('.qz-a'));
         self::assertCount(1, $crawler->filter('.qz-a-good'));
@@ -614,7 +622,7 @@ class AppKindCoverageTest extends WebTestCase
         self::assertStringNotContainsString('*', $crawler->filter('.qz-a-good')->text(), 'L\'étoile marque la bonne réponse, elle ne s\'affiche pas.');
     }
 
-    public function testTheQuizHidesItsResultBoxWhenThereIsNoVerdict(): void
+    public function testTheQuizShowsNothingWhenTheAnalysisIsEmpty(): void
     {
         $this->client->loginUser($this->userFactory->createAdmin());
 
@@ -623,11 +631,13 @@ class AppKindCoverageTest extends WebTestCase
                 'title' => 'Un quiz',
                 'type' => MediaType::TEXT->value,
                 'textContent' => 'Un souvenir',
+                'description' => 'La description ne remplit plus l\'analyse.',
                 'appData' => ['quizName' => 'Un quiz', 'resultTitle' => '', 'resultText' => ''],
             ],
         ]);
 
-        self::assertCount(0, $crawler->filter('.qz-result'));
+        self::assertCount(0, $crawler->filter('.qz-verdict'), 'Sans verdict ni texte, la carte disparaît.');
+        self::assertStringNotContainsString('La description ne remplit plus', $crawler->filter('main')->text());
     }
 
     /**
