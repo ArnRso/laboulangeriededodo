@@ -129,9 +129,10 @@ body {
     height: 12px;
 }
 
-.f-net-battery {
-    width: 27px;
+.f-net-flag {
+    width: 18px;
     height: 12px;
+    border-radius: 2px;
 }
 
 .f-preview-bar {

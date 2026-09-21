@@ -37,7 +37,8 @@
             <p>{{ answer }}</p>
             {% if data.comment|default('') %}
                 <div class="hg-comment">
-                    {% if name %}<span>{{ name }}</span>{% endif %}
+                    {% set commentAuthor = data.commentAuthor|default('') ?: name %}
+                    {% if commentAuthor %}<span>{{ commentAuthor }}</span>{% endif %}
                     {{ data.comment }}
                 </div>
             {% endif %}

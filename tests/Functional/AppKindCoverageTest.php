@@ -678,7 +678,26 @@ class AppKindCoverageTest extends WebTestCase
         self::assertResponseIsSuccessful();
         self::assertStringContainsString('Miss508 a aimé ta réponse', $crawler->filter('.hg-banner')->text());
         self::assertStringContainsString('Miss508', $crawler->filter('.hg-name')->text());
-        self::assertStringContainsString('Miss508', $crawler->filter('.hg-comment')->text(), 'Le petit mot est signé du même nom.');
+        self::assertStringContainsString('Miss508', $crawler->filter('.hg-comment')->text(), 'Sans autre nom, le petit mot est signé du profil.');
+    }
+
+    public function testHingeLetsSomeoneElseSignTheLittleNote(): void
+    {
+        $this->client->loginUser($this->userFactory->createAdmin());
+
+        $crawler = $this->client->request('POST', '/admin/notifications/nouveau/hinge/apercu', [
+            'media' => [
+                'title' => 'Une réponse',
+                'type' => MediaType::TEXT->value,
+                'textContent' => 'Un souvenir',
+                'appData' => ['name' => 'Miss508', 'age' => 130, 'commentAuthor' => 'Dodo', 'comment' => 'hear me out'],
+            ],
+        ]);
+
+        self::assertResponseIsSuccessful();
+        self::assertStringContainsString('Dodo', $crawler->filter('.hg-comment')->text());
+        self::assertStringNotContainsString('Miss508', $crawler->filter('.hg-comment')->text());
+        self::assertStringContainsString('Miss508 a aimé ta réponse', $crawler->filter('.hg-banner')->text(), 'Le bandeau reste au profil.');
     }
 
     public function testHingeSaysSomeoneWhenTheProfileHasNoName(): void
