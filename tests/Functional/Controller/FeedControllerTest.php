@@ -158,7 +158,7 @@ class FeedControllerTest extends WebTestCase
 
         self::assertSelectorNotExists('.f-n-fresh');
         self::assertSelectorExists('[data-controller="countdown"]');
-        self::assertSelectorTextContains('.f-grp', 'En route');
+        self::assertSelectorTextContains('.f-grp', 'À venir');
         self::assertSelectorTextContains('.f-n-seen', 'Notification 1');
     }
 
