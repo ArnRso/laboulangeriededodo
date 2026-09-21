@@ -30,12 +30,17 @@ class CalendarDetailsType extends AbstractAppDetailsType
             ])
             ->add('attendees', TextareaType::class, [
                 'label' => 'Participants',
-                'help' => 'Un par ligne. Les initiales servent d\'avatar.',
                 'required' => false,
-                'attr' => ['rows' => 4, 'placeholder' => "le.pot.agé\nTa dignité (a décliné)"],
+                'help' => 'Un par ligne. Les initiales servent d\'avatar. Ajoute « * » devant une ligne pour en faire l\'organisateur.',
+                'attr' => ['rows' => 4, 'placeholder' => "*le.pot.agé\nTa dignité (a décliné)"],
             ])
             ->add('alert', TextType::class, [
                 'label' => 'Alerte',
+                'required' => false,
+            ])
+            ->add('repeat', TextType::class, [
+                'label' => 'Répétition',
+                'help' => 'Vide : la ligne disparaît.',
                 'required' => false,
             ])
             ->add('calendarName', TextType::class, [
@@ -61,10 +66,11 @@ class CalendarDetailsType extends AbstractAppDetailsType
             'date' => 'Samedi 23 août 2015',
             'timeRange' => '21:00 – 04:12',
             'location' => 'Chez quelqu\'un dont tu as oublié le nom',
-            'attendees' => 'le.pot.agé
+            'attendees' => '*le.pot.agé
 Ta dignité (a décliné)
 Le drama (a accepté)',
             'alert' => 'Il y a 11 ans',
+            'repeat' => 'Jamais, heureusement',
             'calendarName' => 'Canon events',
             'eventTitle' => '',
             'notes' => '',

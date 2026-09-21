@@ -122,9 +122,9 @@
     flex: none;
 }
 
+/* L'organisateur porte les mêmes initiales, sur la couleur du calendrier. */
 .ca-av-me {
-    background: #fff0f6;
-    font-size: 20px;
+    background: linear-gradient(160deg, #ff7a9a, #e0245e);
 }
 
 .ca-person small {

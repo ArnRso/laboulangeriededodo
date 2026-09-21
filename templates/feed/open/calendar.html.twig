@@ -27,7 +27,9 @@
                 <div class="ca-row"><span class="ca-ic" aria-hidden="true">📍</span><div><small>Lieu</small><b>{{ data.location }}</b></div></div>
             {% endif %}
             <div class="ca-row"><span class="ca-ic" aria-hidden="true">🔔</span><div><small>Alerte</small><b>{{ data.alert|default('Il y a 11 ans') }}</b></div></div>
-            <div class="ca-row"><span class="ca-ic" aria-hidden="true">🔁</span><div><small>Répéter</small><b>Jamais, heureusement</b></div></div>
+            {% if data.repeat|default('') %}
+                <div class="ca-row"><span class="ca-ic" aria-hidden="true">🔁</span><div><small>Répéter</small><b>{{ data.repeat }}</b></div></div>
+            {% endif %}
         </section>
 
         {% set attendees = [] %}
@@ -36,17 +38,19 @@
         {% endfor %}
 
         {% if attendees is not empty %}
-            <h2 class="ca-h2">Participants ({{ attendees|length + 1 }})</h2>
+            <h2 class="ca-h2">Participants ({{ attendees|length }})</h2>
             <section class="ca-group">
-                <div class="ca-row ca-person">
-                    <span class="ca-av ca-av-me">{{ recipient and recipient.avatar ? recipient.avatar.value : '🦤' }}</span>
-                    <div><b>{{ recipient ? recipient.publicName : 'Dodo' }}</b><small>Organisateur · toi</small></div>
-                </div>
                 {% for attendee in attendees %}
-                    {% set words = attendee|split(' ') %}
+                    {# Une étoile en tête de ligne désigne l'organisateur. #}
+                    {% set host = attendee starts with '*' %}
+                    {% set name = host ? attendee|slice(1)|trim : attendee %}
+                    {% set words = name|split(' ') %}
                     <div class="ca-row ca-person">
-                        <span class="ca-av">{{ words[0]|slice(0, 1)|upper }}{{ words|length > 1 ? words[1]|slice(0, 1)|upper : '' }}</span>
-                        <div><b>{{ attendee }}</b></div>
+                        <span class="ca-av{{ host ? ' ca-av-me' : '' }}">{{ words[0]|slice(0, 1)|upper }}{{ words|length > 1 ? words[1]|slice(0, 1)|upper : '' }}</span>
+                        <div>
+                            <b>{{ name }}</b>
+                            {% if host %}<small>Organisateur</small>{% endif %}
+                        </div>
                     </div>
                 {% endfor %}
             </section>

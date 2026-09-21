@@ -452,6 +452,74 @@ class AppKindCoverageTest extends WebTestCase
     }
 
     /**
+     * Le calendrier ne décide de rien : la répétition s'écrit, et les
+     * participants sont exactement ceux qu'on a saisis.
+     */
+    public function testTheCalendarListsOnlyTheAttendeesThatWereTyped(): void
+    {
+        $this->client->loginUser($this->userFactory->createAdmin());
+
+        $crawler = $this->client->request('POST', '/admin/notifications/nouveau/calendar/apercu', [
+            'media' => [
+                'title' => 'Ton anniversaire',
+                'type' => MediaType::TEXT->value,
+                'textContent' => 'Un souvenir',
+                'appData' => [
+                    'date' => 'Samedi 23 août 2015',
+                    'attendees' => "*Marie\nPaul",
+                    'repeat' => 'Tous les ans, malgré toi',
+                ],
+            ],
+        ]);
+
+        self::assertResponseIsSuccessful();
+
+        self::assertStringContainsString('Tous les ans, malgré toi', $crawler->filter('.ca-group')->text());
+        self::assertStringNotContainsString('Jamais, heureusement', $crawler->filter('main')->text());
+
+        $people = $crawler->filter('.ca-person');
+        self::assertCount(2, $people, 'Personne n\'est ajouté d\'office.');
+        self::assertStringContainsString('Participants (2)', $crawler->filter('.ca-h2')->first()->text());
+        self::assertStringContainsString('Marie', $people->first()->text());
+        self::assertStringNotContainsString('*', $people->first()->text(), 'L\'étoile désigne l\'organisateur, elle ne s\'affiche pas.');
+        self::assertCount(1, $crawler->filter('.ca-av-me'), 'Seule la ligne étoilée est organisatrice.');
+    }
+
+    public function testTheCalendarHidesTheRepeatLineWhenItIsEmpty(): void
+    {
+        $this->client->loginUser($this->userFactory->createAdmin());
+
+        $crawler = $this->client->request('POST', '/admin/notifications/nouveau/calendar/apercu', [
+            'media' => [
+                'title' => 'Ton anniversaire',
+                'type' => MediaType::TEXT->value,
+                'textContent' => 'Un souvenir',
+                'appData' => ['date' => 'Samedi 23 août 2015', 'attendees' => 'Marie', 'repeat' => ''],
+            ],
+        ]);
+
+        self::assertStringNotContainsString('Répéter', $crawler->filter('main')->text());
+    }
+
+    public function testTheCalendarNeedsNoOrganiserAtAll(): void
+    {
+        $this->client->loginUser($this->userFactory->createAdmin());
+
+        $crawler = $this->client->request('POST', '/admin/notifications/nouveau/calendar/apercu', [
+            'media' => [
+                'title' => 'Ton anniversaire',
+                'type' => MediaType::TEXT->value,
+                'textContent' => 'Un souvenir',
+                'appData' => ['date' => 'Samedi 23 août 2015', 'attendees' => "Marie\nPaul"],
+            ],
+        ]);
+
+        self::assertCount(2, $crawler->filter('.ca-person'));
+        self::assertCount(0, $crawler->filter('.ca-av-me'));
+        self::assertStringNotContainsString('Organisateur', $crawler->filter('main')->text());
+    }
+
+    /**
      * Netflix recommande des films, pas des séries : ni saison, ni épisode.
      */
     public function testNetflixRecommendsAFilm(): void

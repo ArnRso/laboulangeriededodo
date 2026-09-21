@@ -250,7 +250,7 @@ class AppFixtures extends Fixture
                     'date' => 'Samedi 23 août 2015',
                     'timeRange' => '21:00 – 04:12',
                     'location' => 'Chez quelqu\'un dont tu as oublié le nom',
-                    'attendees' => "le.pot.agé\nMarie\nTa mère (par téléphone)",
+                    'attendees' => "*le.pot.agé\nMarie\nTa mère (par téléphone)",
                     'alert' => 'Il y a 11 ans',
                     'calendarName' => 'Canon events',
                 ],
