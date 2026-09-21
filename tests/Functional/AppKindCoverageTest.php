@@ -775,9 +775,9 @@ class AppKindCoverageTest extends WebTestCase
     }
 
     /**
-     * Une vidéo démarre seule sur tous les écrans. Les navigateurs refusant
-     * de lancer du son sans geste de l'utilisateur, elle part en sourdine —
-     * sans « muted », « autoplay » resterait lettre morte.
+     * Une vidéo démarre seule, avec son son. Les navigateurs qui refusent le
+     * son sans geste préalable rendent la main au contrôleur « sound-on »,
+     * qui repart en sourdine puis rallume au premier contact.
      */
     #[DataProvider('appKinds')]
     public function testAVideoPlaysByItself(AppKind $appKind): void
@@ -793,7 +793,8 @@ class AppKindCoverageTest extends WebTestCase
         $video = $crawler->filter('video');
         self::assertCount(1, $video, sprintf('%s doit rendre la vidéo du souvenir.', $appKind->label()));
         self::assertNotNull($video->attr('autoplay'));
-        self::assertNotNull($video->attr('muted'), 'Sans le son coupé, le navigateur refuse de démarrer.');
+        self::assertNull($video->attr('muted'), 'Le son est tenté d\'emblée.');
+        self::assertSame('sound-on', $video->attr('data-controller'), 'Le repli en sourdine est branché.');
         self::assertNotNull($video->attr('playsinline'), 'Sur iPhone, sans cet attribut la vidéo passe en plein écran.');
         self::assertNotNull($video->attr('controls'), 'Les contrôles laissent remettre le son.');
     }

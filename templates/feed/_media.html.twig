@@ -11,10 +11,11 @@
     {% if media.type.value == 'image' %}
         <img src="{{ fileUrl }}" alt="{{ media.title }}">
     {% elseif media.type.value == 'video' %}
-        {# Les navigateurs refusent de démarrer seuls une vidéo qui a du son :
-           elle part donc en sourdine, et les contrôles permettent de le
-           remettre. En boucle, comme sur les apps imitées. #}
-        <video controls playsinline autoplay muted loop preload="auto" src="{{ fileUrl }}">
+        {# On tente le son d'emblée. Les navigateurs qui le refusent sans geste
+           préalable rendent la main au contrôleur, qui repart en sourdine et
+           rallume le son au premier contact. En boucle, comme les apps imitées. #}
+        <video controls playsinline autoplay loop preload="auto" src="{{ fileUrl }}"
+               data-controller="sound-on">
             Votre navigateur ne peut pas lire cette vidéo.
         </video>
     {% elseif media.type.value == 'audio' %}

@@ -9,6 +9,7 @@ use App\Enum\Avatar;
 use App\Enum\MediaType;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class AppFixtures extends Fixture
@@ -59,6 +60,14 @@ class AppFixtures extends Fixture
                 $media->setTextContent($definition['content']);
             } elseif (MediaType::LINK === $definition['type']) {
                 $media->setUrl($definition['content']);
+            } elseif (MediaType::VIDEO === $definition['type']) {
+                // Vich déplace le fichier : on lui donne une copie, pour que
+                // les fixtures restent rejouables.
+                $source = __DIR__.'/media/'.$definition['content'];
+                $copy = sys_get_temp_dir().'/'.uniqid('fixture-', true).'.mp4';
+                copy($source, $copy);
+
+                $media->setFile(new UploadedFile($copy, $definition['content'], 'video/mp4', null, true));
             }
 
             $manager->persist($media);
@@ -179,8 +188,8 @@ class AppFixtures extends Fixture
                 'app' => AppKind::TIKTOK,
                 'title' => 'POV : tu découvres le karaoké',
                 'description' => 'Le son est resté dans la tête de tout le monde. Contre leur gré.',
-                'type' => MediaType::TEXT,
-                'content' => 'Ce soir-là, trois chansons. Zéro note juste. Une salle entière conquise.',
+                'type' => MediaType::VIDEO,
+                'content' => 'souvenir.mp4',
                 'delay' => 2880,
                 'appData' => [
                     'username' => 'dodo.du.passe',
