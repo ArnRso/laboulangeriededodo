@@ -19,7 +19,7 @@ class HingeDetailsType extends AbstractAppDetailsType
         $builder
             ->add('name', TextType::class, [
                 'label' => 'Nom du profil',
-                'help' => 'Celui ou celle qui a aimé la réponse, et dont le profil s\'affiche.',
+                'help' => 'Le profil affiché : son nom coiffe l\'écran, ouvre le bandeau « … a aimé ta réponse » et signe le petit mot.',
                 'constraints' => [new NotBlank()],
             ])
             ->add('age', IntegerType::class, [
@@ -42,11 +42,6 @@ class HingeDetailsType extends AbstractAppDetailsType
                 'help' => 'Sous le souvenir. Vide : reprend le titre de la notification.',
                 'required' => false,
             ])
-            ->add('likedBy', TextType::class, [
-                'label' => 'Qui a aimé la réponse',
-                'help' => 'Affiché dans le bandeau « … a aimé ta réponse », et signe le petit mot.',
-                'required' => false,
-            ])
             ->add('comment', TextType::class, [
                 'label' => 'Petit mot laissé avec le like',
                 'required' => false,
@@ -61,7 +56,6 @@ class HingeDetailsType extends AbstractAppDetailsType
             'prompt' => 'Ce qui me rend heureux',
             'answer' => '',
             'photoCaption' => '',
-            'likedBy' => 'Dodo',
             'comment' => 'hear me out 👀',
         ];
     }

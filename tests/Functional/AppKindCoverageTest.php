@@ -628,10 +628,10 @@ class AppKindCoverageTest extends WebTestCase
     }
 
     /**
-     * Sur Hinge, celui qui aime la réponse n'est pas celui dont on lit le
-     * profil : les deux champs vivent leur vie.
+     * Sur Hinge, le profil affiché est celui qui a aimé la réponse : son nom
+     * coiffe l'écran, ouvre le bandeau et signe le petit mot.
      */
-    public function testHingeSeparatesTheProfileFromWhoLikedTheAnswer(): void
+    public function testHingeNamesTheProfileEverywhereItSpeaks(): void
     {
         $this->client->loginUser($this->userFactory->createAdmin());
 
@@ -640,32 +640,30 @@ class AppKindCoverageTest extends WebTestCase
                 'title' => 'Une réponse',
                 'type' => MediaType::TEXT->value,
                 'textContent' => 'Un souvenir',
-                'appData' => ['name' => 'Camille', 'age' => 19, 'likedBy' => 'Dodo', 'comment' => 'hear me out'],
+                'appData' => ['name' => 'Miss508', 'age' => 130, 'comment' => 'hear me out'],
             ],
         ]);
 
         self::assertResponseIsSuccessful();
-        self::assertStringContainsString('Dodo a aimé ta réponse', $crawler->filter('.hg-banner')->text());
-        self::assertStringContainsString('Camille', $crawler->filter('.hg-name')->text());
-        self::assertStringNotContainsString('Camille', $crawler->filter('.hg-banner')->text());
+        self::assertStringContainsString('Miss508 a aimé ta réponse', $crawler->filter('.hg-banner')->text());
+        self::assertStringContainsString('Miss508', $crawler->filter('.hg-name')->text());
+        self::assertStringContainsString('Miss508', $crawler->filter('.hg-comment')->text(), 'Le petit mot est signé du même nom.');
     }
 
-    public function testHingeSaysSomeoneWhenNobodyIsNamed(): void
+    public function testHingeSaysSomeoneWhenTheProfileHasNoName(): void
     {
         $this->client->loginUser($this->userFactory->createAdmin());
 
         $crawler = $this->client->request('POST', '/admin/notifications/nouveau/hinge/apercu', [
             'media' => [
-                'title' => 'Une réponse',
+                'title' => '',
                 'type' => MediaType::TEXT->value,
                 'textContent' => 'Un souvenir',
-                'appData' => ['name' => 'Camille', 'age' => 19, 'likedBy' => ''],
+                'appData' => ['name' => '', 'age' => 19],
             ],
         ]);
 
-        // Sans ce découplage, le bandeau reprendrait le nom du profil.
         self::assertStringContainsString('Quelqu\'un a aimé ta réponse', $crawler->filter('.hg-banner')->text());
-        self::assertStringNotContainsString('Camille', $crawler->filter('.hg-banner')->text());
     }
 
     public function testYouTubeShowsItsComments(): void
