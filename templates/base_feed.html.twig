@@ -27,11 +27,34 @@
         {% block status %}
             <div class="f-status">
                 {% if app.user and not preview|default(false) %}
-                    <a class="f-gear" href="{{ path('app_account') }}" aria-label="Options">⚙︎</a>
+                    <a class="f-account" href="{{ path('app_account') }}" aria-label="Mon compte">
+                        {# Buste et épaules, comme l'icône de compte d'un téléphone. #}
+                        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                            <circle cx="12" cy="8" r="3.6" fill="none" stroke="currentColor" stroke-width="1.8"/>
+                            <path d="M4.8 20a7.2 7.2 0 0 1 14.4 0" fill="none" stroke="currentColor"
+                                  stroke-width="1.8" stroke-linecap="round"/>
+                        </svg>
+                    </a>
                 {% else %}
                     <span></span>
                 {% endif %}
-                <span class="f-net" aria-hidden="true">🏳️‍🌈 ▮▮▮</span>
+
+                {# Réseau et batterie, dessinés : les caractères pleins étaient
+                   trop lourds à côté du reste de la barre. #}
+                <span class="f-net" aria-hidden="true">
+                    <svg class="f-net-bars" viewBox="0 0 17 12" focusable="false">
+                        <rect x="0" y="8.5" width="3" height="3.5" rx="1" fill="currentColor"/>
+                        <rect x="4.6" y="6" width="3" height="6" rx="1" fill="currentColor"/>
+                        <rect x="9.2" y="3.5" width="3" height="8.5" rx="1" fill="currentColor"/>
+                        <rect x="13.8" y="1" width="3" height="11" rx="1" fill="currentColor"/>
+                    </svg>
+                    <svg class="f-net-battery" viewBox="0 0 27 12" focusable="false">
+                        <rect x="0.6" y="0.6" width="22" height="10.8" rx="3.2"
+                              fill="none" stroke="currentColor" stroke-width="1.1" opacity="0.5"/>
+                        <rect x="2.2" y="2.2" width="17" height="7.6" rx="2" fill="currentColor"/>
+                        <path d="M24.4 4.2v3.6a2 2 0 0 0 0-3.6z" fill="currentColor" opacity="0.5"/>
+                    </svg>
+                </span>
             </div>
         {% endblock %}
 

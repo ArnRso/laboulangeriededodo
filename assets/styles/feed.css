@@ -22,6 +22,8 @@
     --f-layer: rgba(255, 255, 255, 0.55);
     --f-layer-soft: rgba(255, 255, 255, 0.35);
     --f-icon-ring: #fff;
+    --f-btn-bg: #17152b;
+    --f-btn-ink: #fff;
 }
 
 /* L'écran verrouillé, et lui seul : le papier peint est sombre, donc tout
@@ -44,6 +46,8 @@
     --f-layer: rgba(255, 255, 255, 0.12);
     --f-layer-soft: rgba(255, 255, 255, 0.07);
     --f-icon-ring: rgba(255, 255, 255, 0.25);
+    --f-btn-bg: #fff;
+    --f-btn-ink: #17152b;
 }
 
 * {
@@ -83,19 +87,7 @@ body {
     padding: 0 14px 20px;
 }
 
-/* L'écran verrouillé tient dans la hauteur : les raccourcis se posent en
-   bas, et les notifications occupent ce qui reste. */
-.f-wrap-lock {
-    display: flex;
-    flex-direction: column;
-    min-height: calc(100svh - 44px);
-}
-
-.f-wrap-lock .f-dock {
-    margin-top: auto;
-}
-
-/* Barre d'état : pas d'heure, juste le réseau — et la roue pour les options. */
+/* Barre d'état : pas d'heure, juste le réseau, la batterie et le compte. */
 .f-status {
     max-width: 430px;
     margin: 0 auto;
@@ -107,12 +99,37 @@ body {
     font-weight: 700;
 }
 
-.f-gear {
-    color: var(--f-muted);
+.f-account {
+    display: grid;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    margin: -6px;
+    color: var(--f-ink);
     text-decoration: none;
-    font-size: 18px;
-    line-height: 1;
-    opacity: 0.7;
+    opacity: 0.75;
+}
+
+.f-account svg {
+    width: 19px;
+    height: 19px;
+}
+
+.f-net {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--f-ink);
+}
+
+.f-net-bars {
+    width: 17px;
+    height: 12px;
+}
+
+.f-net-battery {
+    width: 27px;
+    height: 12px;
 }
 
 .f-preview-bar {
@@ -160,25 +177,6 @@ body {
     line-height: 1.02;
     font-variant-numeric: tabular-nums;
     text-shadow: 0 2px 18px rgba(0, 0, 0, 0.22);
-}
-
-/* Les raccourcis du bas : deux pastilles, sans action. */
-.f-dock {
-    display: flex;
-    justify-content: space-between;
-    padding: 30px 22px calc(10px + env(safe-area-inset-bottom));
-}
-
-.f-dock-key {
-    width: 52px;
-    height: 52px;
-    border-radius: 50%;
-    display: grid;
-    place-items: center;
-    font-size: 21px;
-    background: rgba(0, 0, 0, 0.28);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
 }
 
 .f-grp {
@@ -296,8 +294,8 @@ body {
     padding: 8px 14px;
     font-size: 12px;
     font-weight: 800;
-    color: #fff;
-    background: var(--f-ink);
+    color: var(--f-btn-ink);
+    background: var(--f-btn-bg);
 }
 
 /* Le point des non lues, posé dans la carte : dehors, il se détachait du
@@ -336,6 +334,7 @@ body {
 
 .f-n-fresh.f-n-tinder .f-btn {
     background: linear-gradient(90deg, #fd5564, #ff7a59);
+    color: #fff;
 }
 
 .f-n-fresh.f-n-doctolib {
@@ -345,6 +344,7 @@ body {
 
 .f-n-fresh.f-n-doctolib .f-btn {
     background: #107aca;
+    color: #fff;
 }
 
 .f-track {

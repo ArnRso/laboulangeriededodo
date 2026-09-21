@@ -163,6 +163,23 @@ class FeedControllerTest extends WebTestCase
         self::assertSelectorTextContains('.f-n-seen', 'Notification 1');
     }
 
+    /**
+     * Le bouton d'action prenait la couleur du texte pour fond : sur le fil
+     * sombre, il s'est retrouvé blanc sur blanc. Texte et fond se règlent
+     * désormais séparément.
+     */
+    public function testTheActionButtonKeepsItsTextReadable(): void
+    {
+        $css = (string) file_get_contents(\dirname(__DIR__, 3).'/assets/styles/feed.css');
+
+        // La règle du bouton, isolée du reste de la feuille.
+        self::assertSame(1, preg_match('/\.f-btn \{(?<rules>[^}]*)\}/', $css, $matches));
+
+        self::assertStringContainsString('color: var(--f-btn-ink)', $matches['rules']);
+        self::assertStringContainsString('background: var(--f-btn-bg)', $matches['rules']);
+        self::assertStringNotContainsString('var(--f-ink)', $matches['rules'], 'Le fond ne suit plus la couleur du texte.');
+    }
+
     public function testTheLockScreenThemeStaysOnTheFeed(): void
     {
         $media = $this->mediaFactory->createFeed(1)[0];
