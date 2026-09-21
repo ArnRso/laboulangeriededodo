@@ -41,9 +41,9 @@ class NetflixDetailsType extends AbstractAppDetailsType
                 'help' => 'Par exemple « 16+ » ou « Tous publics ».',
                 'required' => false,
             ])
-            ->add('seasons', TextType::class, [
-                'label' => 'Saisons ou durée',
-                'help' => '« 1 saison », « 2 h 12 »…',
+            ->add('duration', TextType::class, [
+                'label' => 'Durée',
+                'help' => 'Par exemple « 1 h 47 ».',
                 'required' => false,
             ])
             ->add('genres', TextType::class, [
@@ -70,7 +70,7 @@ class NetflixDetailsType extends AbstractAppDetailsType
             'synopsis' => '',
             'year' => '2015',
             'rating' => '16+',
-            'seasons' => '1 saison',
+            'duration' => '1 h 47',
             'genres' => 'Drame · Comédie · Documentaire',
             'topTen' => true,
             'cast' => 'le.pot.agé, ta mère, le groupe WhatsApp',

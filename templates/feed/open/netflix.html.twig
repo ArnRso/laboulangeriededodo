@@ -16,14 +16,14 @@
             </div>
         </div>
 
-        <div class="nf-kind"><span class="nf-n nf-n-small" aria-hidden="true">N</span> SÉRIE</div>
+        <div class="nf-kind"><span class="nf-n nf-n-small" aria-hidden="true">N</span> FILM</div>
         <h1 class="nf-title">{{ data.showTitle|default(media.title) }}</h1>
 
         <div class="nf-meta">
             <b>{{ data.match|default(98) }} % de correspondance</b>
             <span>{{ data.year|default('2015') }}</span>
             <span class="nf-rating">{{ data.rating|default('16+') }}</span>
-            <span>{{ data.seasons|default('1 saison') }}</span>
+            <span>{{ data.duration|default('1 h 47') }}</span>
             <span class="nf-hd">HD</span>
         </div>
 
@@ -44,7 +44,7 @@
             <p><span>Genres :</span> {{ data.genres|default('Drame · Comédie · Documentaire') }}</p>
         </div>
 
-        <div class="nf-tabs" aria-hidden="true"><span class="on">Épisodes</span><span>Plus de titres similaires</span></div>
+        <div class="nf-tabs" aria-hidden="true"><span class="on">Bande-annonce</span><span>Plus de titres similaires</span></div>
     </main>
 
     {% if not preview %}

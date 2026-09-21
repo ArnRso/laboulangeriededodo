@@ -452,6 +452,32 @@ class AppKindCoverageTest extends WebTestCase
     }
 
     /**
+     * Netflix recommande des films, pas des séries : ni saison, ni épisode.
+     */
+    public function testNetflixRecommendsAFilm(): void
+    {
+        $this->client->loginUser($this->userFactory->createAdmin());
+
+        $crawler = $this->client->request('POST', '/admin/notifications/nouveau/netflix/apercu', [
+            'media' => [
+                'title' => 'Le road trip',
+                'type' => MediaType::TEXT->value,
+                'textContent' => 'Un souvenir',
+                'appData' => ['match' => 98, 'duration' => '1 h 47'],
+            ],
+        ]);
+
+        self::assertResponseIsSuccessful();
+
+        $screen = $crawler->filter('main')->text();
+        self::assertStringContainsString('FILM', $crawler->filter('.nf-kind')->text());
+        self::assertStringContainsString('1 h 47', $crawler->filter('.nf-meta')->text());
+        self::assertStringNotContainsString('SÉRIE', $screen);
+        self::assertStringNotContainsString('saison', $screen);
+        self::assertStringNotContainsString('Épisodes', $screen);
+    }
+
+    /**
      * Le quiz n'a qu'une case de résultat et un encart de texte : plus de
      * score en gros, de barre ni de badge.
      */
