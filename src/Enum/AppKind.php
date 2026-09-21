@@ -156,6 +156,25 @@ enum AppKind: string
     }
 
     /**
+     * Les trois applications inventées pour le cadeau n'ont pas de logo :
+     * elles gardent leur emoji.
+     */
+    private const array WITHOUT_LOGO = [self::HOROSCOPE, self::QUIZ, self::TAROT];
+
+    /**
+     * Le chemin du logo dans les assets, ou null pour les applications qui
+     * n'en ont pas.
+     */
+    public function logo(): ?string
+    {
+        if (\in_array($this, self::WITHOUT_LOGO, true)) {
+            return null;
+        }
+
+        return sprintf('images/apps/%s.png', $this->value);
+    }
+
+    /**
      * Couleur de marque, utilisée pour l'icône dans le fil.
      */
     public function color(): string

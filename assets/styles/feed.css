@@ -466,7 +466,7 @@ body {
     display: flex;
 }
 
-.f-stack-icons i {
+.f-stack-icon {
     width: 26px;
     height: 26px;
     border-radius: 8px;
@@ -476,10 +476,25 @@ body {
     place-items: center;
     font-size: 12px;
     font-style: normal;
+    overflow: hidden;
+    flex: none;
 }
 
-.f-stack-icons i:first-child {
+.f-stack-icon:first-child {
     margin-left: 0;
+}
+
+/* Un vrai logo occupe toute la pastille : il porte déjà son fond. */
+.f-app-logo {
+    background: none;
+    overflow: hidden;
+}
+
+.f-app-logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
 }
 
 .f-stack-text b {

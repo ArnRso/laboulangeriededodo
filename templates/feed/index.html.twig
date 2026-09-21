@@ -71,7 +71,7 @@
                         <button type="button" class="f-stack" data-stack-target="button" data-action="stack#reveal">
                             <span class="f-stack-icons">
                                 {% for state in overview.seen|slice(3, 4) %}
-                                    <i style="background: {{ state.media.appKind.color }}">{{ state.media.appKind.icon }}</i>
+                                    {{ include('feed/_app_icon.html.twig', {app: state.media.appKind, class: 'f-stack-icon'}, with_context: false) }}
                                 {% endfor %}
                             </span>
                             <span class="f-stack-text">

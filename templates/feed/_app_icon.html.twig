@@ -1,0 +1,16 @@
+{#
+    L'icône d'une application : son vrai logo, ou son emoji sur la couleur de
+    marque pour les trois applications inventées pour le cadeau.
+
+    Paramètres :
+      - app   : AppKind
+      - class : classes du conteneur (défaut : f-app)
+#}
+{% set logo = app.logo %}
+{% if logo %}
+    <span class="{{ class|default('f-app') }} f-app-logo">
+        <img src="{{ asset(logo) }}" alt="{{ app.label }}" loading="lazy">
+    </span>
+{% else %}
+    <span class="{{ class|default('f-app') }}" style="background: {{ app.color }}">{{ app.icon }}</span>
+{% endif %}

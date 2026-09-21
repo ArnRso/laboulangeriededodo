@@ -15,7 +15,7 @@
    {{ hidden|default(false) ? 'hidden' : '' }}>
     {% if variant == 'fresh' %}<span class="f-dot" aria-hidden="true"></span>{% endif %}
 
-    <span class="f-app" style="background: {{ app.color }}">{{ app.icon }}</span>
+    {{ include('feed/_app_icon.html.twig', {app: app}, with_context: false) }}
 
     <span class="f-b">
         <span class="f-h">

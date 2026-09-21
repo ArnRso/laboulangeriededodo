@@ -1,0 +1,16 @@
+{#
+    Le logo d'une application dans le back-office, ou son emoji pour les
+    trois applications inventées pour le cadeau.
+
+    Paramètres :
+      - app  : AppKind
+      - size : côté en pixels (défaut : 24)
+#}
+{% set logo = app.logo %}
+{% set side = size|default(24) %}
+{%- if logo -%}
+    <img class="a-app-logo" src="{{ asset(logo) }}" alt="{{ app.label }}"
+         width="{{ side }}" height="{{ side }}" loading="lazy">
+{%- else -%}
+    <span class="a-app-emoji" style="font-size: {{ side }}px; line-height: 1">{{ app.icon }}</span>
+{%- endif -%}

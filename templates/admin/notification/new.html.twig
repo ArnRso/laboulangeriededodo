@@ -3,7 +3,7 @@
 {% block title %}Nouvelle notification {{ appKind.label }}{% endblock %}
 
 {% block admin_body %}
-    <h1 class="h3 mb-1">{{ appKind.icon }} Nouvelle notification {{ appKind.label }}</h1>
+    <h1 class="h3 mb-1 d-flex align-items-center gap-2">{{ include('admin/_app_icon.html.twig', {app: appKind, size: 30}, with_context: false) }} Nouvelle notification {{ appKind.label }}</h1>
     <p class="text-body-secondary mb-4">Étape 2 sur 2 — {{ appKind.pitch }}</p>
 
     <div class="row g-4"

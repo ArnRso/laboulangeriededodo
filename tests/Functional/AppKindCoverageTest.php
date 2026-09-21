@@ -215,7 +215,14 @@ class AppKindCoverageTest extends WebTestCase
         self::assertSelectorTextContains('.f-n-fresh .f-t', $appKind->headline($media->getAppData()));
         self::assertSelectorTextContains('.f-n-fresh .f-m', $media->getTitle());
         self::assertSelectorTextContains('.f-n-fresh .f-btn', $appKind->openLabel());
-        self::assertSame($appKind->icon(), trim($crawler->filter('.f-n-fresh .f-app')->text()));
+        $icon = $crawler->filter('.f-n-fresh .f-app');
+
+        if (null === $appKind->logo()) {
+            self::assertSame($appKind->icon(), trim($icon->text()), 'Sans logo, l\'emoji tient la place.');
+        } else {
+            self::assertCount(1, $icon->filter('img'), sprintf('%s doit montrer son logo.', $appKind->label()));
+            self::assertStringContainsString($appKind->value, (string) $icon->filter('img')->attr('src'));
+        }
 
         $this->client->request('GET', sprintf('/mon-espace/notifications/%d', (int) $media->getId()));
         self::assertResponseIsSuccessful();
@@ -517,6 +524,27 @@ class AppKindCoverageTest extends WebTestCase
         self::assertCount(2, $crawler->filter('.ca-person'));
         self::assertCount(0, $crawler->filter('.ca-av-me'));
         self::assertStringNotContainsString('Organisateur', $crawler->filter('main')->text());
+    }
+
+    /**
+     * Un logo déclaré doit exister : sinon l'écran affiche une image cassée,
+     * ce qu'aucun autre test ne verrait.
+     */
+    #[DataProvider('appKinds')]
+    public function testTheAppLogoExistsOnDisk(AppKind $appKind): void
+    {
+        $logo = $appKind->logo();
+
+        if (null === $logo) {
+            self::assertNotSame('', $appKind->icon(), 'Sans logo, il faut au moins un emoji.');
+
+            return;
+        }
+
+        $path = \dirname(__DIR__, 2).'/assets/'.$logo;
+
+        self::assertFileExists($path, sprintf('%s déclare un logo qui manque.', $appKind->label()));
+        self::assertNotFalse(getimagesize($path), 'Le fichier doit être une vraie image.');
     }
 
     /**

@@ -59,7 +59,7 @@
     {# Un brouillon n'a pas encore d'application, donc pas de détails. #}
     {% if form.appData is defined %}
         <fieldset class="border rounded p-3 mb-3">
-            <legend class="fs-6 fw-semibold mb-2">{{ appKind.icon }} Détails {{ appKind.label }}</legend>
+            <legend class="fs-6 fw-semibold mb-2 d-flex align-items-center gap-2">{{ include('admin/_app_icon.html.twig', {app: appKind, size: 22}, with_context: false) }} Détails {{ appKind.label }}</legend>
             {% for child in form.appData %}
                 {{ form_row(child) }}
             {% endfor %}

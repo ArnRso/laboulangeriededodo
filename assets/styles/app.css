@@ -79,3 +79,15 @@ main {
     outline: 2px solid var(--bs-primary);
     outline-offset: 2px;
 }
+
+/* Le logo d'une application dans le back-office : arrondi comme sur un
+   écran d'accueil, pour qu'on la reconnaisse au premier coup d'œil. */
+.a-app-logo {
+    border-radius: 22%;
+    flex: none;
+    object-fit: cover;
+}
+
+.a-app-emoji {
+    flex: none;
+}

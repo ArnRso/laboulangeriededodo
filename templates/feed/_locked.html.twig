@@ -9,7 +9,7 @@
 {% set app = state.media.appKind %}
 
 <div class="f-n f-n-{{ app.value }} f-n-locked f-n-static">
-    <span class="f-app" style="background: {{ app.color }}">{{ app.icon }}</span>
+    {{ include('feed/_app_icon.html.twig', {app: app}, with_context: false) }}
 
     <span class="f-b">
         <span class="f-h">

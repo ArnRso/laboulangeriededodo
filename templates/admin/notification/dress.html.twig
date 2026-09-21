@@ -5,7 +5,7 @@
 {% block admin_body %}
     <div class="d-flex justify-content-between align-items-start mb-4">
         <div>
-            <h1 class="h3 mb-1">{{ appKind.icon }} Habiller « {{ media.title }} » en {{ appKind.label }}</h1>
+            <h1 class="h3 mb-1 d-flex align-items-center gap-2">{{ include('admin/_app_icon.html.twig', {app: appKind, size: 30}, with_context: false) }} Habiller « {{ media.title }} » en {{ appKind.label }}</h1>
             <p class="text-body-secondary mb-0">{{ appKind.pitch }}</p>
         </div>
         <a class="btn btn-outline-secondary" href="{{ path('app_admin_notification_dress_choose', {id: media.id}) }}">Changer d'application</a>
