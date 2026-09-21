@@ -16,7 +16,7 @@
                 <span class="f-bar-spacer"></span>
             </div>
             <div class="dl-ok"><i>✓</i><b>Rendez-vous honoré</b></div>
-            <p>Canon event · Cette journée était inévitable. Tu as accepté ton destin.</p>
+            {% if data.intro|default('') %}<p>{{ data.intro }}</p>{% endif %}
         </header>
 
         <section class="dl-card dl-pr">

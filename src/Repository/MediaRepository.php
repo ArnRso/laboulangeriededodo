@@ -23,7 +23,11 @@ class MediaRepository extends ServiceEntityRepository
      */
     public function findAllOrdered(): array
     {
+        // Les étiquettes viennent avec : sans cette jointure, le back-office
+        // les redemande une fois par notification.
         return $this->createQueryBuilder('m')
+            ->leftJoin('m.tags', 't')
+            ->addSelect('t')
             ->orderBy('m.position', 'ASC')
             ->addOrderBy('m.id', 'ASC')
             ->getQuery()

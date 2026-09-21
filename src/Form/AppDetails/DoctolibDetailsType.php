@@ -15,6 +15,11 @@ class DoctolibDetailsType extends AbstractAppDetailsType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
+            ->add('intro', TextType::class, [
+                'label' => 'Phrase sous « Rendez-vous honoré »',
+                'help' => 'Vide : la ligne disparaît.',
+                'required' => false,
+            ])
             ->add('practitioner', TextType::class, [
                 'label' => 'Praticien',
                 'constraints' => [new NotBlank()],
@@ -53,6 +58,7 @@ class DoctolibDetailsType extends AbstractAppDetailsType
     public static function defaults(): array
     {
         return [
+            'intro' => 'Canon event · Cette journée était inévitable. Tu as accepté ton destin.',
             'practitioner' => 'Dr Passé',
             'specialty' => 'Spécialiste des décisions catastrophiques',
             'sector' => 'Conventionné secteur 2015',

@@ -34,7 +34,10 @@ class NotificationController extends AbstractController
     #[Route('', name: 'app_admin_notification_index', methods: ['GET'])]
     public function index(Request $request, MediaRepository $mediaRepository, TagRepository $tagRepository): Response
     {
-        $activeTag = $tagRepository->find($request->query->getInt('tag'));
+        // Sans filtre, on n'interroge pas la base : « tag » absent vaut zéro,
+        // et le repository irait chercher une étiquette qui n'existe pas.
+        $tagId = $request->query->getInt('tag');
+        $activeTag = 0 !== $tagId ? $tagRepository->find($tagId) : null;
         $medias = $mediaRepository->findAllOrdered();
 
         if (null !== $activeTag) {
