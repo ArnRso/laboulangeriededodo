@@ -24,6 +24,8 @@
     --f-icon-ring: #fff;
     --f-btn-bg: #17152b;
     --f-btn-ink: #fff;
+    --f-back-bg: #f6f6f6;
+    --f-back-ink: #17152b;
 }
 
 /* L'écran verrouillé, et lui seul : le papier peint est sombre, donc tout
@@ -48,6 +50,8 @@
     --f-icon-ring: rgba(255, 255, 255, 0.25);
     --f-btn-bg: #fff;
     --f-btn-ink: #17152b;
+    --f-back-bg: rgba(255, 255, 255, 0.16);
+    --f-back-ink: #fff;
 }
 
 * {
@@ -665,10 +669,6 @@ body {
     text-decoration: none;
 }
 
-.f-back-glass {
-    background: var(--f-glass);
-}
-
 /* Écrans d'ouverture : socle commun. */
 .f-open .f-status {
     display: none;
@@ -706,11 +706,11 @@ body {
     /* La barre est en flex : sans cela, le cercle s'écrase en ovale. */
     flex: none;
     border-radius: 50%;
-    background: #f6f6f6;
+    background: var(--f-back-bg);
     display: grid;
     place-items: center;
     text-decoration: none;
-    color: inherit;
+    color: var(--f-back-ink);
 }
 
 .f-back-icon {

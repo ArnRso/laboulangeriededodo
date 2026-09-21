@@ -65,6 +65,21 @@ class AccountControllerTest extends WebTestCase
         self::assertSame('', trim($crawler->filter('a.f-back')->text()), 'Aucun caractère à côté du dessin.');
     }
 
+    /**
+     * Le bouton de retour avait un fond clair en dur et une couleur héritée
+     * du thème : sur le papier peint sombre, le chevron devenait invisible.
+     */
+    public function testTheBackButtonDoesNotInheritTheTextColour(): void
+    {
+        $css = (string) file_get_contents(\dirname(__DIR__, 3).'/assets/styles/feed.css');
+
+        self::assertSame(1, preg_match('/\n\.f-back \{(?<rules>[^}]*)\}/', $css, $matches));
+
+        self::assertStringContainsString('background: var(--f-back-bg)', $matches['rules']);
+        self::assertStringContainsString('color: var(--f-back-ink)', $matches['rules']);
+        self::assertStringNotContainsString('color: inherit', $matches['rules'], 'La couleur du chevron ne suit pas le texte.');
+    }
+
     public function testTheRecipientCanChangeTheirPassword(): void
     {
         $dorian = $this->userFactory->createRecipient('dorian@example.com', self::CURRENT_PASSWORD);
