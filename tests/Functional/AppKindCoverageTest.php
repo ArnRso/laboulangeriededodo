@@ -212,9 +212,13 @@ class AppKindCoverageTest extends WebTestCase
 
         $crawler = $this->client->request('GET', '/mon-espace');
         self::assertResponseIsSuccessful();
-        self::assertSelectorTextContains('.f-n-fresh .f-t', $appKind->headline($media->getAppData()));
-        self::assertSelectorTextContains('.f-n-fresh .f-m', $media->getTitle());
+
+        // La carte annonce l'arrivée, pas le contenu : le titre et le résumé
+        // n'apparaissent qu'une fois la notification ouverte.
+        self::assertSelectorTextContains('.f-n-fresh .f-t', 'Notification masquée');
         self::assertSelectorTextContains('.f-n-fresh .f-btn', $appKind->openLabel());
+        self::assertStringNotContainsString($media->getTitle(), $crawler->filter('.f-n-fresh')->text());
+        self::assertStringNotContainsString($appKind->headline($media->getAppData()), $crawler->filter('.f-n-fresh')->text());
         $icon = $crawler->filter('.f-n-fresh .f-app');
 
         if (null === $appKind->logo()) {

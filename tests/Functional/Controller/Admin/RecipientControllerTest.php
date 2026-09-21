@@ -164,7 +164,13 @@ class RecipientControllerTest extends WebTestCase
 
         self::assertResponseIsSuccessful();
         self::assertCount(0, $crawler->filter('.f-n-seen'), 'Marie n\'hérite pas des ouvertures de Dorian.');
-        self::assertSelectorTextContains('.f-n-fresh .f-m', 'Notification 1', 'Elle commence au début du même fil.');
+        // Le titre est masqué tant que la notification n'est pas ouverte :
+        // c'est le lien de la carte qui dit où elle en est.
+        self::assertSame(
+            sprintf('/mon-espace/notifications/%d', (int) $medias[0]->getId()),
+            $crawler->filter('.f-n-fresh')->attr('href'),
+            'Elle commence au début du même fil.',
+        );
 
         $this->client->loginUser($dorian);
         $crawler = $this->client->request('GET', '/mon-espace');

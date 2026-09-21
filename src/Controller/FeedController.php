@@ -87,7 +87,9 @@ class FeedController extends AbstractController
             return $this->redirectToRoute('app_feed');
         }
 
-        $this->addFlash('success', sprintf('Le temps a sauté. « %s » vient d\'arriver.', $media->getTitle()));
+        // Le titre reste caché : l'écran verrouillé annonce l'arrivée, pas
+        // le contenu. L'application, elle, est déjà visible sur la carte.
+        $this->addFlash('success', sprintf('Le temps a sauté. Une notification %s vient d\'arriver.', $media->requireAppKind()->label()));
 
         return $this->redirectToRoute('app_feed');
     }

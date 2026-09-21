@@ -70,7 +70,6 @@ class FeedControllerTest extends WebTestCase
 
         self::assertResponseIsSuccessful();
         self::assertSelectorExists('.f-n-fresh');
-        self::assertSelectorTextContains('.f-n-fresh', 'Notification 1');
         self::assertSelectorTextContains('body', 'part quand tu auras ouvert celle-ci');
         self::assertSelectorNotExists('[data-controller="countdown"]', 'Le chrono ne court pas tant que la fraîche n\'est pas ouverte.');
     }
@@ -279,13 +278,55 @@ class FeedControllerTest extends WebTestCase
 
     public function testUnpublishedNotificationIsInvisible(): void
     {
-        $this->mediaFactory->createNotification(0, 'Brouillon secret', published: false);
-        $this->mediaFactory->createNotification(1, 'Visible');
+        $this->mediaFactory->createNotification(0, 'Brouillon secret', AppKind::TINDER, published: false);
+        $this->mediaFactory->createNotification(1, 'Visible', AppKind::DOCTOLIB);
 
         $this->client->request('GET', '/mon-espace');
 
         self::assertSelectorTextNotContains('body', 'Brouillon secret');
-        self::assertSelectorTextContains('.f-n-fresh', 'Visible');
+        self::assertSelectorTextNotContains('body', 'Tinder', 'Une notification hors du fil n\'existe pas.');
+        self::assertSelectorTextContains('.f-n-fresh', 'Doctolib');
+    }
+
+    /**
+     * Une notification fraîche est masquée elle aussi : l'écran verrouillé
+     * annonce qu'elle est arrivée, pas ce qu'elle dit.
+     */
+    public function testAFreshNotificationHidesItsContentToo(): void
+    {
+        $media = $this->mediaFactory->createNotification(0, 'Le titre secret', AppKind::DELIVEROO, description: 'La description secrète.');
+        $media->setAppData(['restaurant' => 'Chez Lactose', 'rider' => 'le.pot.agé']);
+        $this->entityManager->flush();
+
+        $crawler = $this->client->request('GET', '/mon-espace');
+
+        self::assertResponseIsSuccessful();
+        $card = $crawler->filter('.f-n-fresh');
+
+        self::assertStringContainsString('Deliveroo', $card->text(), 'L\'application se montre.');
+        self::assertStringContainsString('Notification masquée', $card->text());
+        self::assertStringContainsString('Ouvrir la commande', $card->text(), 'Le bouton reste, pour l\'ouvrir.');
+
+        self::assertStringNotContainsString('Le titre secret', $card->text());
+        self::assertStringNotContainsString('La description secrète.', $card->text());
+        self::assertStringNotContainsString('Chez Lactose', $card->text());
+    }
+
+    public function testSkippingTheWaitDoesNotAnnounceTheTitle(): void
+    {
+        $medias = $this->mediaFactory->createFeed(2);
+        $medias[1]->setTitle('Le titre secret');
+        $this->entityManager->flush();
+
+        $this->client->request('GET', sprintf('/mon-espace/notifications/%d', (int) $medias[0]->getId()));
+
+        // Le coup de pouce part du formulaire caché de l'écran verrouillé.
+        $crawler = $this->client->request('GET', '/mon-espace');
+        $this->client->submit($crawler->filter('form.f-cheat')->form());
+        $this->client->followRedirect();
+
+        $html = (string) $this->client->getResponse()->getContent();
+        self::assertStringNotContainsString('Le titre secret', $html, 'Le coup de pouce n\'annonce pas le contenu.');
     }
 
     public function testTagsNeverReachTheRecipient(): void
@@ -401,13 +442,15 @@ class FeedControllerTest extends WebTestCase
     public function testADraftWithoutAppIsInvisibleToTheRecipient(): void
     {
         $draft = $this->mediaFactory->createDraft(0, 'Encore sans app');
-        $this->mediaFactory->createNotification(1, 'Bien habillée', delayMinutes: 0);
+        $this->mediaFactory->createNotification(1, 'Bien habillée', AppKind::DOCTOLIB, delayMinutes: 0);
 
         $this->client->request('GET', '/mon-espace');
 
         self::assertResponseIsSuccessful();
         self::assertSelectorTextNotContains('main', 'Encore sans app');
-        self::assertSelectorTextContains('main', 'Bien habillée');
+        // Le titre n'est plus affiché avant l'ouverture : c'est l'application
+        // qui signale qu'une notification est bien là.
+        self::assertSelectorTextContains('main', 'Doctolib');
 
         $this->client->request('GET', sprintf('/mon-espace/notifications/%d', (int) $draft->getId()));
 

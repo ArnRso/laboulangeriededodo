@@ -8,7 +8,6 @@
 #}
 {% set media = state.media %}
 {% set app = media.appKind %}
-{% set data = media.appData %}
 
 <a class="f-n f-n-{{ app.value }} f-n-{{ variant }}"
    href="{{ path('app_feed_open', {id: media.id}) }}"
@@ -24,14 +23,9 @@
         </span>
 
         {% if variant == 'fresh' %}
-            <span class="f-t">{{ app.headline(data) }}</span>
-            <span class="f-m">
-                1 × <b>{{ media.title }}</b>
-                {% if app.value == 'uber_eats' %} · livrée par {{ data.courier|default('le.pot.agé') }}{% endif %}
-            </span>
-            {% if app.value == 'uber_eats' %}
-                <span class="f-track" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
-            {% endif %}
+            {# Rien du contenu ne sort d'ici : l'écran verrouillé annonce
+               qu'une notification est arrivée, pas ce qu'elle dit. #}
+            <span class="f-t f-t-hidden">Notification masquée</span>
             <span class="f-btn">{{ app.openLabel }}</span>
         {% else %}
             <span class="f-t">{{ media.title }}</span>
