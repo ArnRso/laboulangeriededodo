@@ -3,7 +3,6 @@
 {% set data = media.appData %}
 {% set question = data.question|default('') ?: media.title %}
 {% set resultText = data.resultText|default('') ?: media.description %}
-{% set score = data.score|default(0) %}
 
 {% block title %}{{ media.title }} · Quiz{% endblock %}
 {% block body_class %}f-open f-open-qz{% endblock %}
@@ -16,46 +15,43 @@
             <span class="f-bar-spacer"></span>
         </div>
 
-        <section class="qz-card">
-            <h1 class="qz-q">{{ question }}</h1>
-
+        <div class="qz-sheet">
             {{ include('feed/_media.html.twig', {media: media, class: 'qz-media'}, with_context: false) }}
-        </section>
 
-        {% set answers = [] %}
-        {% for line in data.answers|default('')|split('\n') %}
-            {% if line|trim %}{% set answers = answers|merge([line|trim]) %}{% endif %}
-        {% endfor %}
+            <p class="qz-q">{{ question }}</p>
 
-        {% if answers is not empty %}
-            <ul class="qz-answers">
-                {% for answer in answers %}
-                    {% set good = answer starts with '*' %}
-                    <li class="qz-a{{ good ? ' qz-a-good' : '' }}">
-                        <span>{{ good ? answer|slice(1)|trim : answer }}</span>
-                        {% if good %}<i class="qz-tick" aria-label="Bonne réponse">✓</i>{% endif %}
-                    </li>
-                {% endfor %}
-            </ul>
-        {% endif %}
+            {% set answers = [] %}
+            {% for line in data.answers|default('')|split('\n') %}
+                {% if line|trim %}{% set answers = answers|merge([line|trim]) %}{% endif %}
+            {% endfor %}
 
-        <section class="qz-result">
-            <small class="qz-h2">🧠 Ton résultat</small>
-            <b class="qz-verdict">{{ data.resultTitle|default('Tu es à 87 % un canon event') }}</b>
+            {% if answers is not empty %}
+                <ul class="qz-answers">
+                    {% for answer in answers %}
+                        {% set good = answer starts with '*' %}
+                        <li class="qz-a{{ good ? ' qz-a-good' : '' }}">
+                            <span class="qz-bullet" aria-hidden="true">
+                                {% if good %}
+                                    <svg viewBox="0 0 24 24" focusable="false">
+                                        <path d="M6 12.5 L10 16.5 L18 8" fill="none" stroke="currentColor"
+                                              stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                {% endif %}
+                            </span>
+                            <span class="qz-a-text">{{ good ? answer|slice(1)|trim : answer }}</span>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
 
-            <div class="qz-score">{{ score }}<i>%</i></div>
-            <div class="qz-track qz-track-score">
-                <i style="width: {{ score }}%"></i>
-            </div>
+            {% if data.resultTitle|default('') %}
+                <div class="qz-result">{{ data.resultTitle }}</div>
+            {% endif %}
 
             {% if resultText %}
                 <p class="qz-text">{{ resultText }}</p>
             {% endif %}
-
-            {% if data.badge|default('') %}
-                <div class="qz-badge">{{ data.badge }}</div>
-            {% endif %}
-        </section>
+        </div>
     </main>
 
     {% if not preview %}

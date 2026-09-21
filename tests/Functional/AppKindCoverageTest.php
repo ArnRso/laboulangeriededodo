@@ -452,6 +452,60 @@ class AppKindCoverageTest extends WebTestCase
     }
 
     /**
+     * Le quiz n'a qu'une case de résultat et un encart de texte : plus de
+     * score en gros, de barre ni de badge.
+     */
+    public function testTheQuizShowsOneResultBoxAndOneTextBox(): void
+    {
+        $this->client->loginUser($this->userFactory->createAdmin());
+
+        $crawler = $this->client->request('POST', '/admin/notifications/nouveau/quiz/apercu', [
+            'media' => [
+                'title' => 'Un quiz',
+                'type' => MediaType::TEXT->value,
+                'textContent' => 'Un souvenir',
+                'description' => 'Le commentaire du résultat.',
+                'appData' => [
+                    'quizName' => 'Un quiz',
+                    'question' => 'Comment tu as géré ça ?',
+                    'answers' => "à l'arrache\n*en mode canon event\nen niant tout",
+                    'resultTitle' => 'Tu es à 87 % un canon event',
+                    'resultText' => '',
+                ],
+            ],
+        ]);
+
+        self::assertResponseIsSuccessful();
+
+        self::assertCount(1, $crawler->filter('.qz-result'));
+        self::assertStringContainsString('Tu es à 87 % un canon event', $crawler->filter('.qz-result')->text());
+        self::assertCount(1, $crawler->filter('.qz-text'));
+        self::assertStringContainsString('Le commentaire du résultat.', $crawler->filter('.qz-text')->text());
+
+        self::assertCount(3, $crawler->filter('.qz-a'));
+        self::assertCount(1, $crawler->filter('.qz-a-good'));
+        self::assertCount(1, $crawler->filter('.qz-a-good .qz-bullet svg'), 'La bonne réponse porte sa coche.');
+        self::assertStringContainsString('en mode canon event', $crawler->filter('.qz-a-good')->text());
+        self::assertStringNotContainsString('*', $crawler->filter('.qz-a-good')->text(), 'L\'étoile marque la bonne réponse, elle ne s\'affiche pas.');
+    }
+
+    public function testTheQuizHidesItsResultBoxWhenThereIsNoVerdict(): void
+    {
+        $this->client->loginUser($this->userFactory->createAdmin());
+
+        $crawler = $this->client->request('POST', '/admin/notifications/nouveau/quiz/apercu', [
+            'media' => [
+                'title' => 'Un quiz',
+                'type' => MediaType::TEXT->value,
+                'textContent' => 'Un souvenir',
+                'appData' => ['quizName' => 'Un quiz', 'resultTitle' => '', 'resultText' => ''],
+            ],
+        ]);
+
+        self::assertCount(0, $crawler->filter('.qz-result'));
+    }
+
+    /**
      * La flèche de retour est dessinée, pas écrite : les glyphes « ‹ » et
      * « ⌄ » tombent à côté du centre de leur cercle, chacun à sa façon.
      */
