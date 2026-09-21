@@ -31,6 +31,30 @@ class SecurityControllerTest extends WebTestCase
         self::assertSelectorExists('form input[name="_username"]');
     }
 
+    /**
+     * Un visiteur tombe sur le formulaire, pas sur une page qui invite à
+     * cliquer pour l'atteindre.
+     */
+    public function testTheHomePageOpensOnTheLoginForm(): void
+    {
+        $this->client->request('GET', '/');
+
+        self::assertResponseRedirects('/connexion');
+
+        $crawler = $this->client->followRedirect();
+        self::assertCount(1, $crawler->filter('form input[name="_username"]'));
+        self::assertCount(1, $crawler->filter('form input[name="_password"]'));
+    }
+
+    public function testTheLoginPageWearsTheAppColours(): void
+    {
+        $crawler = $this->client->request('GET', '/connexion');
+
+        self::assertSelectorExists('body.f-body-lock', 'Même palette que le reste de l\'application.');
+        self::assertCount(0, $crawler->filter('.f-n-doctolib'), 'Plus de fausse notification pour entrer.');
+        self::assertCount(0, $crawler->filter('.f-status'), 'Pas de barre d\'état sur un écran de connexion.');
+    }
+
     public function testLoginPasswordFieldOffersAVisibilityToggle(): void
     {
         $crawler = $this->client->request('GET', '/connexion');

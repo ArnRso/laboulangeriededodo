@@ -18,6 +18,8 @@ class HomeController extends AbstractController
             return $this->redirectToRoute($user->isAdmin() ? 'app_admin_notification_index' : 'app_feed');
         }
 
-        return $this->render('home/index.html.twig');
+        // Rien à annoncer à qui n'est pas connecté : autant ouvrir sur le
+        // formulaire plutôt que sur une page qui invite à cliquer.
+        return $this->redirectToRoute('app_login');
     }
 }

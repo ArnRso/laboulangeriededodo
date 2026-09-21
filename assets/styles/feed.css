@@ -669,6 +669,37 @@ body {
     text-decoration: none;
 }
 
+/* Connexion : le formulaire seul, centré, aux couleurs du fil. */
+.f-login-wrap {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 100svh;
+}
+
+.f-login-head {
+    text-align: center;
+    margin-bottom: 26px;
+}
+
+.f-login-mark {
+    font-size: 40px;
+    line-height: 1;
+}
+
+.f-login-head h1 {
+    margin: 12px 0 0;
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: -0.4px;
+}
+
+.f-login-head p {
+    margin: 6px 0 0;
+    font-size: 14px;
+    color: var(--f-stamp);
+}
+
 /* Écrans d'ouverture : socle commun. */
 .f-open .f-status {
     display: none;

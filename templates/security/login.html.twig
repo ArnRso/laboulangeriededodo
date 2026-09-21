@@ -2,11 +2,17 @@
 
 {% block title %}Connexion{% endblock %}
 
+{% block body_class %}f-body-lock f-login{% endblock %}
+
+{# La barre d'état du téléphone n'a rien à faire sur un écran de connexion. #}
+{% block status %}{% endblock %}
+
 {% block body %}
-    <main class="f-wrap">
-        <header class="f-clock">
-            <div class="f-clock-time">🔔</div>
-            <div class="f-clock-date">on t'attendait</div>
+    <main class="f-wrap f-login-wrap">
+        <header class="f-login-head">
+            <span class="f-login-mark" aria-hidden="true">🔔</span>
+            <h1>La Boulangerie de Dodo</h1>
+            <p>Connecte-toi pour retrouver tes notifications.</p>
         </header>
 
         {% for message in app.flashes('success') %}
@@ -18,8 +24,6 @@
         {% endif %}
 
         <form method="post" class="f-card">
-            <h1 class="f-card-title">Connexion</h1>
-
             <div class="f-field">
                 <label for="username" class="f-label">Email</label>
                 <input type="email" id="username" name="_username" value="{{ last_username }}"

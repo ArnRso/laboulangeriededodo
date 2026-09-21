@@ -26,6 +26,11 @@ class Media
      */
     public const int MAX_DELAY_MINUTES = 720 * 60;
 
+    /**
+     * Deux jours entre deux notifications : le fil dure, sans qu'on l'oublie.
+     */
+    public const int DEFAULT_DELAY_MINUTES = 48 * 60;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -73,7 +78,7 @@ class Media
     #[ORM\Column]
     #[Assert\PositiveOrZero]
     #[Assert\LessThanOrEqual(self::MAX_DELAY_MINUTES)]
-    private int $delayMinutes = 1440;
+    private int $delayMinutes = self::DEFAULT_DELAY_MINUTES;
 
     /**
      * Détails propres à l'application imitée (pseudo Instagram, praticien

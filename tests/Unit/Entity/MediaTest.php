@@ -35,6 +35,11 @@ class MediaTest extends TestCase
         self::assertSame('Deliveroo · Nom du plat', $media->getFragments()[0]['label']);
     }
 
+    public function testANewNotificationWaitsTwoDaysByDefault(): void
+    {
+        self::assertSame(2880, new Media()->getDelayMinutes());
+    }
+
     public function testATagIsNotAttachedTwice(): void
     {
         $media = new Media();

@@ -105,7 +105,7 @@ class AppFixtures extends Fixture
                 'description' => 'Impossible de l\'oublier. Toi non plus, d\'ailleurs, on t\'a entendu.',
                 'type' => MediaType::LINK,
                 'content' => 'https://open.spotify.com/',
-                'delay' => 1440,
+                'delay' => 2880,
                 'appData' => [
                     'username' => 'dodo.du.passe',
                     'location' => 'Nos années lycée · Septembre 2015',
@@ -123,7 +123,7 @@ class AppFixtures extends Fixture
                 'description' => 'Le voyage scolaire. Trois jours, un bus, la pluie, et cette décision capillaire prise à 7 h du matin dans un miroir de station-service.',
                 'type' => MediaType::TEXT,
                 'content' => 'Preuve photo à venir. Tu ne l\'as jamais supprimée, on l\'a retrouvée.',
-                'delay' => 1440,
+                'delay' => 2880,
                 'appData' => [
                     'matchName' => 'La coupe de 2015',
                     'matchAge' => 19,
@@ -154,7 +154,7 @@ class AppFixtures extends Fixture
                 'description' => 'Sans GPS, évidemment. On s\'est perdus trois fois. C\'était le meilleur moment.',
                 'type' => MediaType::TEXT,
                 'content' => 'Tu conduisais. Personne ne sait encore comment on est arrivés.',
-                'delay' => 1440,
+                'delay' => 2880,
                 'appData' => [
                     'courier' => 'le.pot.agé',
                     'trip' => 'Quelque part → Ailleurs · 3 détours',
@@ -181,7 +181,7 @@ class AppFixtures extends Fixture
                 'description' => 'Le son est resté dans la tête de tout le monde. Contre leur gré.',
                 'type' => MediaType::TEXT,
                 'content' => 'Ce soir-là, trois chansons. Zéro note juste. Une salle entière conquise.',
-                'delay' => 1440,
+                'delay' => 2880,
                 'appData' => [
                     'username' => 'dodo.du.passe',
                     'sound' => 'son original – dodo.du.passe · karaoké (sped up)',
@@ -213,7 +213,7 @@ class AppFixtures extends Fixture
                 'description' => 'Le barman s\'en souvient. Nous aussi. Ton compte, moins.',
                 'type' => MediaType::TEXT,
                 'content' => 'Reçu retrouvé dans une poche de veste. Pas la tienne.',
-                'delay' => 1440,
+                'delay' => 2880,
                 'appData' => [
                     'counterparty' => 'Le bar de 2015',
                     'reference' => 'CB 2015 TOURNÉE GÉNÉRALE',
@@ -228,7 +228,7 @@ class AppFixtures extends Fixture
                 'description' => 'Prévisions : pluie, cartons mal fermés, canapé coincé dans l\'escalier. Toutes confirmées.',
                 'type' => MediaType::TEXT,
                 'content' => 'On t\'avait dit de démonter les pieds du canapé.',
-                'delay' => 1440,
+                'delay' => 2880,
                 'appData' => [
                     'city' => 'Ton premier appart',
                     'temperature' => 9,
@@ -245,7 +245,7 @@ class AppFixtures extends Fixture
                 'description' => 'Tu as dit « pas de fête ». Il y a eu une fête. Tu as fini par chanter.',
                 'type' => MediaType::TEXT,
                 'content' => 'Tout le monde avait prévu le coup. Toi seul a été surpris, comme chaque année.',
-                'delay' => 1440,
+                'delay' => 2880,
                 'appData' => [
                     'date' => 'Samedi 23 août 2015',
                     'timeRange' => '21:00 – 04:12',
