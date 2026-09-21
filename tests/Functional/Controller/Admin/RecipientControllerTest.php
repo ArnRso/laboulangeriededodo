@@ -4,6 +4,7 @@ namespace App\Tests\Functional\Controller\Admin;
 
 use App\Entity\User;
 use App\Enum\Avatar;
+use App\Enum\InvitationLifetime;
 use App\Repository\UserRepository;
 use App\Tests\Factory\MediaFactory;
 use App\Tests\Factory\UserFactory;
@@ -37,7 +38,7 @@ class RecipientControllerTest extends WebTestCase
     public function testInvitesRecipient(): void
     {
         $this->client->request('GET', '/admin/destinataires');
-        $this->client->submitForm('Envoyer l\'invitation', [
+        $this->client->submitForm('Inviter', [
             'invite_recipient[email]' => 'dorian@example.com',
             'invite_recipient[displayName]' => 'Dodo',
             'invite_recipient[avatar]' => '🦤',
@@ -57,7 +58,7 @@ class RecipientControllerTest extends WebTestCase
     public function testDisplayNameIsRequired(): void
     {
         $this->client->request('GET', '/admin/destinataires');
-        $this->client->submitForm('Envoyer l\'invitation', [
+        $this->client->submitForm('Inviter', [
             'invite_recipient[email]' => 'dorian@example.com',
             'invite_recipient[displayName]' => '',
             'invite_recipient[avatar]' => '🦤',
@@ -70,7 +71,7 @@ class RecipientControllerTest extends WebTestCase
     public function testInvitationEmailIsSentToTheRecipient(): void
     {
         $this->client->request('GET', '/admin/destinataires');
-        $this->client->submitForm('Envoyer l\'invitation', [
+        $this->client->submitForm('Inviter', [
             'invite_recipient[email]' => 'dorian@example.com',
             'invite_recipient[displayName]' => 'Dodo',
             'invite_recipient[avatar]' => '🦤',
@@ -137,7 +138,7 @@ class RecipientControllerTest extends WebTestCase
     public function testInvalidEmailIsRejected(): void
     {
         $this->client->request('GET', '/admin/destinataires');
-        $this->client->submitForm('Envoyer l\'invitation', [
+        $this->client->submitForm('Inviter', [
             'invite_recipient[email]' => 'pas-un-email',
         ]);
 
@@ -227,6 +228,201 @@ class RecipientControllerTest extends WebTestCase
         self::assertCount(1, $crawler->filter('.f-n-seen'), 'Rien n\'a été remis à zéro.');
     }
 
+    public function testGeneratingALinkInsteadOfSendingAnEmail(): void
+    {
+        $this->invite('nouveau@test.com', 'Nouveau', [
+            'invite_recipient[sendEmail]' => '0',
+            'invite_recipient[lifetime]' => (string) InvitationLifetime::TWO_HOURS->value,
+        ]);
+
+        self::assertResponseRedirects('/admin/destinataires');
+        $crawler = $this->client->followRedirect();
+
+        $link = $crawler->filter('[data-copy-target="source"]');
+        self::assertCount(1, $link, 'Le lien s\'affiche pour être transmis à la main.');
+
+        $invited = $this->userRepository->findOneByEmail('nouveau@test.com');
+        self::assertNotNull($invited);
+        self::assertStringContainsString((string) $invited->getInvitationToken(), (string) $link->attr('value'));
+        self::assertCount(0, self::getMailerMessages(), 'Rien n\'est envoyé.');
+    }
+
+    public function testTheChosenLifetimeSetsTheExpiry(): void
+    {
+        $this->invite('nouveau@test.com', 'Nouveau', [
+            'invite_recipient[sendEmail]' => '0',
+            'invite_recipient[lifetime]' => (string) InvitationLifetime::HALF_HOUR->value,
+        ]);
+
+        $invited = $this->userRepository->findOneByEmail('nouveau@test.com');
+        self::assertNotNull($invited);
+
+        $expiresAt = $invited->getInvitationExpiresAt();
+        self::assertNotNull($expiresAt);
+
+        $minutes = ($expiresAt->getTimestamp() - time()) / 60;
+        self::assertGreaterThan(25, $minutes);
+        self::assertLessThan(35, $minutes, 'Une demi-heure, pas la semaine par défaut.');
+    }
+
+    public function testResendingTheEmailToSomeoneWhoNeverActivated(): void
+    {
+        $waiting = $this->inviteAndForgetTheEmail();
+
+        $token = $this->tokenFor('renvoyer', $waiting);
+        $before = $this->readTokenFromDatabase('nouveau@test.com');
+
+        $this->client->request('POST', sprintf('/admin/destinataires/%d/renvoyer', (int) $waiting->getId()), [
+            '_token' => $token,
+        ]);
+
+        self::assertResponseRedirects('/admin/destinataires');
+
+        // Le mail du renvoi porte le jeton neuf, pas celui de l'invitation.
+        $sent = self::getMailerMessages();
+        $last = end($sent);
+        self::assertInstanceOf(Email::class, $last);
+
+        $fresh = $this->readTokenFromDatabase('nouveau@test.com');
+        self::assertNotSame($before, $fresh, 'Le jeton est remplacé.');
+        self::assertStringContainsString($fresh, $last->getHtmlBody().$last->getTextBody());
+    }
+
+    public function testRegeneratingTheLinkOfSomeoneWhoNeverActivated(): void
+    {
+        $waiting = $this->inviteAndForgetTheEmail();
+        $before = $this->readTokenFromDatabase($waiting->getEmail());
+        $sent = \count(self::getMailerMessages());
+
+        $this->client->request('POST', sprintf('/admin/destinataires/%d/lien', (int) $waiting->getId()), [
+            '_token' => $this->tokenFor('lien', $waiting),
+            'lifetime' => (string) InvitationLifetime::ONE_HOUR->value,
+        ]);
+
+        $crawler = $this->client->followRedirect();
+
+        self::assertCount(1, $crawler->filter('[data-copy-target="source"]'));
+        self::assertNotSame($before, $this->readTokenFromDatabase($waiting->getEmail()), 'Le jeton est remplacé.');
+        self::assertCount($sent, self::getMailerMessages(), 'Un lien à la main n\'envoie rien de plus.');
+    }
+
+    public function testTheAdminCanWatchTheFeedThroughARecipientsEyes(): void
+    {
+        $dorian = $this->userFactory->createRecipient();
+
+        // Symfony bascule puis redirige vers la même URL, sans le paramètre.
+        $this->client->request('GET', sprintf('/mon-espace?_switch_user=%s', urlencode($dorian->getEmail())));
+        $this->client->followRedirect();
+
+        self::assertResponseIsSuccessful();
+        self::assertSelectorTextContains('.f-impersonating', $dorian->getPublicName());
+
+        // Et on revient à son propre compte.
+        $this->client->request('GET', '/admin/destinataires?_switch_user=_exit');
+        $this->client->followRedirect();
+
+        self::assertResponseIsSuccessful();
+        self::assertSelectorNotExists('.f-impersonating');
+    }
+
+    /**
+     * Le back-office est fermé à qui n'est pas administrateur, usurpation ou
+     * non : la règle vient de access_control, on la vérifie plutôt que de la
+     * supposer.
+     */
+    public function testTheBackOfficeNeedsTheAdminRole(): void
+    {
+        $this->client->loginUser($this->userFactory->createRecipient());
+
+        foreach (['/admin/notifications', '/admin/destinataires', '/admin/etiquettes'] as $path) {
+            $this->client->request('GET', $path);
+            self::assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN, sprintf('%s doit rester fermé.', $path));
+        }
+    }
+
+    /**
+     * L'usurpation ne doit pas ouvrir le back-office : l'administrateur qui
+     * regarde par les yeux d'un destinataire perd ses droits le temps de la
+     * visite.
+     */
+    public function testImpersonatingDropsTheAdminRights(): void
+    {
+        $dorian = $this->userFactory->createRecipient();
+
+        $this->client->request('GET', sprintf('/mon-espace?_switch_user=%s', urlencode($dorian->getEmail())));
+        $this->client->followRedirect();
+
+        $this->client->request('GET', '/admin/notifications');
+
+        self::assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN, 'Le fil de quelqu\'un ne donne pas les clés de l\'admin.');
+    }
+
+    public function testARecipientCannotImpersonateAnyone(): void
+    {
+        $dorian = $this->userFactory->createRecipient();
+        $lea = $this->userFactory->createRecipient('lea@test.com');
+
+        $this->client->loginUser($dorian);
+        $this->client->request('GET', sprintf('/mon-espace?_switch_user=%s', urlencode($lea->getEmail())));
+
+        self::assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+    }
+
+    public function testARecipientCanBeDeleted(): void
+    {
+        $recipient = $this->userFactory->createRecipient();
+
+        $this->client->request('POST', sprintf('/admin/destinataires/%d/supprimer', (int) $recipient->getId()), [
+            '_token' => $this->tokenFor('supprimer', $recipient),
+        ]);
+
+        self::assertResponseRedirects('/admin/destinataires');
+        self::assertNull($this->userRepository->find((int) $recipient->getId()), 'Le compte disparaît.');
+    }
+
+    public function testAnAdminCannotBeDeletedFromThisPage(): void
+    {
+        $admin = $this->userFactory->createAdmin('autre.admin@test.com');
+        $recipient = $this->userFactory->createRecipient();
+
+        // Un administrateur n'est pas listé : on emprunte le jeton d'un
+        // destinataire pour vérifier que le refus vient bien du service.
+        $this->client->request('POST', sprintf('/admin/destinataires/%d/supprimer', (int) $admin->getId()), [
+            '_token' => $this->tokenFor('supprimer', $recipient),
+        ]);
+
+        self::assertNotNull($this->userRepository->find((int) $admin->getId()), 'L\'administrateur reste.');
+    }
+
+    /**
+     * Le jeton est relu dans la page : c'est celui que l'administrateur
+     * enverrait en cliquant, et la session le reconnaît.
+     */
+    private function tokenFor(string $action, User $user): string
+    {
+        $crawler = $this->client->request('GET', '/admin/destinataires');
+
+        $field = $crawler->filter(sprintf('form[action$="/destinataires/%d/%s"] input[name="_token"]', (int) $user->getId(), $action));
+
+        self::assertCount(1, $field, sprintf('Le formulaire « %s » doit être proposé.', $action));
+
+        return (string) $field->attr('value');
+    }
+
+    /**
+     * Quelqu'un d'invité dont le compte attend encore son mot de passe.
+     */
+    private function inviteAndForgetTheEmail(): User
+    {
+        $this->invite('nouveau@test.com', 'Nouveau');
+        $this->client->followRedirect();
+
+        $waiting = $this->userRepository->findOneByEmail('nouveau@test.com');
+        self::assertNotNull($waiting);
+
+        return $waiting;
+    }
+
     public function testTheAvatarPickerIsDrawnOnlyOnce(): void
     {
         $crawler = $this->client->request('GET', '/admin/destinataires');
@@ -238,7 +434,9 @@ class RecipientControllerTest extends WebTestCase
             $crawler->filter('input[name="invite_recipient[avatar]"]'),
             'Un radio par avatar : sans setRendered, form_end les redessinerait en liste sous le bouton.',
         );
-        self::assertCount(0, $crawler->filter('.form-check'));
+        // Le thème Bootstrap enveloppe les autres champs à cases dans des
+        // form-check : seuls les avatars doivent y échapper.
+        self::assertCount(0, $crawler->filter('.avatar-grid .form-check'));
     }
 
     /**
@@ -247,7 +445,7 @@ class RecipientControllerTest extends WebTestCase
     private function invite(string $email, string $displayName, array $extra = []): void
     {
         $this->client->request('GET', '/admin/destinataires');
-        $this->client->submitForm('Envoyer l\'invitation', array_merge([
+        $this->client->submitForm('Inviter', array_merge([
             'invite_recipient[email]' => $email,
             'invite_recipient[displayName]' => $displayName,
             'invite_recipient[avatar]' => '🦤',

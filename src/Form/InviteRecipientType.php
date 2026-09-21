@@ -3,7 +3,9 @@
 namespace App\Form;
 
 use App\Enum\Avatar;
+use App\Enum\InvitationLifetime;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\EnumType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -47,6 +49,22 @@ class InviteRecipientType extends AbstractType
                 'constraints' => [
                     new NotBlank(message: 'Merci de choisir un avatar.'),
                 ],
+            ])
+            ->add('sendEmail', ChoiceType::class, [
+                'label' => 'Comment transmettre le lien',
+                'choices' => [
+                    'Envoyer l\'invitation par email' => true,
+                    'Me donner le lien, je l\'envoie moi-même' => false,
+                ],
+                'expanded' => true,
+                'data' => true,
+            ])
+            ->add('lifetime', EnumType::class, [
+                'label' => 'Validité du lien',
+                'class' => InvitationLifetime::class,
+                'choice_label' => static fn (InvitationLifetime $lifetime): string => $lifetime->label(),
+                'data' => InvitationLifetime::ONE_WEEK,
+                'help' => 'Uniquement pour un lien transmis à la main.',
             ]);
     }
 

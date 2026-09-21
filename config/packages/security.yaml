@@ -28,6 +28,9 @@ security:
             logout:
                 path: app_logout
                 target: app_home
+            # L'administrateur peut voir le fil avec les yeux d'un
+            # destinataire, et revenir avec ?_switch_user=_exit.
+            switch_user: { role: ROLE_ADMIN }
 
     # Note: Only the *first* matching rule is applied
     access_control:

@@ -669,6 +669,27 @@ body {
     text-decoration: none;
 }
 
+/* Bandeau d'usurpation : visible sans se confondre avec le fil. */
+.f-impersonating {
+    max-width: 430px;
+    margin: 8px auto 0;
+    padding: 8px 14px;
+    border-radius: 12px;
+    background: #ffd166;
+    color: #17152b;
+    font-size: 12px;
+    font-weight: 700;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+}
+
+.f-impersonating a {
+    color: inherit;
+    white-space: nowrap;
+}
+
 /* Connexion : le formulaire seul, centré, aux couleurs du fil. */
 .f-login-wrap {
     display: flex;

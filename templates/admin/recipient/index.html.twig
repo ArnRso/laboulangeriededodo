@@ -3,6 +3,19 @@
 {% block title %}Destinataires{% endblock %}
 
 {% block admin_body %}
+    {% if invitationLink %}
+        <div class="alert alert-success" role="status">
+            <div class="fw-semibold mb-1">Le lien de {{ invitationLink.name }} est prêt</div>
+            <p class="small mb-2">Valable {{ invitationLink.lifetime }}. À toi de le transmettre : il n'a été envoyé à personne.</p>
+            <div class="input-group" data-controller="copy">
+                <input type="text" class="form-control font-monospace" value="{{ invitationLink.url }}"
+                       readonly data-copy-target="source" onfocus="this.select()">
+                <button type="button" class="btn btn-outline-secondary"
+                        data-action="copy#toClipboard" data-copy-target="button">Copier</button>
+            </div>
+        </div>
+    {% endif %}
+
     <h1 class="h3 mb-1">Destinataires</h1>
     <p class="text-body-secondary mb-4">Tout le monde reçoit le même fil, chacun à son rythme : les délais courent à partir de ses propres ouvertures.</p>
 
@@ -13,7 +26,7 @@
             {% else %}
                 <ul class="list-group">
                     {% for row in recipients %}
-                        <li class="list-group-item d-flex justify-content-between align-items-center gap-3">
+                        <li class="list-group-item d-flex flex-column gap-2">
                             <div class="d-flex align-items-center gap-3 min-w-0">
                                 <span class="fs-3">{{ row.user.avatar ? row.user.avatar.value : '🙂' }}</span>
                                 <div class="min-w-0">
@@ -38,12 +51,66 @@
                                 </div>
                             </div>
 
-                            {% if row.opened > 0 %}
-                                <form method="post" action="{{ path('app_admin_recipient_reset', {id: row.user.id}) }}"
-                                      onsubmit="return confirm('Remettre {{ row.user.publicName }} au début du fil ?');">
-                                    <input type="hidden" name="_token" value="{{ csrf_token('reset_recipient_' ~ row.user.id) }}">
-                                    <button type="submit" class="btn btn-sm btn-outline-secondary flex-shrink-0">Remettre au début</button>
+                            <div class="d-flex flex-wrap gap-1">
+                                {% if row.user.password %}
+                                    <a class="btn btn-sm btn-outline-primary"
+                                       href="{{ path('app_feed', {_switch_user: row.user.email}) }}">Voir son fil</a>
+                                {% else %}
+                                    {# Le compte attend son mot de passe : on peut relancer, par
+                                       mail ou par un lien qu'on transmet soi-même. #}
+                                    <button type="button" class="btn btn-sm btn-outline-primary"
+                                            data-bs-toggle="modal" data-bs-target="#invitation-{{ row.user.id }}">Relancer l'invitation</button>
+                                {% endif %}
+
+                                {% if row.opened > 0 %}
+                                    <form method="post" action="{{ path('app_admin_recipient_reset', {id: row.user.id}) }}"
+                                          onsubmit="return confirm('Remettre {{ row.user.publicName }} au début du fil ?');">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('reset_recipient_' ~ row.user.id) }}">
+                                        <button type="submit" class="btn btn-sm btn-outline-secondary">Remettre au début</button>
+                                    </form>
+                                {% endif %}
+
+                                <form method="post" action="{{ path('app_admin_recipient_delete', {id: row.user.id}) }}"
+                                      onsubmit="return confirm('Supprimer {{ row.user.publicName }} ? Son compte et sa progression disparaissent.');">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('delete_recipient_' ~ row.user.id) }}">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">Supprimer</button>
                                 </form>
+                            </div>
+
+                            {% if not row.user.password %}
+                                <div class="modal fade" id="invitation-{{ row.user.id }}" tabindex="-1"
+                                     aria-labelledby="invitation-{{ row.user.id }}-titre" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h2 class="modal-title h5" id="invitation-{{ row.user.id }}-titre">Relancer {{ row.user.publicName }}</h2>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <p class="text-body-secondary small">{{ row.user.email }} n'a pas encore choisi son mot de passe. Les deux options remplacent le lien précédent.</p>
+
+                                                <form method="post" action="{{ path('app_admin_recipient_resend', {id: row.user.id}) }}" class="mb-4">
+                                                    <input type="hidden" name="_token" value="{{ csrf_token('resend_recipient_' ~ row.user.id) }}">
+                                                    <button type="submit" class="btn btn-primary w-100">Envoyer l'invitation par email</button>
+                                                    <p class="form-text mt-1 mb-0">Valable une semaine.</p>
+                                                </form>
+
+                                                <hr>
+
+                                                <form method="post" action="{{ path('app_admin_recipient_link', {id: row.user.id}) }}">
+                                                    <input type="hidden" name="_token" value="{{ csrf_token('link_recipient_' ~ row.user.id) }}">
+                                                    <label class="form-label" for="lifetime-{{ row.user.id }}">Validité du lien</label>
+                                                    <select name="lifetime" id="lifetime-{{ row.user.id }}" class="form-select mb-2">
+                                                        {% for lifetime in lifetimes %}
+                                                            <option value="{{ lifetime.value }}"{{ lifetime.value == 10080 ? ' selected' : '' }}>{{ lifetime.label }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                    <button type="submit" class="btn btn-outline-primary w-100">Me donner le lien, je l'envoie moi-même</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             {% endif %}
                         </li>
                     {% endfor %}
@@ -88,7 +155,10 @@
                             {% do form.avatar.setRendered %}
                         </div>
 
-                        <button type="submit" class="btn btn-primary mt-2">Envoyer l'invitation</button>
+                        {{ form_row(form.sendEmail) }}
+                        {{ form_row(form.lifetime) }}
+
+                        <button type="submit" class="btn btn-primary mt-2">Inviter</button>
                     {{ form_end(form) }}
                 </div>
             </div>

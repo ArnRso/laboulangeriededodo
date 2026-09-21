@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use App\Entity\User;
+use App\Enum\InvitationLifetime;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Clock\ClockInterface;
@@ -34,7 +35,7 @@ class InvitationService
      * @throws RandomException
      * @throws \DateMalformedIntervalStringException
      */
-    public function invite(string $email, array $roles): User
+    public function invite(string $email, array $roles, ?InvitationLifetime $lifetime = null): User
     {
         if (null !== $this->userRepository->findOneByEmail($email)) {
             throw new \InvalidArgumentException(sprintf('Un compte existe déjà pour "%s".', $email));
@@ -43,7 +44,7 @@ class InvitationService
         $user = new User();
         $user->setEmail($email)->setRoles($roles);
 
-        $this->refreshInvitationToken($user);
+        $this->refreshInvitationToken($user, $lifetime);
 
         $this->entityManager->persist($user);
         $this->entityManager->flush();
@@ -57,14 +58,15 @@ class InvitationService
      * @throws RandomException
      * @throws \DateMalformedIntervalStringException
      */
-    public function refreshInvitationToken(User $user): string
+    public function refreshInvitationToken(User $user, ?InvitationLifetime $lifetime = null): string
     {
         $token = bin2hex(random_bytes(32));
 
+        $interval = $lifetime?->interval()
+            ?? new \DateInterval(sprintf('P%dD', self::TOKEN_LIFETIME_DAYS));
+
         $user->setInvitationToken($token)
-            ->setInvitationExpiresAt(
-                $this->clock->now()->add(new \DateInterval(sprintf('P%dD', self::TOKEN_LIFETIME_DAYS)))
-            );
+            ->setInvitationExpiresAt($this->clock->now()->add($interval));
 
         return $token;
     }

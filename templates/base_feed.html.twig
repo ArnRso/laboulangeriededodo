@@ -63,6 +63,15 @@
 
         {# L'écran verrouillé vide ce bloc : un bandeau n'a rien à y faire,
            et il en dirait trop sur ce qui vient d'arriver. #}
+        {# Un administrateur qui regarde par-dessus l'épaule d'un destinataire :
+           de quoi revenir à son propre compte. #}
+        {% if is_granted('IS_IMPERSONATOR') %}
+            <div class="f-impersonating">
+                Tu vois le fil de {{ app.user.publicName }}
+                <a href="{{ path('app_admin_recipient', {_switch_user: '_exit'}) }}">Revenir à l'admin</a>
+            </div>
+        {% endif %}
+
         {% block flashes %}
             {% for message in app.flashes('error') %}
                 <div class="f-flash" role="alert">{{ message }}</div>

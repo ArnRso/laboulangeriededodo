@@ -4,6 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Entity\User;
 use App\Enum\Avatar;
+use App\Enum\InvitationLifetime;
 use App\Form\InviteRecipientType;
 use App\Repository\MediaAccessRepository;
 use App\Repository\MediaRepository;
@@ -16,6 +17,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -27,6 +29,11 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[IsGranted('ROLE_ADMIN')]
 class RecipientController extends AbstractController
 {
+    /**
+     * Le lien fraîchement généré, le temps d'une redirection.
+     */
+    private const string INVITATION_LINK = 'invitation_link';
+
     /**
      * @throws TransportExceptionInterface
      * @throws RandomException
@@ -48,10 +55,26 @@ class RecipientController extends AbstractController
             $displayName = $form->get('displayName')->getData();
             $avatar = $form->get('avatar')->getData();
 
+            $sendEmail = $form->get('sendEmail')->getData();
+            $lifetime = $form->get('lifetime')->getData();
+
             if (\is_string($email) && \is_string($displayName) && $avatar instanceof Avatar) {
                 try {
-                    $recipient = $recipientInviter->invite($email, $displayName, $avatar);
-                    $this->addFlash('success', sprintf('L\'invitation de %s est partie.', $recipient->getPublicName()));
+                    if (false === $sendEmail && $lifetime instanceof InvitationLifetime) {
+                        [$recipient, $token] = $recipientInviter->inviteWithoutEmail($email, $displayName, $avatar, $lifetime);
+
+                        // Le lien passe par la session plutôt que par un
+                        // flash : le gabarit affiche les flash comme des
+                        // phrases, et celui-ci porte plusieurs valeurs.
+                        $request->getSession()->set(self::INVITATION_LINK, [
+                            'name' => $recipient->getPublicName(),
+                            'lifetime' => $lifetime->label(),
+                            'url' => $this->generateUrl('app_invitation_accept', ['token' => $token], UrlGeneratorInterface::ABSOLUTE_URL),
+                        ]);
+                    } else {
+                        $recipient = $recipientInviter->invite($email, $displayName, $avatar);
+                        $this->addFlash('success', sprintf('L\'invitation de %s est partie.', $recipient->getPublicName()));
+                    }
                 } catch (\LogicException|\InvalidArgumentException $exception) {
                     $this->addFlash('error', $exception->getMessage());
                 }
@@ -70,11 +93,85 @@ class RecipientController extends AbstractController
             ];
         }
 
+        $session = $request->getSession();
+        $invitationLink = $session->get(self::INVITATION_LINK);
+        $session->remove(self::INVITATION_LINK);
+
         return $this->render('admin/recipient/index.html.twig', [
             'form' => $form,
             'recipients' => $recipients,
             'feedLength' => \count($mediaRepository->findPublishedOrdered()),
+            'invitationLink' => \is_array($invitationLink) ? $invitationLink : null,
+            'lifetimes' => InvitationLifetime::cases(),
         ]);
+    }
+
+    /**
+     * Renvoie le mail d'invitation à quelqu'un qui n'a pas encore activé son
+     * compte.
+     *
+     * @throws TransportExceptionInterface
+     * @throws RandomException
+     * @throws \DateMalformedIntervalStringException
+     */
+    #[Route('/{id}/renvoyer', name: 'app_admin_recipient_resend', requirements: ['id' => '\d+'], methods: ['POST'])]
+    #[IsCsrfTokenValid(new Expression('"resend_recipient_" ~ args["recipient"].getId()'))]
+    public function resend(User $recipient, RecipientInviter $recipientInviter): Response
+    {
+        try {
+            $recipientInviter->resendEmail($recipient);
+            $this->addFlash('success', sprintf('L\'invitation de %s est repartie.', $recipient->getPublicName()));
+        } catch (\LogicException $exception) {
+            $this->addFlash('error', $exception->getMessage());
+        }
+
+        return $this->redirectToRoute('app_admin_recipient');
+    }
+
+    /**
+     * Refabrique le lien de quelqu'un, à transmettre à la main.
+     *
+     * @throws RandomException
+     * @throws \DateMalformedIntervalStringException
+     */
+    #[Route('/{id}/lien', name: 'app_admin_recipient_link', requirements: ['id' => '\d+'], methods: ['POST'])]
+    #[IsCsrfTokenValid(new Expression('"link_recipient_" ~ args["recipient"].getId()'))]
+    public function link(Request $request, User $recipient, RecipientInviter $recipientInviter): Response
+    {
+        $lifetime = InvitationLifetime::tryFrom($request->request->getInt('lifetime')) ?? InvitationLifetime::ONE_WEEK;
+
+        try {
+            $token = $recipientInviter->refreshLink($recipient, $lifetime);
+
+            $request->getSession()->set(self::INVITATION_LINK, [
+                'name' => $recipient->getPublicName(),
+                'lifetime' => $lifetime->label(),
+                'url' => $this->generateUrl('app_invitation_accept', ['token' => $token], UrlGeneratorInterface::ABSOLUTE_URL),
+            ]);
+        } catch (\LogicException $exception) {
+            $this->addFlash('error', $exception->getMessage());
+        }
+
+        return $this->redirectToRoute('app_admin_recipient');
+    }
+
+    /**
+     * Retire quelqu'un du cadeau, définitivement.
+     */
+    #[Route('/{id}/supprimer', name: 'app_admin_recipient_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
+    #[IsCsrfTokenValid(new Expression('"delete_recipient_" ~ args["recipient"].getId()'))]
+    public function delete(User $recipient, RecipientInviter $recipientInviter): Response
+    {
+        $name = $recipient->getPublicName();
+
+        try {
+            $recipientInviter->delete($recipient);
+            $this->addFlash('success', sprintf('%s ne fait plus partie du cadeau.', $name));
+        } catch (\LogicException $exception) {
+            $this->addFlash('error', $exception->getMessage());
+        }
+
+        return $this->redirectToRoute('app_admin_recipient');
     }
 
     /**
