@@ -2,6 +2,11 @@
 
 {% block title %}Mon compte{% endblock %}
 
+{# Le destinataire reste sur l'écran verrouillé : même papier peint, même
+   verre. Le bloc n'existe que dans le gabarit du fil, donc la page de
+   l'admin n'en voit rien. #}
+{% block body_class %}f-body-lock{% endblock %}
+
 {% block body %}
     {% if is_granted('ROLE_ADMIN') %}
         <h1 class="h3 mb-1">Mon compte</h1>
@@ -36,7 +41,7 @@
     {% else %}
         <main class="f-wrap">
             <div class="f-bar">
-                <a class="f-back f-back-glass" href="{{ path('app_feed') }}" aria-label="Retour">‹</a>
+                {{ include('feed/_back.html.twig', {class: 'f-back-glass'}, with_context: false) }}
                 <b>Options</b>
                 <span class="f-bar-spacer"></span>
             </div>

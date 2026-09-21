@@ -50,6 +50,21 @@ class AccountControllerTest extends WebTestCase
         self::assertSelectorTextContains('body', 'Changer de mot de passe');
     }
 
+    /**
+     * La page du destinataire prolonge l'écran verrouillé : même papier
+     * peint, même verre, et une flèche dessinée comme ailleurs.
+     */
+    public function testTheRecipientPageWearsTheLockScreenTheme(): void
+    {
+        $this->client->loginUser($this->userFactory->createRecipient());
+
+        $crawler = $this->client->request('GET', '/mon-compte');
+
+        self::assertSelectorExists('body.f-body-lock');
+        self::assertCount(1, $crawler->filter('a.f-back svg.f-back-icon'), 'La flèche est dessinée, pas écrite.');
+        self::assertSame('', trim($crawler->filter('a.f-back')->text()), 'Aucun caractère à côté du dessin.');
+    }
+
     public function testTheRecipientCanChangeTheirPassword(): void
     {
         $dorian = $this->userFactory->createRecipient('dorian@example.com', self::CURRENT_PASSWORD);

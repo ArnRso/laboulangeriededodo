@@ -606,7 +606,8 @@ body {
     font: inherit;
     font-size: 16px;
     font-weight: 600;
-    color: var(--f-ink);
+    /* Le champ reste blanc : sa couleur de texte ne suit pas le thème. */
+    color: #17152b;
     outline: none;
 }
 
@@ -640,8 +641,8 @@ body {
     margin-top: 16px;
     border: 0;
     border-radius: 999px;
-    background: var(--f-ink);
-    color: #fff;
+    background: var(--f-btn-bg);
+    color: var(--f-btn-ink);
     padding: 14px;
     font: inherit;
     font-size: 15px;
