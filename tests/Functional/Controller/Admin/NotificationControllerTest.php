@@ -483,6 +483,97 @@ class NotificationControllerTest extends WebTestCase
         self::assertSame(['Notification 2', 'Notification 1', 'Notification 3'], $this->titlesInOrder());
     }
 
+    public function testReorderAppliesTheOrderFromTheDrop(): void
+    {
+        $medias = $this->mediaFactory->createFeed(3);
+
+        $this->client->request('POST', '/admin/notifications/reordonner', [
+            '_token' => $this->reorderToken(),
+            'ids' => [(int) $medias[2]->getId(), (int) $medias[0]->getId(), (int) $medias[1]->getId()],
+        ]);
+
+        self::assertResponseStatusCodeSame(Response::HTTP_NO_CONTENT);
+        self::assertSame(['Notification 3', 'Notification 1', 'Notification 2'], $this->titlesInOrder());
+    }
+
+    /**
+     * Un identifiant oublié ne doit pas faire disparaître la notification du
+     * fil : elle se range à la suite.
+     */
+    public function testReorderKeepsTheNotificationsLeftOut(): void
+    {
+        $medias = $this->mediaFactory->createFeed(3);
+
+        $this->client->request('POST', '/admin/notifications/reordonner', [
+            '_token' => $this->reorderToken(),
+            'ids' => [(int) $medias[2]->getId()],
+        ]);
+
+        self::assertSame(['Notification 3', 'Notification 1', 'Notification 2'], $this->titlesInOrder());
+    }
+
+    public function testReorderIgnoresUnknownIds(): void
+    {
+        $medias = $this->mediaFactory->createFeed(2);
+
+        $this->client->request('POST', '/admin/notifications/reordonner', [
+            '_token' => $this->reorderToken(),
+            'ids' => [999999, (int) $medias[1]->getId(), (int) $medias[0]->getId()],
+        ]);
+
+        self::assertResponseStatusCodeSame(Response::HTTP_NO_CONTENT);
+        self::assertSame(['Notification 2', 'Notification 1'], $this->titlesInOrder());
+    }
+
+    public function testReorderRequiresValidCsrfToken(): void
+    {
+        $medias = $this->mediaFactory->createFeed(2);
+
+        $this->client->request('POST', '/admin/notifications/reordonner', [
+            '_token' => 'jeton-invalide',
+            'ids' => [(int) $medias[1]->getId(), (int) $medias[0]->getId()],
+        ]);
+
+        // Un jeton invalide invalide la session : le firewall renvoie vers la
+        // connexion plutôt que de servir un 403.
+        self::assertResponseRedirects();
+        self::assertSame(['Notification 1', 'Notification 2'], $this->titlesInOrder(), 'L\'ordre est inchangé.');
+    }
+
+    public function testTheFeedCarriesItsDragHandles(): void
+    {
+        $this->mediaFactory->createFeed(3);
+
+        $crawler = $this->client->request('GET', '/admin/notifications');
+
+        self::assertCount(1, $crawler->filter('ol[data-controller="sortable"]'));
+        self::assertCount(3, $crawler->filter('li[data-sortable-target="item"]'));
+        self::assertCount(3, $crawler->filter('.a-grip[draggable="true"]'));
+    }
+
+    /**
+     * Filtré par étiquette, l'ordre envoyé serait incomplet : le glisser
+     * n'est proposé que sur le fil entier.
+     */
+    public function testFilteringByTagTurnsOffTheDragAndDrop(): void
+    {
+        $voyage = $this->mediaFactory->createTag('Voyage');
+        $this->mediaFactory->createNotification(0, 'Un voyage', tags: [$voyage]);
+        $this->mediaFactory->createNotification(1, 'Autre chose');
+
+        $crawler = $this->client->request('GET', sprintf('/admin/notifications?tag=%d', (int) $voyage->getId()));
+
+        self::assertCount(0, $crawler->filter('ol[data-controller="sortable"]'));
+        self::assertCount(0, $crawler->filter('.a-grip'));
+    }
+
+    private function reorderToken(): string
+    {
+        $crawler = $this->client->request('GET', '/admin/notifications');
+
+        return (string) $crawler->filter('ol[data-controller="sortable"]')->attr('data-sortable-token-value');
+    }
+
     public function testMoveRequiresValidCsrfToken(): void
     {
         $medias = $this->mediaFactory->createFeed(2);

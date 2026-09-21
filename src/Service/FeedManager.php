@@ -93,6 +93,39 @@ class FeedManager
         $this->entityManager->flush();
     }
 
+    /**
+     * Applique un ordre venu du glisser-déposer. Les notifications absentes
+     * de la liste gardent leur place, à la suite : un identifiant oublié ou
+     * inventé ne doit pas vider le fil.
+     *
+     * @param list<int> $orderedIds
+     */
+    public function reorder(array $orderedIds): void
+    {
+        $medias = $this->mediaRepository->findAllOrdered();
+
+        $byId = [];
+
+        foreach ($medias as $media) {
+            $byId[(int) $media->getId()] = $media;
+        }
+
+        $ordered = [];
+
+        foreach ($orderedIds as $id) {
+            if (isset($byId[$id])) {
+                $ordered[] = $byId[$id];
+                unset($byId[$id]);
+            }
+        }
+
+        foreach (array_merge($ordered, array_values($byId)) as $position => $media) {
+            $media->setPosition($position);
+        }
+
+        $this->entityManager->flush();
+    }
+
     public function normalizePositions(): void
     {
         foreach ($this->mediaRepository->findAllOrdered() as $position => $media) {

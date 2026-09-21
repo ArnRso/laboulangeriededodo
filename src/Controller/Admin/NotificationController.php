@@ -233,6 +233,20 @@ class NotificationController extends AbstractController
         return $this->redirectToRoute('app_admin_notification_index');
     }
 
+    /**
+     * Le nouvel ordre après un glisser-déposer, envoyé par le navigateur.
+     */
+    #[Route('/reordonner', name: 'app_admin_notification_reorder', methods: ['POST'])]
+    #[IsCsrfTokenValid('reorder_medias')]
+    public function reorder(Request $request, FeedManager $feedManager): Response
+    {
+        $ids = $request->request->all('ids');
+
+        $feedManager->reorder(array_values(array_map(intval(...), array_filter($ids, is_scalar(...)))));
+
+        return new Response(status: Response::HTTP_NO_CONTENT);
+    }
+
     #[Route('/{id}/supprimer', name: 'app_admin_notification_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
     #[IsCsrfTokenValid(new Expression('"delete_media_" ~ args["media"].getId()'))]
     public function delete(Media $media, FeedManager $feedManager): Response

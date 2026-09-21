@@ -91,3 +91,21 @@ main {
 .a-app-emoji {
     flex: none;
 }
+
+/* La poignée de glisse des notifications. */
+.a-grip {
+    cursor: grab;
+    color: var(--bs-secondary-color);
+    font-size: 18px;
+    line-height: 1;
+    user-select: none;
+    flex: none;
+}
+
+.a-grip:active {
+    cursor: grabbing;
+}
+
+.list-group-item.is-dragging {
+    opacity: 0.45;
+}

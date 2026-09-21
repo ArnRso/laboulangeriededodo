@@ -31,10 +31,28 @@
             <div class="alert alert-info">Le fil est vide. Ajoute une première notification : elle sera disponible dès l'activation du compte.</div>
         {% endif %}
     {% else %}
-        <ol class="list-group list-group-numbered">
+        {# Le glisser-déposer n'est possible que sur le fil entier : filtré par
+           étiquette, l'ordre envoyé serait incomplet. #}
+        {% set sortable = not activeTag %}
+
+        <ol class="list-group list-group-numbered"
+            {% if sortable %}
+                data-controller="sortable"
+                data-sortable-url-value="{{ path('app_admin_notification_reorder') }}"
+                data-sortable-token-value="{{ csrf_token('reorder_medias') }}"
+            {% endif %}>
             {% for media in medias %}
-                <li class="list-group-item d-flex justify-content-between align-items-center gap-3{{ media.published ? '' : ' list-group-item-light' }}">
+                <li class="list-group-item d-flex justify-content-between align-items-center gap-3{{ media.published ? '' : ' list-group-item-light' }}"
+                    {% if sortable %}
+                        data-sortable-target="item"
+                        data-sortable-id="{{ media.id }}"
+                        data-action="dragover->sortable#over"
+                    {% endif %}>
                     <div class="d-flex align-items-center gap-3 flex-grow-1 min-w-0">
+                        {% if sortable %}
+                            <span class="a-grip" draggable="true" title="Glisser pour réordonner"
+                                  data-action="dragstart->sortable#start dragend->sortable#end">⠿</span>
+                        {% endif %}
                         {% if media.appKind %}
                             {{ include('admin/_app_icon.html.twig', {app: media.appKind, size: 28}, with_context: false) }}
                         {% else %}
