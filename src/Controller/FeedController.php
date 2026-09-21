@@ -52,8 +52,6 @@ class FeedController extends AbstractController
         try {
             $feedService->open($user, $media);
         } catch (\LogicException) {
-            $this->addFlash('error', 'Cette notification n\'est pas encore arrivée. Patience.');
-
             return $this->redirectToRoute('app_feed');
         }
 
@@ -80,16 +78,10 @@ class FeedController extends AbstractController
         }
 
         try {
-            $media = $feedService->skipWait($user);
+            $feedService->skipWait($user);
         } catch (\LogicException) {
-            $this->addFlash('error', 'Rien n\'attend son tour : le fil est à jour.');
-
-            return $this->redirectToRoute('app_feed');
+            // Le fil est déjà à jour : il n'y a rien à faire sauter.
         }
-
-        // Le titre reste caché : l'écran verrouillé annonce l'arrivée, pas
-        // le contenu. L'application, elle, est déjà visible sur la carte.
-        $this->addFlash('success', sprintf('Le temps a sauté. Une notification %s vient d\'arriver.', $media->requireAppKind()->label()));
 
         return $this->redirectToRoute('app_feed');
     }

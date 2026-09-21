@@ -135,8 +135,8 @@ class FeedControllerTest extends WebTestCase
 
         self::assertResponseRedirects('/mon-espace');
         $this->client->followRedirect();
-        self::assertSelectorTextContains('.f-flash', 'pas encore arrivée');
-        self::assertNull($this->accessRepository->findOneByUserAndMedia($this->dorian, $medias[2]));
+        self::assertSelectorNotExists('.f-flash', 'Aucun bandeau sur l\'écran verrouillé.');
+        self::assertNull($this->accessRepository->findOneByUserAndMedia($this->dorian, $medias[2]), 'Elle reste fermée.');
     }
 
     public function testSecondStaysLockedUntilTheDelayHasElapsed(): void
@@ -395,7 +395,7 @@ class FeedControllerTest extends WebTestCase
 
         self::assertResponseRedirects('/mon-espace');
         $this->client->followRedirect();
-        self::assertSelectorTextContains('.f-flash-ok', 'Le temps a sauté');
+        self::assertSelectorNotExists('.f-flash', 'Aucun bandeau sur l\'écran verrouillé.');
 
         $this->client->request('GET', sprintf('/mon-espace/notifications/%d', (int) $medias[1]->getId()));
         self::assertResponseIsSuccessful('La suivante s\'ouvre sans attendre son délai.');

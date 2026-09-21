@@ -4,6 +4,9 @@
 
 {% block body_class %}f-body-lock{% endblock %}
 
+{# Pas de bandeau sur l'écran verrouillé. #}
+{% block flashes %}{% endblock %}
+
 {% block body %}
     <main class="f-wrap" data-controller="clock cheat-code">
         <header class="f-clock">

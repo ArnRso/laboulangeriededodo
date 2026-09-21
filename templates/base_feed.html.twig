@@ -58,13 +58,17 @@
             </div>
         {% endblock %}
 
-        {% for message in app.flashes('error') %}
-            <div class="f-flash" role="alert">{{ message }}</div>
-        {% endfor %}
+        {# L'écran verrouillé vide ce bloc : un bandeau n'a rien à y faire,
+           et il en dirait trop sur ce qui vient d'arriver. #}
+        {% block flashes %}
+            {% for message in app.flashes('error') %}
+                <div class="f-flash" role="alert">{{ message }}</div>
+            {% endfor %}
 
-        {% for message in app.flashes('success') %}
-            <div class="f-flash f-flash-ok" role="status">{{ message }}</div>
-        {% endfor %}
+            {% for message in app.flashes('success') %}
+                <div class="f-flash f-flash-ok" role="status">{{ message }}</div>
+            {% endfor %}
+        {% endblock %}
 
         {% block body %}{% endblock %}
     </body>
