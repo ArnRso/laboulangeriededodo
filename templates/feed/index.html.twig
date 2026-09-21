@@ -64,18 +64,18 @@
 
                 <div data-controller="stack">
                     {% for state in overview.seen %}
-                        {{ include('feed/_card.html.twig', {state: state, variant: 'seen', hidden: loop.index > 3}, with_context: false) }}
+                        {{ include('feed/_card.html.twig', {state: state, variant: 'seen', hidden: loop.index > 2}, with_context: false) }}
                     {% endfor %}
 
-                    {% if overview.seen|length > 3 %}
+                    {% if overview.seen|length > 2 %}
                         <button type="button" class="f-stack" data-stack-target="button" data-action="stack#reveal">
                             <span class="f-stack-icons">
-                                {% for state in overview.seen|slice(3, 4) %}
+                                {% for state in overview.seen|slice(2, 4) %}
                                     {{ include('feed/_app_icon.html.twig', {app: state.media.appKind, class: 'f-stack-icon'}, with_context: false) }}
                                 {% endfor %}
                             </span>
                             <span class="f-stack-text">
-                                <b>{{ overview.seen|length - 3 }} autre{{ overview.seen|length - 3 > 1 ? 's' : '' }} notification{{ overview.seen|length - 3 > 1 ? 's' : '' }}</b>
+                                <b>{{ overview.seen|length - 2 }} autre{{ overview.seen|length - 2 > 1 ? 's' : '' }} notification{{ overview.seen|length - 2 > 1 ? 's' : '' }}</b>
                                 <small>Afficher ▾</small>
                             </span>
                         </button>

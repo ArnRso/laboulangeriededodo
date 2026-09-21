@@ -84,7 +84,9 @@ body {
 .f-wrap {
     max-width: 430px;
     margin: 0 auto;
-    padding: 0 14px 20px;
+    /* Assez d'air en bas pour que le dernier élément — la pile repliée et
+       ses feuillets — ne colle pas au bord de l'écran. */
+    padding: 0 14px calc(40px + env(safe-area-inset-bottom));
 }
 
 /* Barre d'état : pas d'heure, juste le réseau, la batterie et le compte. */
@@ -215,7 +217,11 @@ body {
     position: relative;
 }
 
-.f-n[hidden] {
+/* Un « display » explicite l'emporte sur l'attribut « hidden » : sans ces
+   règles, une carte ou le bouton de la pile resteraient à l'écran une fois
+   masqués. */
+.f-n[hidden],
+.f-stack[hidden] {
     display: none;
 }
 

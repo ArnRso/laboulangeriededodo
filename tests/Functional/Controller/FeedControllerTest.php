@@ -260,7 +260,7 @@ class FeedControllerTest extends WebTestCase
         self::assertSelectorTextContains('body', 'Notification 2');
     }
 
-    public function testSeenNotificationsBeyondThreeAreFoldedInAStack(): void
+    public function testSeenNotificationsBeyondTwoAreFoldedInAStack(): void
     {
         $medias = $this->mediaFactory->createFeed(5, delayMinutes: 0);
 
@@ -271,9 +271,42 @@ class FeedControllerTest extends WebTestCase
         $crawler = $this->client->request('GET', '/mon-espace');
 
         self::assertCount(5, $crawler->filter('.f-n-seen'));
-        self::assertCount(2, $crawler->filter('.f-n-seen[hidden]'), 'Seules les trois plus récentes sont visibles.');
-        self::assertSelectorTextContains('.f-stack', '2 autres notifications');
+        self::assertCount(3, $crawler->filter('.f-n-seen[hidden]'), 'Seules les deux plus récentes sont visibles.');
+        self::assertSelectorTextContains('.f-stack', '3 autres notifications');
         self::assertSelectorTextContains('body', 'Fin de saison');
+    }
+
+    /**
+     * Le bouton de la pile porte un « display » : sans règle pour l'attribut
+     * « hidden », il restait à l'écran une fois la pile dépliée.
+     */
+    public function testHidingTheStackButtonActuallyRemovesIt(): void
+    {
+        $css = (string) file_get_contents(\dirname(__DIR__, 3).'/assets/styles/feed.css');
+
+        self::assertSame(1, preg_match('/\.f-n\[hidden\],\s*\.f-stack\[hidden\] \{(?<rules>[^}]*)\}/', $css, $matches));
+        self::assertStringContainsString('display: none', $matches['rules']);
+    }
+
+    /**
+     * Le bouton de la pile doit rester dans l'écran : plus bas, il faudrait
+     * faire défiler pour l'atteindre, alors que c'est lui qui signale qu'il
+     * reste des notifications.
+     */
+    public function testTheStackButtonComesWithTheCardsItFolds(): void
+    {
+        $medias = $this->mediaFactory->createFeed(6, delayMinutes: 0);
+
+        foreach ($medias as $media) {
+            $this->client->request('GET', sprintf('/mon-espace/notifications/%d', (int) $media->getId()));
+        }
+
+        $crawler = $this->client->request('GET', '/mon-espace');
+
+        $stack = $crawler->filter('[data-controller="stack"]');
+        self::assertCount(1, $stack->filter('.f-stack'));
+        self::assertCount(2, $stack->filter('.f-n-seen:not([hidden])'), 'Deux cartes précèdent le bouton.');
+        self::assertSame('stack#reveal', $stack->filter('.f-stack')->attr('data-action'));
     }
 
     public function testUnpublishedNotificationIsInvisible(): void
