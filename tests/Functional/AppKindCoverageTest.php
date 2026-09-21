@@ -104,7 +104,6 @@ class AppKindCoverageTest extends WebTestCase
         self::assertNotSame('', $appKind->label());
         self::assertNotSame('', $appKind->pitch());
         self::assertNotSame('', $appKind->headline([]));
-        self::assertNotSame('', $appKind->openLabel());
     }
 
     public function testEveryAppBelongsToACategory(): void
@@ -216,7 +215,7 @@ class AppKindCoverageTest extends WebTestCase
         // La carte annonce l'arrivée, pas le contenu : le titre et le résumé
         // n'apparaissent qu'une fois la notification ouverte.
         self::assertSelectorTextContains('.f-n-fresh .f-t', 'Notification masquée');
-        self::assertSelectorTextContains('.f-n-fresh .f-btn', $appKind->openLabel());
+        self::assertSame('Ouvrir', trim($crawler->filter('.f-n-fresh .f-btn')->text()), 'Le bouton ne trahit pas l\'application.');
         self::assertStringNotContainsString($media->getTitle(), $crawler->filter('.f-n-fresh')->text());
         self::assertStringNotContainsString($appKind->headline($media->getAppData()), $crawler->filter('.f-n-fresh')->text());
         $icon = $crawler->filter('.f-n-fresh .f-app');

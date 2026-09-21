@@ -305,7 +305,7 @@ class FeedControllerTest extends WebTestCase
 
         self::assertStringContainsString('Deliveroo', $card->text(), 'L\'application se montre.');
         self::assertStringContainsString('Notification masquée', $card->text());
-        self::assertStringContainsString('Ouvrir la commande', $card->text(), 'Le bouton reste, pour l\'ouvrir.');
+        self::assertStringContainsString('Ouvrir', $card->text(), 'Le bouton reste, pour l\'ouvrir.');
 
         self::assertStringNotContainsString('Le titre secret', $card->text());
         self::assertStringNotContainsString('La description secrète.', $card->text());

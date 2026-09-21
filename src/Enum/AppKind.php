@@ -288,40 +288,6 @@ enum AppKind: string
     }
 
     /**
-     * Le bouton d'ouverture, dans le fil.
-     */
-    public function openLabel(): string
-    {
-        return match ($this) {
-            self::UBER_EATS, self::DELIVEROO, self::BURGER_KING, self::MCDONALDS => 'Ouvrir la commande',
-            self::INSTAGRAM => 'Voir la publication',
-            self::TINDER => 'Voir le match',
-            self::DOCTOLIB => 'Voir le rendez-vous',
-            self::TIKTOK, self::YOUTUBE => 'Regarder la vidéo',
-            self::SNAPCHAT => 'Ouvrir le Snap',
-            self::X => 'Voir le post',
-            self::BEREAL => 'Voir le BeReal',
-            self::NETFLIX => 'Lecture',
-            self::SPOTIFY => 'Écouter',
-            self::WHATSAPP, self::MESSENGER, self::IMESSAGE => 'Répondre',
-            self::DUOLINGO => 'Reprendre la leçon',
-            self::HINGE => 'Voir le profil',
-            self::BUMBLE => 'Envoyer le premier message',
-            self::UBER => 'Voir le reçu',
-            self::WAZE => 'Démarrer',
-            self::REVOLUT => 'Voir la transaction',
-            self::PAYPAL => 'Voir les détails',
-            self::LYDIA => 'Voir le virement',
-            self::METEO => 'Voir les prévisions',
-            self::CALENDAR => 'Voir l\'événement',
-            self::HOROSCOPE => 'Lire mon thème',
-            self::QUIZ => 'Passer le quiz',
-            self::PORNHUB => 'Regarder la vidéo',
-            self::TAROT => 'Voir mon tirage',
-        };
-    }
-
-    /**
      * Gabarit de l'écran d'ouverture, côté destinataire.
      */
     public function template(): string
