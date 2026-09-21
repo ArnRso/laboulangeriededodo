@@ -452,6 +452,34 @@ class AppKindCoverageTest extends WebTestCase
     }
 
     /**
+     * La flèche de retour est dessinée, pas écrite : les glyphes « ‹ » et
+     * « ⌄ » tombent à côté du centre de leur cercle, chacun à sa façon.
+     */
+    #[DataProvider('appKinds')]
+    public function testTheBackArrowIsDrawn(AppKind $appKind): void
+    {
+        $this->client->loginUser($this->userFactory->createAdmin());
+
+        $crawler = $this->client->request('POST', sprintf('/admin/notifications/nouveau/%s/apercu', $appKind->value), [
+            'media' => ['title' => 'Un écran', 'type' => MediaType::TEXT->value, 'textContent' => 'Un souvenir'],
+        ]);
+
+        self::assertResponseIsSuccessful();
+
+        $back = $crawler->filter('a.f-back');
+
+        // Tinder n'a pas de barre : son écran se referme par le bas.
+        if (0 === $back->count()) {
+            self::assertSame(AppKind::TINDER, $appKind, sprintf('%s a perdu sa barre de retour.', $appKind->label()));
+
+            return;
+        }
+
+        self::assertCount(1, $back->filter('svg.f-back-icon'), sprintf('%s doit dessiner sa flèche.', $appKind->label()));
+        self::assertSame('', trim($back->text()), 'Aucun caractère ne subsiste à côté du dessin.');
+    }
+
+    /**
      * Sur Hinge, celui qui aime la réponse n'est pas celui dont on lit le
      * profil : les deux champs vivent leur vie.
      */

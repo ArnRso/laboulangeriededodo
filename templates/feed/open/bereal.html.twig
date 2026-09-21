@@ -10,7 +10,7 @@
 {% block body %}
     <main class="f-wrap f-wrap-open">
         <div class="f-bar">
-            <a class="f-back" href="{{ path('app_feed') }}" aria-label="Retour">‹</a>
+            {{ include('feed/_back.html.twig', {}, with_context: false) }}
             <b class="br-logo">BeReal.</b>
             <span class="f-bar-spacer"></span>
         </div>

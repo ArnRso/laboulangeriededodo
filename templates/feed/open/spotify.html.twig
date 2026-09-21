@@ -16,7 +16,7 @@
 {% block body %}
     <main class="f-wrap f-wrap-open">
         <div class="f-bar">
-            <a class="f-back" href="{{ path('app_feed') }}" aria-label="Retour">⌄</a>
+            {{ include('feed/_back.html.twig', {direction: 'down'}, with_context: false) }}
             <div class="sp-from">
                 <small>Lecture depuis la playlist</small>
                 <b>{{ data.playlist|default('Tes années lycée') }}</b>

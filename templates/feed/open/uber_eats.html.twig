@@ -8,7 +8,7 @@
 {% block body %}
     <main class="f-wrap f-wrap-open">
         <div class="f-bar">
-            <a class="f-back" href="{{ path('app_feed') }}" aria-label="Retour">‹</a>
+            {{ include('feed/_back.html.twig', {}, with_context: false) }}
             <b>Détails de la commande</b>
             <span class="f-bar-spacer"></span>
         </div>

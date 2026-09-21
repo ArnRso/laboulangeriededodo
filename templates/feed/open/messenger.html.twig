@@ -9,7 +9,7 @@
 {% block body %}
     <main class="f-wrap f-wrap-open">
         <div class="f-bar ms-bar">
-            <a class="f-back" href="{{ path('app_feed') }}" aria-label="Retour">‹</a>
+            {{ include('feed/_back.html.twig', {}, with_context: false) }}
             <span class="ms-av"><span>{{ data.contactEmoji|default('👶') }}</span><i></i></span>
             <div class="ms-who">
                 <b>{{ contact }}</b>

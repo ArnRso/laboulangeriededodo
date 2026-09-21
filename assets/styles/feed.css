@@ -680,14 +680,27 @@ body {
 .f-back {
     width: 36px;
     height: 36px;
+    /* La barre est en flex : sans cela, le cercle s'écrase en ovale. */
+    flex: none;
     border-radius: 50%;
     background: #f6f6f6;
     display: grid;
     place-items: center;
-    font-size: 20px;
     text-decoration: none;
     color: inherit;
-    font-weight: 800;
+}
+
+.f-back-icon {
+    width: 17px;
+    height: 17px;
+    /* Le chevron pointe à gauche ; un demi-pixel le recentre optiquement,
+       sa pointe pesant plus que ses deux extrémités. */
+    margin-right: 1px;
+}
+
+.f-back-icon-down {
+    rotate: -90deg;
+    margin: 1px 0 0;
 }
 
 .f-bar-inverse .f-back {

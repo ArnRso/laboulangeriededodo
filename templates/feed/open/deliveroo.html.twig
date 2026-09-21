@@ -14,7 +14,7 @@
     <main class="f-wrap f-wrap-open">
         <header class="dv-top">
             <div class="f-bar f-bar-inverse">
-                <a class="f-back" href="{{ path('app_feed') }}" aria-label="Retour">‹</a>
+                {{ include('feed/_back.html.twig', {}, with_context: false) }}
                 <b>Suivi de commande</b>
                 <span class="f-bar-spacer"></span>
             </div>

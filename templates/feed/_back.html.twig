@@ -1,0 +1,18 @@
+{#
+    La flèche de retour des écrans d'application.
+
+    Le chevron est dessiné plutôt qu'écrit : les glyphes « ‹ » et « ⌄ » ne
+    sont pas centrés dans leur chasse, et chacun tombe à côté du centre du
+    cercle d'une quantité qui lui est propre.
+
+    Paramètres :
+      - direction : 'left' (défaut) ou 'down', pour refermer un plein écran
+      - class     : classes ajoutées au lien (optionnel)
+#}
+<a class="f-back {{ class|default('') }}" href="{{ path('app_feed') }}" aria-label="Retour">
+    <svg class="f-back-icon{{ direction|default('left') == 'down' ? ' f-back-icon-down' : '' }}"
+         viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M15 4 L7 12 L15 20" fill="none" stroke="currentColor"
+              stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+</a>

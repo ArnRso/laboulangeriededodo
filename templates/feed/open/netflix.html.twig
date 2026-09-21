@@ -10,7 +10,7 @@
         <div class="nf-hero">
             {{ include('feed/_media.html.twig', {media: media, class: 'nf-media'}, with_context: false) }}
             <div class="f-bar nf-bar">
-                <a class="f-back" href="{{ path('app_feed') }}" aria-label="Retour">‹</a>
+                {{ include('feed/_back.html.twig', {}, with_context: false) }}
                 <span class="nf-n" aria-hidden="true">N</span>
                 <span class="f-bar-spacer"></span>
             </div>
