@@ -44,10 +44,7 @@
             {% endif %}
 
             {% if overview.next %}
-                <div class="f-grp">
-                    En route
-                    <span>{% if overview.fresh %}part quand tu auras ouvert celle-ci{% else %}elle arrive{% endif %}</span>
-                </div>
+                <div class="f-grp">En route</div>
 
                 {{ include('feed/_locked.html.twig', {state: overview.next}, with_context: false) }}
 

@@ -70,7 +70,7 @@ class FeedControllerTest extends WebTestCase
 
         self::assertResponseIsSuccessful();
         self::assertSelectorExists('.f-n-fresh');
-        self::assertSelectorTextContains('body', 'part quand tu auras ouvert celle-ci');
+        self::assertSelectorExists('.f-n-locked', 'La suivante attend son tour.');
         self::assertSelectorNotExists('[data-controller="countdown"]', 'Le chrono ne court pas tant que la fraîche n\'est pas ouverte.');
     }
 
