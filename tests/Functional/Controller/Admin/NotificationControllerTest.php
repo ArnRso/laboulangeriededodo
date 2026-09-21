@@ -472,12 +472,84 @@ class NotificationControllerTest extends WebTestCase
         self::assertFalse($updated->isPublished());
     }
 
+    public function testTheSwitchTakesANotificationOutOfTheFeed(): void
+    {
+        $media = $this->mediaFactory->createNotification(0, 'Dans le fil');
+
+        $this->client->request('POST', sprintf('/admin/notifications/%d/basculer', (int) $media->getId()), [
+            '_token' => $this->tokenFrom('basculer', $media),
+        ]);
+
+        self::assertResponseRedirects('/admin/notifications');
+        self::assertFalse($this->mediaRepository->find((int) $media->getId())?->isPublished());
+    }
+
+    public function testTheSwitchPutsItBack(): void
+    {
+        $media = $this->mediaFactory->createNotification(0, 'Hors fil', published: false);
+
+        $this->client->request('POST', sprintf('/admin/notifications/%d/basculer', (int) $media->getId()), [
+            '_token' => $this->tokenFrom('basculer', $media),
+        ]);
+
+        self::assertTrue($this->mediaRepository->find((int) $media->getId())?->isPublished());
+    }
+
+    /**
+     * Un brouillon n'a pas d'écran : le laisser entrer dans le fil bloquerait
+     * la progression du destinataire.
+     */
+    public function testADraftCannotBeSwitchedIntoTheFeed(): void
+    {
+        $draft = $this->mediaFactory->createDraft(0, 'Sans app');
+
+        $this->client->request('POST', sprintf('/admin/notifications/%d/basculer', (int) $draft->getId()), [
+            '_token' => $this->tokenFrom('basculer', $draft),
+        ]);
+
+        self::assertFalse($this->mediaRepository->find((int) $draft->getId())?->isPublished());
+    }
+
+    public function testTheListingShowsASwitchPerNotification(): void
+    {
+        $this->mediaFactory->createNotification(0, 'Publiée');
+        $this->mediaFactory->createDraft(1, 'Brouillon');
+
+        $crawler = $this->client->request('GET', '/admin/notifications');
+
+        self::assertCount(2, $crawler->filter('.form-switch input[type="checkbox"]'));
+        self::assertCount(1, $crawler->filter('.form-switch input[checked]'), 'Seule la publiée est cochée.');
+        self::assertCount(1, $crawler->filter('.form-switch input[disabled]'), 'Le brouillon ne peut pas basculer.');
+
+        // L'état se lit dans l'infobulle : le libellé prenait trop de place.
+        self::assertStringContainsString('Dans le fil', (string) $crawler->filter('form[action$="/basculer"]')->first()->attr('title'));
+    }
+
+    /**
+     * Le jeton est relu dans la page : c'est celui qu'enverrait un clic.
+     */
+    private function tokenFrom(string $action, Media $media): string
+    {
+        $crawler = $this->client->request('GET', '/admin/notifications');
+
+        return (string) $crawler
+            ->filter(sprintf('form[action$="/notifications/%d/%s"] input[name="_token"]', (int) $media->getId(), $action))
+            ->attr('value');
+    }
+
     public function testMoveDown(): void
     {
         $this->mediaFactory->createFeed(3);
 
         $crawler = $this->client->request('GET', '/admin/notifications');
-        $this->client->submit($crawler->filter('.list-group-item')->eq(0)->filter('form')->eq(1)->form());
+
+        // Le formulaire est désigné par son action : l'ordre des formulaires
+        // dans la ligne change dès qu'on en ajoute un.
+        $down = $crawler->filter('.list-group-item')->eq(0)
+            ->filter('form[action$="/deplacer"]')
+            ->reduce(static fn ($node): bool => 'down' === $node->filter('input[name="direction"]')->attr('value'));
+
+        $this->client->submit($down->form());
 
         self::assertResponseRedirects();
         self::assertSame(['Notification 2', 'Notification 1', 'Notification 3'], $this->titlesInOrder());

@@ -39,12 +39,12 @@
     background: #f1eefc;
 }
 
+/* La photo se montre en entier : ni hauteur imposée, ni recadrage. */
 .qz-media img,
 .qz-media video {
     display: block;
     width: 100%;
-    max-height: 240px;
-    object-fit: cover;
+    height: auto;
 }
 
 .qz-media .f-media-text {

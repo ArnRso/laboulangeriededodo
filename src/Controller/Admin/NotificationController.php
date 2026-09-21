@@ -237,6 +237,25 @@ class NotificationController extends AbstractController
     }
 
     /**
+     * Met une notification dans le fil, ou l'en retire.
+     */
+    #[Route('/{id}/basculer', name: 'app_admin_notification_toggle', requirements: ['id' => '\d+'], methods: ['POST'])]
+    #[IsCsrfTokenValid(new Expression('"toggle_media_" ~ args["media"].getId()'))]
+    public function toggle(Media $media, FeedManager $feedManager): Response
+    {
+        if ($media->isDraft()) {
+            $this->addFlash('error', 'Un brouillon ne peut pas entrer dans le fil : habille-le d\'abord.');
+
+            return $this->redirectToRoute('app_admin_notification_index');
+        }
+
+        $media->setPublished(!$media->isPublished());
+        $feedManager->update($media);
+
+        return $this->redirectToRoute('app_admin_notification_index');
+    }
+
+    /**
      * Le nouvel ordre après un glisser-déposer, envoyé par le navigateur.
      */
     #[Route('/reordonner', name: 'app_admin_notification_reorder', methods: ['POST'])]
