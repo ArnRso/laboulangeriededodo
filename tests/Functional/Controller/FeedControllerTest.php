@@ -396,6 +396,51 @@ class FeedControllerTest extends WebTestCase
         self::assertNull($this->accessRepository->findOneByUserAndMedia($admin, $media));
     }
 
+    public function testAdminOpeningANotificationLeavesNoTrace(): void
+    {
+        $media = $this->mediaFactory->createNotification(0, 'À ne pas marquer lue', AppKind::DOCTOLIB);
+        $admin = $this->userFactory->createAdmin();
+        $this->client->loginUser($admin);
+
+        $this->client->request('GET', sprintf('/mon-espace/notifications/%d', (int) $media->getId()));
+
+        // L'administrateur regarde le fil par l'aperçu : son passage ne doit
+        // pas compter comme une lecture.
+        self::assertResponseRedirects(sprintf('/admin/notifications/%d/apercu', (int) $media->getId()));
+        self::assertNull($this->accessRepository->findOneByUserAndMedia($admin, $media));
+    }
+
+    public function testWatchingSomeonesFeedDoesNotOpenTheirNotification(): void
+    {
+        $media = $this->mediaFactory->createNotification(0, 'À ne pas consommer', AppKind::DOCTOLIB);
+        $this->client->loginUser($this->userFactory->createAdmin('admin-curieux@example.com'));
+
+        $this->client->request('GET', sprintf('/mon-espace/notifications/%d?_switch_user=%s', (int) $media->getId(), urlencode($this->dorian->getEmail())));
+        // Symfony renvoie d'abord sur la même URL, sans le paramètre.
+        $this->client->followRedirect();
+
+        self::assertResponseIsSuccessful();
+        self::assertSelectorTextContains('body', 'Rendez-vous honoré', 'Le contenu se regarde quand même.');
+        self::assertNull(
+            $this->accessRepository->findOneByUserAndMedia($this->dorian, $media),
+            'Dorian doit encore l\'avoir à lire.',
+        );
+    }
+
+    public function testWatchingSomeonesFeedStopsAtWhatHasNotArrived(): void
+    {
+        $medias = $this->mediaFactory->createFeed(2, delayMinutes: 60);
+        $this->client->loginUser($this->userFactory->createAdmin('admin-curieux@example.com'));
+
+        $this->client->request('GET', sprintf('/mon-espace/notifications/%d?_switch_user=%s', (int) $medias[1]->getId(), urlencode($this->dorian->getEmail())));
+        $this->client->followRedirect();
+
+        // La seconde n'est pas encore arrivée : l'administrateur ne la voit
+        // pas non plus, sinon il découvrirait le fil en avance.
+        self::assertResponseRedirects('/mon-espace');
+        self::assertNull($this->accessRepository->findOneByUserAndMedia($this->dorian, $medias[1]));
+    }
+
     public function testRecipientCannotUseTheAdminPreview(): void
     {
         $media = $this->mediaFactory->createNotification(0);

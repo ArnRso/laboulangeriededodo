@@ -97,6 +97,15 @@ class FeedService
         return $media;
     }
 
+    /**
+     * La notification est-elle arrivée pour cette personne ? Sert à regarder
+     * son fil sans y toucher.
+     */
+    public function canOpen(User $user, Media $media): bool
+    {
+        return $this->unlockService->canOpen($user, $media);
+    }
+
     public function hasOpened(User $user, Media $media): bool
     {
         return null !== $this->mediaAccessRepository->findOneByUserAndMedia($user, $media);

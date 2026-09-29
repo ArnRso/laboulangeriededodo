@@ -49,10 +49,19 @@ class FeedController extends AbstractController
 
         $justOpened = !$feedService->hasOpened($user, $media);
 
-        try {
-            $feedService->open($user, $media);
-        } catch (\LogicException) {
-            return $this->redirectToRoute('app_feed');
+        // Un administrateur qui regarde par-dessus l'épaule du destinataire
+        // ne lui consomme pas sa notification : elle resterait à lire, mais
+        // le chrono de la suivante serait parti sans lui.
+        if ($this->isGranted('IS_IMPERSONATOR')) {
+            if (!$feedService->canOpen($user, $media)) {
+                return $this->redirectToRoute('app_feed');
+            }
+        } else {
+            try {
+                $feedService->open($user, $media);
+            } catch (\LogicException) {
+                return $this->redirectToRoute('app_feed');
+            }
         }
 
         return $this->render($media->requireAppKind()->template(), [
