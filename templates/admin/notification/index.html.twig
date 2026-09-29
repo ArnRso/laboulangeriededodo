@@ -75,6 +75,27 @@
                                     {% endfor %}
                                 </div>
                             {% endif %}
+                            {% set lecteurs = accesses[media.id]|default([]) %}
+                            {% if lecteurs is not empty %}
+                                {# Qui l'a déjà lue, et de quoi la leur rendre à
+                                   lire si l'ouverture n'était pas voulue. #}
+                                <div class="d-flex flex-wrap align-items-center gap-1 mt-1">
+                                    {% for acces in lecteurs %}
+                                        <span class="badge bg-success-subtle border border-success-subtle text-success-emphasis d-inline-flex align-items-center gap-1">
+                                            {{ acces.user.publicName }}
+                                            <span class="text-body-secondary fw-normal">· {{ acces.openedAt|date('d/m à H:i') }}</span>
+                                            <form method="post" class="d-inline"
+                                                  action="{{ path('app_admin_notification_reopen', {id: media.id, recipientId: acces.user.id}) }}"
+                                                  onsubmit="return confirm('{{ acces.user.publicName }} devra rouvrir cette notification. Continuer ?');">
+                                                <input type="hidden" name="_token" value="{{ csrf_token('reopen_media_' ~ media.id ~ '_' ~ acces.user.id) }}">
+                                                <button type="submit" class="btn btn-link btn-sm p-0 lh-1 text-body-secondary text-decoration-none"
+                                                        title="Remettre à non lue pour {{ acces.user.publicName }}"
+                                                        aria-label="Remettre à non lue pour {{ acces.user.publicName }}">×</button>
+                                            </form>
+                                        </span>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
                         </div>
                     </div>
 

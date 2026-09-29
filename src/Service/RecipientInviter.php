@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\Entity\Media;
 use App\Entity\User;
 use App\Enum\Avatar;
 use App\Enum\InvitationLifetime;
@@ -177,6 +178,22 @@ readonly class RecipientInviter
      * Remet une personne au début du fil : ses ouvertures et ses coups de
      * pouce disparaissent, son compte reste.
      */
+    /**
+     * Efface une seule ouverture : la notification redevient à lire pour
+     * cette personne, sans toucher au reste de sa progression.
+     */
+    public function reopen(User $recipient, Media $media): void
+    {
+        $access = $this->mediaAccessRepository->findOneByUserAndMedia($recipient, $media);
+
+        if (null === $access) {
+            throw new \LogicException(sprintf('%s n\'a pas ouvert cette notification.', $recipient->getPublicName()));
+        }
+
+        $this->entityManager->remove($access);
+        $this->entityManager->flush();
+    }
+
     public function resetProgress(User $recipient): void
     {
         foreach ($this->mediaAccessRepository->findForUser($recipient) as $access) {

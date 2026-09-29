@@ -3,10 +3,12 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Media;
+use App\Entity\User;
 use App\Enum\AppKind;
 use App\Form\AppDetails\AppDetailsRegistry;
 use App\Form\DressType;
 use App\Form\MediaType;
+use App\Repository\MediaAccessRepository;
 use App\Repository\MediaRepository;
 use App\Repository\TagRepository;
 use App\Service\Dressing\AppFieldCatalog;
@@ -14,6 +16,8 @@ use App\Service\Dressing\DressMapping;
 use App\Service\Dressing\NotificationDresser;
 use App\Service\Dressing\SourceCatalog;
 use App\Service\FeedManager;
+use App\Service\RecipientInviter;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\Form\FormInterface;
@@ -32,8 +36,12 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class NotificationController extends AbstractController
 {
     #[Route('', name: 'app_admin_notification_index', methods: ['GET'])]
-    public function index(Request $request, MediaRepository $mediaRepository, TagRepository $tagRepository): Response
-    {
+    public function index(
+        Request $request,
+        MediaRepository $mediaRepository,
+        TagRepository $tagRepository,
+        MediaAccessRepository $mediaAccessRepository,
+    ): Response {
         // Sans filtre, on n'interroge pas la base : « tag » absent vaut zéro,
         // et le repository irait chercher une étiquette qui n'existe pas.
         $tagId = $request->query->getInt('tag');
@@ -51,6 +59,7 @@ class NotificationController extends AbstractController
             'medias' => $medias,
             'tags' => $tagRepository->findAllOrdered(),
             'activeTag' => $activeTag,
+            'accesses' => $mediaAccessRepository->findAllGroupedByMedia(),
         ]);
     }
 
@@ -275,6 +284,27 @@ class NotificationController extends AbstractController
     {
         $feedManager->delete($media);
         $this->addFlash('success', 'Notification supprimée.');
+
+        return $this->redirectToRoute('app_admin_notification_index');
+    }
+
+    /**
+     * Rend une notification à lire pour quelqu'un qui l'a déjà ouverte.
+     */
+    #[Route('/{id}/rouvrir/{recipientId}', name: 'app_admin_notification_reopen', requirements: ['id' => '\\d+', 'recipientId' => '\\d+'], methods: ['POST'])]
+    #[IsCsrfTokenValid(new Expression('"reopen_media_" ~ args["media"].getId() ~ "_" ~ args["recipient"].getId()'))]
+    public function reopen(
+        Media $media,
+        #[MapEntity(id: 'recipientId')]
+        User $recipient,
+        RecipientInviter $recipientInviter,
+    ): Response {
+        try {
+            $recipientInviter->reopen($recipient, $media);
+            $this->addFlash('success', sprintf('%s doit rouvrir « %s ».', $recipient->getPublicName(), $media->getTitle()));
+        } catch (\LogicException $exception) {
+            $this->addFlash('error', $exception->getMessage());
+        }
 
         return $this->redirectToRoute('app_admin_notification_index');
     }

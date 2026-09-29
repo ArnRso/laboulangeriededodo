@@ -795,6 +795,112 @@ class NotificationControllerTest extends WebTestCase
         return new UploadedFile($path, 'souvenir.png', 'image/png', null, true);
     }
 
+    public function testTheListingNamesWhoOpenedEachNotification(): void
+    {
+        $medias = $this->mediaFactory->createFeed(2, delayMinutes: 0);
+        $dorian = $this->userFactory->createRecipient('dorian@example.com');
+        $marie = $this->userFactory->createRecipient('marie@example.com');
+
+        foreach ([$dorian, $marie] as $recipient) {
+            $this->client->loginUser($recipient);
+            $this->client->request('GET', sprintf('/mon-espace/notifications/%d', (int) $medias[0]->getId()));
+        }
+
+        $this->client->loginUser($this->userFactory->createAdmin('autre-admin@example.com'));
+        $crawler = $this->client->request('GET', '/admin/notifications');
+
+        $lignes = $crawler->filter('li.list-group-item');
+        self::assertStringContainsString($dorian->getPublicName(), $lignes->eq(0)->text());
+        self::assertStringContainsString($marie->getPublicName(), $lignes->eq(0)->text());
+        self::assertStringNotContainsString($dorian->getPublicName(), $lignes->eq(1)->text(), 'La suivante n\'a été ouverte par personne.');
+    }
+
+    public function testReopeningMakesTheNotificationUnreadAgain(): void
+    {
+        $medias = $this->mediaFactory->createFeed(2, delayMinutes: 0);
+        $dorian = $this->userFactory->createRecipient('dorian@example.com');
+        $marie = $this->userFactory->createRecipient('marie@example.com');
+
+        foreach ([$dorian, $marie] as $recipient) {
+            $this->client->loginUser($recipient);
+            $this->client->request('GET', sprintf('/mon-espace/notifications/%d', (int) $medias[0]->getId()));
+        }
+
+        $this->client->loginUser($this->userFactory->createAdmin('autre-admin@example.com'));
+        $crawler = $this->client->request('GET', '/admin/notifications');
+        $action = sprintf('/admin/notifications/%d/rouvrir/%d', (int) $medias[0]->getId(), (int) $marie->getId());
+        $this->client->submit($crawler->filter(sprintf('form[action="%s"]', $action))->form());
+
+        self::assertResponseRedirects('/admin/notifications');
+        $this->client->followRedirect();
+        self::assertSelectorTextContains('.alert-success', 'doit rouvrir');
+
+        $this->client->loginUser($marie);
+        $crawler = $this->client->request('GET', '/mon-espace');
+        self::assertCount(0, $crawler->filter('.f-n-seen'), 'Marie doit la rouvrir.');
+
+        $this->client->loginUser($dorian);
+        $crawler = $this->client->request('GET', '/mon-espace');
+        self::assertCount(1, $crawler->filter('.f-n-seen'), 'Dorian garde la sienne.');
+    }
+
+    public function testReopeningRefusesAForgedToken(): void
+    {
+        $medias = $this->mediaFactory->createFeed(1, delayMinutes: 0);
+        $marie = $this->userFactory->createRecipient('marie@example.com');
+
+        $this->client->loginUser($marie);
+        $this->client->request('GET', sprintf('/mon-espace/notifications/%d', (int) $medias[0]->getId()));
+
+        $this->client->loginUser($this->userFactory->createAdmin('autre-admin@example.com'));
+        $this->client->request(
+            'POST',
+            sprintf('/admin/notifications/%d/rouvrir/%d', (int) $medias[0]->getId(), (int) $marie->getId()),
+            ['_token' => 'jeton-invalide'],
+        );
+
+        self::assertResponseRedirects();
+
+        $this->client->loginUser($marie);
+        $crawler = $this->client->request('GET', '/mon-espace');
+        self::assertCount(1, $crawler->filter('.f-n-seen'), 'Rien n\'a été rouvert.');
+    }
+
+    public function testReopeningSomethingNeverOpenedSaysSo(): void
+    {
+        $medias = $this->mediaFactory->createFeed(1, delayMinutes: 0);
+        $marie = $this->userFactory->createRecipient('marie@example.com');
+
+        // Le bouton n'existe que sur une ouverture : on rejoue le formulaire
+        // d'une autre personne pour obtenir un jeton valable, puis on vise
+        // Marie, qui n'a rien ouvert.
+        $dorian = $this->userFactory->createRecipient('dorian@example.com');
+        $this->client->loginUser($dorian);
+        $this->client->request('GET', sprintf('/mon-espace/notifications/%d', (int) $medias[0]->getId()));
+
+        $this->client->loginUser($this->userFactory->createAdmin('autre-admin@example.com'));
+        $crawler = $this->client->request('GET', '/admin/notifications');
+        $token = $crawler->filter(sprintf(
+            'form[action="/admin/notifications/%d/rouvrir/%d"] input[name="_token"]',
+            (int) $medias[0]->getId(),
+            (int) $dorian->getId(),
+        ))->attr('value');
+
+        $this->client->request(
+            'POST',
+            sprintf('/admin/notifications/%d/rouvrir/%d', (int) $medias[0]->getId(), (int) $marie->getId()),
+            ['_token' => (string) $token],
+        );
+
+        // Le jeton porte l'identifiant du destinataire : celui de Dorian ne
+        // vaut pas pour Marie.
+        self::assertResponseRedirects();
+
+        $this->client->loginUser($dorian);
+        $crawler = $this->client->request('GET', '/mon-espace');
+        self::assertCount(1, $crawler->filter('.f-n-seen'), 'Dorian garde la sienne.');
+    }
+
     private function removeUploadedFile(Media $media): void
     {
         $this->mediaStorage()->delete((string) $media->getFilePath());

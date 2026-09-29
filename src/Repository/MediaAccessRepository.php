@@ -42,6 +42,31 @@ class MediaAccessRepository extends ServiceEntityRepository
     }
 
     /**
+     * Les ouvertures de tout le fil, groupées par notification : de quoi
+     * montrer qui a lu quoi sans une requête par ligne.
+     *
+     * @return array<int, list<MediaAccess>>
+     */
+    public function findAllGroupedByMedia(): array
+    {
+        $accesses = $this->createQueryBuilder('ma')
+            ->join('ma.user', 'u')
+            ->addSelect('u')
+            ->join('ma.media', 'm')
+            ->orderBy('ma.openedAt', 'ASC')
+            ->getQuery()
+            ->getResult();
+
+        $grouped = [];
+
+        foreach ($accesses as $access) {
+            $grouped[(int) $access->getMedia()->getId()][] = $access;
+        }
+
+        return $grouped;
+    }
+
+    /**
      * @return list<MediaAccess>
      */
     public function findByMedia(Media $media): array
