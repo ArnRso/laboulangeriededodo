@@ -13,7 +13,7 @@ $finder = (new PhpCsFixer\Finder())
 return (new PhpCsFixer\Config())
     ->setRules([
         '@Symfony' => true,
-        '@PHP84Migration' => true,
+        '@PHP85Migration' => true,
         // Aligné sur les règles strictes de PHPStan.
         'php_unit_test_case_static_method_calls' => ['call_type' => 'self'],
         'declare_strict_types' => false,
