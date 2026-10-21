@@ -7,6 +7,7 @@ use App\Enum\AppKind;
 use App\Enum\MediaType;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\Validator\ConstraintViolationInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class MediaValidationTest extends KernelTestCase
@@ -222,7 +223,7 @@ class MediaValidationTest extends KernelTestCase
     }
 
     /**
-     * @param iterable<\Symfony\Component\Validator\ConstraintViolationInterface> $violations
+     * @param iterable<ConstraintViolationInterface> $violations
      */
     private static function assertViolation(iterable $violations, string $expectedPath): void
     {

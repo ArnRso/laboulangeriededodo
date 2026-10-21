@@ -12,7 +12,7 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class InvitationServiceTest extends TestCase
 {
-    private const NOW = '2026-01-01 12:00:00';
+    private const string NOW = '2026-01-01 12:00:00';
 
     public function testInviteCreatesUserWithTokenAndNoPassword(): void
     {

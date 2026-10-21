@@ -69,12 +69,6 @@ final readonly class DressMapping
 
     public function usesSource(string $key): bool
     {
-        foreach ($this->fields as $mapping) {
-            if ($mapping->usesSource($key)) {
-                return true;
-            }
-        }
-
-        return false;
+        return array_any($this->fields, fn ($mapping) => $mapping->usesSource($key));
     }
 }

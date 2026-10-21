@@ -16,7 +16,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * le garantit par un index sur LOWER(name), que Doctrine ne sait pas décrire.
  */
 #[ORM\Entity(repositoryClass: TagRepository::class)]
-class Tag
+class Tag implements \Stringable
 {
     /**
      * Au-delà, l'étiquette n'aide plus à s'y retrouver.

@@ -186,8 +186,4 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         return $this->createdAt;
     }
-
-    public function eraseCredentials(): void
-    {
-    }
 }

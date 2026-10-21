@@ -96,6 +96,8 @@
         "phpstan": "phpstan analyse --memory-limit=1G",
         "cs": "PHP_CS_FIXER_IGNORE_ENV=1 php-cs-fixer fix --dry-run --diff",
         "cs:fix": "PHP_CS_FIXER_IGNORE_ENV=1 php-cs-fixer fix",
+        "rector": "rector process --dry-run",
+        "rector:fix": "rector process",
         "twig": [
             "@php bin/console lint:twig templates",
             "twig-cs-fixer lint"
@@ -112,11 +114,13 @@
             "@lint",
             "@cs",
             "@phpstan",
+            "@rector",
             "@twig",
             "@js",
             "@test"
         ],
         "fix": [
+            "@rector:fix",
             "@cs:fix",
             "@twig:fix",
             "@js:fix"
@@ -143,6 +147,7 @@
         "phpstan/phpstan-strict-rules": "^2.0",
         "phpstan/phpstan-symfony": "^2.0",
         "phpunit/phpunit": "^13.3",
+        "rector/rector": "^2.7",
         "symfony/browser-kit": "8.1.*",
         "symfony/css-selector": "8.1.*",
         "symfony/debug-bundle": "8.1.*",

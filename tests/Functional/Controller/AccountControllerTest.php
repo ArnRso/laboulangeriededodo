@@ -12,7 +12,7 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class AccountControllerTest extends WebTestCase
 {
-    private const CURRENT_PASSWORD = 'mot-de-passe-actuel';
+    private const string CURRENT_PASSWORD = 'mot-de-passe-actuel';
 
     private KernelBrowser $client;
     private UserFactory $userFactory;

@@ -64,15 +64,7 @@ class FeedManager
     public function move(Media $media, int $offset): void
     {
         $medias = $this->mediaRepository->findAllOrdered();
-        $currentIndex = null;
-
-        foreach ($medias as $index => $candidate) {
-            if ($candidate === $media) {
-                $currentIndex = $index;
-
-                break;
-            }
-        }
+        $currentIndex = array_find_key($medias, fn ($candidate) => $candidate === $media);
 
         if (null === $currentIndex) {
             return;
